@@ -35,3 +35,11 @@ build/
 **/.mvn
 **/mvnw
 **/mvnw.cmd
+
+### resources ###
+resources/**/conf
+resources/**/data
+resources/**/html
+resources/**/log
+
+!.gitkeep
