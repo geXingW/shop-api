@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gexingw.shop.mapper.UmsAdminMapper">
+<!--    <select id="getById" resultType="com.gexingw.chdtadmin.bean.Member">-->
+<!--        select * from ums_member where id = #{id}-->
+<!--    </select>-->
+
+    <resultMap type="com.gexingw.shop.bean.ums.UmsAdmin" id="adminResultType">
+        <id column="id" property="id" />
+        <result column="dept_id" property="deptId" />
+        <result column="password" property="password" />
+        <result column="username" property="username" />
+        <result column="nick_name" property="nickName" />
+        <result column="gender" property="gender" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="avatar_name" property="avatarName" />
+        <result column="avatar_path" property="avatarPath" />
+        <result column="is_admin" jdbcType="BOOLEAN" property="isAdmin" />
+        <result column="enabled" property="enabled" />
+        <association javaType="com.gexingw.shop.bean.ums.UmsDept" property="dept">
+            <id column="ud_id" property="id" />
+            <id column="pid" property="pid" />
+            <id column="sub_count" property="subCount" />
+            <id column="name" property="name" />
+            <id column="dept_sort" property="deptSort" />
+            <id column="ud_enabled" property="enabled" />
+        </association>
+        <collection property="jobs" ofType="com.gexingw.shop.bean.ums.UmsJob">
+            <id column="uj_id" property="id" />
+            <id column="uj_name" property="name" />
+            <id column="uj_enabled" property="enabled" />
+            <id column="uj_sort" property="job_sort" />
+        </collection>
+    </resultMap>
+
+    <select id="getList" resultMap="adminResultType">
+        select ua.*, ud.id ud_id, ud.enabled ud_enabled from ums_admins ua left join ums_depts ud on ud.id = ua.dept_id
+    </select>
+
+
+    <resultMap type="com.gexingw.shop.bean.ums.UmsAdmin" id="adminResultType2">
+        <id column="id" property="id" />
+        <result column="dept_id" property="deptId" />
+        <result column="password" property="password" />
+        <result column="username" property="username" />
+        <result column="nick_name" property="nickName" />
+        <result column="gender" property="gender" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="avatar_name" property="avatarName" />
+        <result column="avatar_path" property="avatarPath" />
+        <result column="is_admin" jdbcType="BOOLEAN" property="isAdmin" />
+        <result column="enabled" property="enabled" />
+        <association javaType="com.gexingw.shop.bean.ums.UmsDept" property="dept" column="dept_id" select="getDept"/>
+        <collection property="jobs" column="id" javaType="ArrayList" ofType="com.gexingw.shop.bean.ums.UmsJob" select="getJobs"/>
+        <collection property="roles" column="id" javaType="ArrayList" ofType="com.gexingw.shop.bean.ums.UmsRole" select="getRoles"/>
+    </resultMap>
+
+    <select id="getList2" resultMap="adminResultType2">
+        select ua.*, ud.id ud_id, ud.enabled ud_enabled from ums_admins ua left join ums_depts ud on ud.id = ua.dept_id
+    </select>
+
+    <select id="getJobs" parameterType="long" resultType="com.gexingw.shop.bean.ums.UmsJob">
+        select uj.* from ums_jobs uj
+        left join ums_admins_jobs uaj on uaj.job_id = uj.id
+        where uaj.admin_id = #{id}
+    </select>
+
+    <select id="getDept" parameterType="long" resultType="com.gexingw.shop.bean.ums.UmsDept">
+        select * from ums_depts ud where ud.id = #{id}
+    </select>
+
+    <select id="getRoles" parameterType="long" resultType="com.gexingw.shop.bean.ums.UmsRole">
+        select * from ums_roles ur
+        left join ums_admins_roles uar on uar.role_id = ur.id
+        where uar.admin_id = #{id}
+    </select>
+
+    <select id="queryList" resultMap="adminResultType2">
+        select * from ums_admins
+        <where>
+            <if test="requestParams.deptId != -1L">
+                and dept_id = #{requestParams.deptId}
+            </if>
+            <if test="requestParams.enabled != -1">
+                and enabled = #{requestParams.enabled}
+            </if>
+            <if test="requestParams.blurry != null">
+                and (username like '%${requestParams.blurry}%' or email like '%${requestParams.blurry}%')
+            </if>
+            <if test="requestParams.createTime.length != 0">
+                and #{requestParams.createTime[0]} &lt;= create_time  and create_time &lt; #{requestParams.createTime[1]}
+            </if>
+        </where>
+    </select>
+</mapper>
