@@ -5,13 +5,13 @@ server:
 # 应用名称
 spring:
   application:
-    name: shop-admin
+    name: shop-admin-api
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:33060/chdt
-      username: root
-      password: root
+      url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:shop}
+      username: ${DB_USER:root}
+      password: ${DB_PWD:root}
       filters: stat
 
       stat-view-servlet:
@@ -28,8 +28,8 @@ spring:
         stat:
           enabled: true
   redis:
-    host: localhost
-    port: 63790
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
 
   validation:
     basename: classpath:lang/ValidationMessages
