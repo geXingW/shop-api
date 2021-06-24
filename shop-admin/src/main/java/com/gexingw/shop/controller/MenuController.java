@@ -136,6 +136,14 @@ public class MenuController {
     @PreAuthorize("@el.check('menu:add')")
     public R save(@RequestBody UmsMenuRequestParam menuRequestParam) {
         Long id = umsMenuService.save(menuRequestParam);
+
+        // 如果存在父级菜单，父级菜单的子菜单需要加1
+        if (!umsMenuService.incrParentMenuSubCount(menuRequestParam.getPid())) {
+            return R.ok("更新父级菜单子菜单数量失败！");
+        }
+
+        // 添加角色与菜单的绑定
+
         long authId = AuthUtil.getAuthId();
         if (id > 0) {
             umsMenuService.delRedisAdminMenuByAdminId(authId);
@@ -196,10 +204,30 @@ public class MenuController {
     @PutMapping
     @PreAuthorize("@el.check('menu:edit')")
     public R update(@RequestBody UmsMenuRequestParam menuRequestParam) {
+        UmsMenu umsMenu = umsMenuService.getMenuById(menuRequestParam.getId());
+        if (umsMenu == null) {
+            return R.ok(RespCode.RESOURCE_NOT_EXIST, "菜单不存在！");
+        }
+
         if (!umsMenuService.update(menuRequestParam)) {
             return R.ok(RespCode.FAILURE.getCode(), "更新失败！");
         }
 
+        // 如果修改了父级菜单，需要更新父级菜单的subcount
+        if (!umsMenu.getPid().equals(menuRequestParam.getPid())) {
+
+            // 旧的父级菜单 -1
+            if (!umsMenuService.decrParentMenuSubCount(umsMenu.getPid())) {
+                return R.ok(RespCode.DB_OPERATION_FAILURE, "父级菜单更新失败！");
+            }
+
+            // 新的父级菜单 +1
+            if (umsMenuService.incrParentMenuSubCount(menuRequestParam.getPid())) {
+                return R.ok(RespCode.DB_OPERATION_FAILURE, "父级菜单更新失败！");
+            }
+        }
+
+        // 清除缓存
         long authId = AuthUtil.getAuthId();
         umsMenuService.delRedisAdminMenuByAdminId(authId);
         umsMenuService.delRedisAdminPermissionByAdminId(authId);
@@ -214,18 +242,21 @@ public class MenuController {
             return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
         }
 
+        // 更新父级菜单的 subcount
+        List<UmsMenu> umsMenus = umsMenuService.getByIds(ids);
+        for (UmsMenu umsMenu : umsMenus) {
+            // 父级菜单subcount -1
+            if (!umsMenuService.decrParentMenuSubCount(umsMenu.getPid())) {
+                return R.ok(RespCode.DB_OPERATION_FAILURE, "父级菜单更新失败！");
+            }
+        }
+
         for (Long id : ids) {
             umsMenuService.delRedisAdminMenuByAdminId(id);
             umsMenuService.delRedisAdminPermissionByAdminId(id);
         }
 
         return R.ok("已删除！");
-    }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("@el.check('menu:del')")
-    public R delete(@PathVariable("id") long id) {
-        return R.ok();
     }
 
     @GetMapping("lazy")

@@ -65,5 +65,12 @@ public class UmsMenu {
         return !isHasChildren();
     }
 
+    public void incrSubCount(int incrCnt) {
+        this.subCount += incrCnt;
+    }
+
+    public void decrSubCount(int decrCnt) {
+        this.subCount -= decrCnt;
+    }
 }
 
