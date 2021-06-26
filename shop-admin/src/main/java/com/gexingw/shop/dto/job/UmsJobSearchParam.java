@@ -15,5 +15,4 @@ public class UmsJobSearchParam extends BaseSearchParam {
 
     private int jobSort;
 
-    private Date createTime;
 }

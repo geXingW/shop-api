@@ -7,5 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Data
 public class PmsProductCategorySearchParam extends BaseSearchParam {
+    private Long pid;
 
 }
