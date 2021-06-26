@@ -1,10 +1,10 @@
 package com.gexingw.shop.bean.pms;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -19,7 +19,15 @@ public class PmsProduct {
 
     private String name;
 
+    private BigDecimal price;
+
+    private String pic;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 }

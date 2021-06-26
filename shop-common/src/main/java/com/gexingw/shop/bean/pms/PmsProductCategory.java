@@ -1,10 +1,13 @@
 package com.gexingw.shop.bean.pms;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
+@TableName("pms_product_categories")
 public class PmsProductCategory {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -15,7 +18,7 @@ public class PmsProductCategory {
 
     private Integer level;
 
-    private Integer navStatus;
+    private Integer subCount;
 
     private Integer showStatus;
 
@@ -25,4 +28,23 @@ public class PmsProductCategory {
 
     private String keywords;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(fill = FieldFill.INSERT)
+    private Date createTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
+
+    public boolean isHasChildren() {
+        return subCount > 0;
+    }
+
+    public void incrSubCount(int incrCnt) {
+        subCount += incrCnt;
+    }
+
+    public void decrSubCount(int decrCnt) {
+        subCount = Math.max(0, subCount - decrCnt);
+    }
 }

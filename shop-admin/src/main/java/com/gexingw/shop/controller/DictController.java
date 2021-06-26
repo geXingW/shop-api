@@ -87,11 +87,11 @@ public class DictController {
     @PreAuthorize("@el.check('job:del')")
     public R delete(@RequestBody List<Long> ids) {
         if (umsDictMapper.deleteBatchIds(ids) <= 0) {
-            return R.ok(RespCode.DELETE_FAILURE, "删除失败！");
+            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
         }
 
         if (!umsDictService.delete(ids)) {
-            return R.ok("删除失败！");
+            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
 
         }
 

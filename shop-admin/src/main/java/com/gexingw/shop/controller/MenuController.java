@@ -139,7 +139,7 @@ public class MenuController {
 
         // 如果存在父级菜单，父级菜单的子菜单需要加1
         if (!umsMenuService.incrParentMenuSubCount(menuRequestParam.getPid())) {
-            return R.ok("更新父级菜单子菜单数量失败！");
+            return R.ok(RespCode.FAILURE.getCode(), "更新父级菜单子菜单数量失败！");
         }
 
         // 添加角色与菜单的绑定
@@ -206,7 +206,7 @@ public class MenuController {
     public R update(@RequestBody UmsMenuRequestParam menuRequestParam) {
         UmsMenu umsMenu = umsMenuService.getMenuById(menuRequestParam.getId());
         if (umsMenu == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST, "菜单不存在！");
+            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "菜单不存在！");
         }
 
         if (!umsMenuService.update(menuRequestParam)) {
@@ -218,12 +218,12 @@ public class MenuController {
 
             // 旧的父级菜单 -1
             if (!umsMenuService.decrParentMenuSubCount(umsMenu.getPid())) {
-                return R.ok(RespCode.DB_OPERATION_FAILURE, "父级菜单更新失败！");
+                return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), "父级菜单更新失败！");
             }
 
             // 新的父级菜单 +1
             if (umsMenuService.incrParentMenuSubCount(menuRequestParam.getPid())) {
-                return R.ok(RespCode.DB_OPERATION_FAILURE, "父级菜单更新失败！");
+                return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), "父级菜单更新失败！");
             }
         }
 
