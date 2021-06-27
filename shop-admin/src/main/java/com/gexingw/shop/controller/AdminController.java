@@ -3,11 +3,13 @@ package com.gexingw.shop.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bean.ums.UmsAdmin;
+import com.gexingw.shop.bean.ums.UmsDept;
 import com.gexingw.shop.dto.admin.UmsAdminRequestParam;
 import com.gexingw.shop.dto.admin.UmsAdminSearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.mapper.UmsAdminMapper;
 import com.gexingw.shop.service.UmsAdminService;
+import com.gexingw.shop.service.UmsDeptService;
 import com.gexingw.shop.service.UmsMenuService;
 import com.gexingw.shop.service.UmsRoleService;
 import com.gexingw.shop.utils.FileUtil;
@@ -30,6 +32,9 @@ public class AdminController {
 
     @Autowired
     private UmsAdminMapper umsAdminMapper;
+
+    @Autowired
+    UmsDeptService umsDeptService;
 
     @Autowired
     UmsMenuService umsMenuService;
@@ -95,6 +100,20 @@ public class AdminController {
         umsMenuService.delRedisAdminPermissionByAdminId(umsAdminRequestParam.getId());
         umsRoleService.delRedisAdminRolesByAdminId(umsAdminRequestParam.getId());
         umsAdminService.delRedisAdminDataScopeByAdminId(umsAdminRequestParam.getId());
+        umsDeptService.delRedisAdminDeptByAdminId(umsAdminRequestParam.getId());
+
+        return R.ok("更新成功！");
+    }
+
+    @PutMapping("center")
+    public R updateCenter(@RequestBody UmsAdminRequestParam requestParam) {
+        try {
+            if (!umsAdminService.updateCenter(requestParam)) {
+                return R.ok(RespCode.FAILURE.getCode(), "更新失败！");
+            }
+        } catch (Exception e) {
+            return R.ok(RespCode.FAILURE.getCode(), e.getMessage());
+        }
 
         return R.ok("更新成功！");
     }
@@ -112,6 +131,7 @@ public class AdminController {
             umsMenuService.delRedisAdminPermissionByAdminId(id);
             umsAdminService.delRedisAdminDataScopeByAdminId(id);
             umsAdminService.delRedisAdminDetailByAdminId(id);
+            umsDeptService.delRedisAdminDeptByAdminId(id);
         }
 
         return R.ok("删除成功！");

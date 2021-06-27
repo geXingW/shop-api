@@ -150,6 +150,10 @@ public class JwtTokenUtil {
      */
     private boolean isTokenExpired(String token) {
         Date expiredDate = getExpiredDateFromToken(token);
+        if (expiredDate == null) {
+            return true;
+        }
+
         return expiredDate.before(new Date());
     }
 
@@ -158,6 +162,10 @@ public class JwtTokenUtil {
      */
     private Date getExpiredDateFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
+        if (claims == null) {
+            return null;
+        }
+
         return claims.getExpiration();
     }
 

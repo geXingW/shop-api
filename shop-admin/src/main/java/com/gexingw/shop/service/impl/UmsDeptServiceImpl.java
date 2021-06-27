@@ -1,12 +1,16 @@
 package com.gexingw.shop.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gexingw.shop.bean.ums.UmsAdmin;
 import com.gexingw.shop.bean.ums.UmsDept;
+import com.gexingw.shop.constant.AdminConstant;
 import com.gexingw.shop.dto.dept.UmsDeptRequestParam;
 import com.gexingw.shop.mapper.UmsAdminMapper;
 import com.gexingw.shop.mapper.UmsDeptMapper;
+import com.gexingw.shop.service.UmsAdminService;
 import com.gexingw.shop.service.UmsDeptService;
+import com.gexingw.shop.util.RedisUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +28,12 @@ public class UmsDeptServiceImpl implements UmsDeptService {
 
     @Autowired
     private UmsAdminMapper umsAdminMapper;
+
+    @Autowired
+    private UmsAdminService umsAdminService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public List<UmsDept> getAll() {
@@ -126,6 +136,11 @@ public class UmsDeptServiceImpl implements UmsDeptService {
         return umsAdminMapper.selectList(new QueryWrapper<UmsAdmin>().eq("dept_id", depId));
     }
 
+    @Override
+    public List<UmsAdmin> getDeptAdminsByDeptIds(List<Long> deptIds) {
+        return umsAdminMapper.selectList(new QueryWrapper<UmsAdmin>().in("dept_id", deptIds));
+    }
+
     public List<UmsDept> getDeptWithChildrenByPids(List<Long> pids) {
         List<UmsDept> depts = umsDeptMapper.selectList(new QueryWrapper<UmsDept>().in("pid", pids));
         if (depts.size() > 0) {
@@ -133,5 +148,40 @@ public class UmsDeptServiceImpl implements UmsDeptService {
         }
 
         return depts;
+    }
+
+    @Override
+    public UmsDept getAdminDeptByAdminId(Long adminId) {
+        // 查询Redis
+        UmsDept umsDept = getRedisAdminDeptByAdminId(adminId);
+        if (umsDept != null) {
+            return umsDept;
+        }
+
+        // 查询数据库
+        UmsAdmin umsAdmin = umsAdminService.getAdminDetailByAdminId(adminId);
+        umsDept = umsDeptMapper.selectById(umsAdmin.getDeptId());
+        if (umsDept != null) {
+            setRedisAdminDeptByAdminId(adminId, umsAdmin);
+        }
+
+        return umsDept;
+    }
+
+    public boolean setRedisAdminDeptByAdminId(Long adminId, UmsAdmin umsAdmin) {
+        return redisUtil.set(String.format(AdminConstant.REDIS_ADMIN_DEPT_FORMAT, adminId), umsAdmin);
+    }
+
+    public UmsDept getRedisAdminDeptByAdminId(Long adminId) {
+        Object redisObj = redisUtil.get(String.format(AdminConstant.REDIS_ADMIN_DEPT_FORMAT, adminId));
+        if (redisObj == null) {
+            return null;
+        }
+
+        return JSON.parseObject(redisObj.toString(), UmsDept.class);
+    }
+
+    public void delRedisAdminDeptByAdminId(Long adminId) {
+        redisUtil.del(String.format(AdminConstant.REDIS_ADMIN_DEPT_FORMAT, adminId));
     }
 }
