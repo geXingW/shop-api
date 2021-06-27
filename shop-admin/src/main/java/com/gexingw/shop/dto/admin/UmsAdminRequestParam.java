@@ -42,6 +42,9 @@ public class UmsAdminRequestParam {
     @NotEmpty
     private List<UmsRole> roles;
 
+    private String newPass;
+    private String oldPass;
+
 //    private void setGender(String v){
 //        gender = "男".equals(v) ? UmsAdminSexType.M: UmsAdminSexType.F;
 //    }

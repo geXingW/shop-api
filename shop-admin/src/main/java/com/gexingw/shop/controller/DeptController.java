@@ -195,6 +195,7 @@ public class DeptController {
         List<UmsAdmin> admins = umsDeptService.getDeptAdminsByDeptId(deptRequestParam.getId());
         for (UmsAdmin umsAdmin : admins) {
             umsAdminService.delRedisAdminDataScopeByAdminId(umsAdmin.getId());
+            umsDeptService.delRedisAdminDeptByAdminId(umsAdmin.getId());
         }
 
         return R.ok("已更新！");
@@ -203,8 +204,14 @@ public class DeptController {
     @DeleteMapping
     @PreAuthorize("@el.check('dept:del')")
     public R delete(@RequestBody List<Long> ids) {
+        // 清除相关联管理员的数据权限
+        List<UmsAdmin> admins = umsDeptService.getDeptAdminsByDeptIds(ids);
         if (!umsDeptService.delete(ids)) {
             return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+        }
+
+        for (UmsAdmin umsAdmin : admins) {
+            umsDeptService.delRedisAdminDeptByAdminId(umsAdmin.getId());
         }
 
         return R.ok("已删除！");

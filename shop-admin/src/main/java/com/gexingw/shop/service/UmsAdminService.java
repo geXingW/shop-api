@@ -57,4 +57,8 @@ public interface UmsAdminService {
     UmsAdmin getAdminDetailByAdminName(String authUsername);
 
     UserDetails loadUserByUsername(String username);
+
+    public UmsAdmin getAdminDetailByAdminId(Long adminId);
+
+    boolean updateCenter(UmsAdminRequestParam requestParam) throws Exception;
 }

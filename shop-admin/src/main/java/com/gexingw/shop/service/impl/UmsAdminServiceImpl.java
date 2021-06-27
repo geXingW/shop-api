@@ -7,18 +7,21 @@ import com.gexingw.shop.constant.AdminConstant;
 import com.gexingw.shop.constant.AuthConstant;
 import com.gexingw.shop.dto.admin.UmsAdminRequestParam;
 import com.gexingw.shop.enums.DataScopeEnum;
+import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.mapper.*;
 import com.gexingw.shop.service.*;
 
 import com.alibaba.fastjson.JSON;
 import com.gexingw.shop.util.AuthUtil;
 import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RsaUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +63,13 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Autowired
     UmsDeptService umsDeptService;
+
+    @Autowired
+    private RsaUtil rsaUtil;
+
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -340,6 +350,56 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         return umsAdmin;
     }
 
+    public UmsAdmin getAdminDetailByAdminId(Long adminId) {
+        // 从redis获取
+        UmsAdmin umsAdmin = getRedisAdminDetailByAdminId(adminId);
+        if (umsAdmin != null) {
+            return umsAdmin;
+        }
+
+        // redis中没有，从DB获取
+        umsAdmin = umsAdminMapper.selectById(adminId);
+        if (umsAdmin != null) {
+            setRedisAdminDetailByAdminId(adminId, umsAdmin);
+        }
+
+        return umsAdmin;
+    }
+
+    @Override
+    public boolean updateCenter(UmsAdminRequestParam requestParam) throws Exception {
+        UmsAdmin umsAdmin = getAdminDetailByAdminId(requestParam.getId());
+        if (umsAdmin == null) {
+            return false;
+        }
+
+        if (requestParam.getGender() != null) {
+            umsAdmin.setGender(requestParam.getGender());
+        }
+
+        if (requestParam.getPhone() != null) {
+            umsAdmin.setPhone(requestParam.getPhone());
+        }
+
+        if (requestParam.getNickName() != null) {
+            umsAdmin.setNickName(requestParam.getNickName());
+        }
+
+        // 更新密码
+        if (requestParam.getNewPass() != null && requestParam.getOldPass() != null) {
+            // 验证旧密码
+            String oldPwd = rsaUtil.decryptByPrivateKey(requestParam.getOldPass());
+            if (!passwordEncoder.matches(oldPwd, umsAdmin.getPassword())) {
+                throw new RuntimeException("原始密码错误！");
+            }
+
+            String newPwd = rsaUtil.decryptByPrivateKey(requestParam.getNewPass());
+            umsAdmin.setPassword(passwordEncoder.encode(newPwd));
+        }
+
+        return umsAdminMapper.updateById(umsAdmin) > 0;
+    }
+
     /**
      * 跟据 <b>username</b> 获取存储在redis中的用户详情
      *
@@ -403,5 +463,8 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         return Collections.min(roleLvls) <= optLvl;
     }
 
+    public String rsaDecode(String encodeStr) throws Exception {
+        return rsaUtil.decryptByPrivateKey(encodeStr);
+    }
 }
 

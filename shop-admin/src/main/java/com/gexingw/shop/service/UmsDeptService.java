@@ -26,5 +26,15 @@ public interface UmsDeptService {
 
     List<UmsAdmin> getDeptAdminsByDeptId(Long depId);
 
+    List<UmsAdmin> getDeptAdminsByDeptIds(List<Long> deptIds);
+
     public List<UmsDept> getDeptWithChildrenByPids(List<Long> pids);
+
+    UmsDept getAdminDeptByAdminId(Long id);
+
+    public UmsDept getRedisAdminDeptByAdminId(Long adminId);
+
+    public boolean setRedisAdminDeptByAdminId(Long adminId, UmsAdmin umsAdmin);
+
+    public void delRedisAdminDeptByAdminId(Long adminId);
 }

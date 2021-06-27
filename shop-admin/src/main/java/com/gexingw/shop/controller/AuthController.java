@@ -7,6 +7,7 @@ import com.gexingw.shop.dto.auth.UmsLoginRequestParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.exception.BadRequestException;
 import com.gexingw.shop.service.UmsAdminService;
+import com.gexingw.shop.service.UmsDeptService;
 import com.gexingw.shop.service.UmsJobService;
 import com.gexingw.shop.util.AuthUtil;
 import com.gexingw.shop.util.JwtTokenUtil;
@@ -48,6 +49,9 @@ public class AuthController {
 
     @Autowired
     RedisUtil redisUtil;
+
+    @Autowired
+    UmsDeptService deptService;
 
     /**
      * 登陆接口
@@ -133,6 +137,9 @@ public class AuthController {
 
         // 角色
         userInfo.put("roles", umsAdminService.getUserPermissions(userDetails.getId()));
+
+        // 所属部门
+        userDetails.setDept(deptService.getAdminDeptByAdminId(userDetails.getId()));
 
         // 移除密码字段
         userDetails.setPassword(null);

@@ -29,6 +29,7 @@ services:
       - ./services/nginx/conf/conf.d:/etc/nginx/conf.d #配置文件挂载
       - ./services/nginx/html:/usr/share/nginx/html #静态资源根目录挂载
       - ./services/nginx/log:/var/log/nginx #日志文件挂载
+      - /J/upload:/usr/share/nginx/upload # 文件上传路径
     ports:
       - 80:80
 #  rabbitmq:

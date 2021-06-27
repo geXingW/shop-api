@@ -48,10 +48,18 @@ public class BaseSearchParam {
     }
 
     public String getCreateTimeBegin() {
-        return createTime.length >= 1 ? createTime[0] : null;
+        if (createTime == null || createTime.length < 1) {
+            return null;
+        }
+
+        return createTime[0];
     }
 
     public String getCreateTimeEnd() {
-        return createTime.length >= 2 ? createTime[1] : null;
+        if (createTime == null || createTime.length < 2) {
+            return null;
+        }
+
+        return createTime[1];
     }
 }
