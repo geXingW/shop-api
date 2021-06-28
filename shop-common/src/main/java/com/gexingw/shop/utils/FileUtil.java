@@ -2,6 +2,7 @@ package com.gexingw.shop.utils;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.gexingw.shop.exception.BadRequestException;
@@ -9,7 +10,9 @@ import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -159,14 +162,15 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
      * 将文件名解析成文件的上传路径
      */
     public static File upload(MultipartFile file, String filePath) {
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmssS");
-        String name = getFileNameNoEx(file.getOriginalFilename());
-        String suffix = getExtensionName(file.getOriginalFilename());
-        String nowStr = "-" + format.format(date);
+        String extension = getExtensionName(file.getOriginalFilename());
+
+        // 文件名 + 时间戳
+        String fileName = getFileNameNoEx(file.getOriginalFilename()) + System.currentTimeMillis();
+        // 文件明进行md5加密
+        fileName = DigestUtils.md5DigestAsHex(fileName.getBytes()) + "." + extension;
+        String path = StrUtil.removeSuffix(filePath, File.separator) + File.separator + fileName;
+
         try {
-            String fileName = name + nowStr + "." + suffix;
-            String path = filePath + fileName;
             // getCanonicalFile 可解析正确各种路径
             File dest = new File(path).getCanonicalFile();
             // 检测是否存在目录
@@ -175,6 +179,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
                     System.out.println("was not successful.");
                 }
             }
+
             // 文件写入
             file.transferTo(dest);
             return dest;
@@ -193,7 +198,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         BigExcelWriter writer = ExcelUtil.getBigWriter(file);
         // 一次性写出内容，使用默认样式，强制输出标题
         writer.write(list, true);
-        SXSSFSheet sheet = (SXSSFSheet)writer.getSheet();
+        SXSSFSheet sheet = (SXSSFSheet) writer.getSheet();
         //上面需要强转SXSSFSheet  不然没有trackAllColumnsForAutoSizing方法
         sheet.trackAllColumnsForAutoSizing();
         //列宽自适应

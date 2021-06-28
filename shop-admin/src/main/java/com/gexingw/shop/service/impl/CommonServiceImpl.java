@@ -1,5 +1,6 @@
 package com.gexingw.shop.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gexingw.shop.bean.Upload;
 import com.gexingw.shop.config.FileConfig;
@@ -22,11 +23,13 @@ public class CommonServiceImpl implements CommonService {
     UploadMapper uploadMapper;
 
     @Override
-    public String upload(MultipartFile file) {
-        String uploadPath = fileConfig.getLocation();
-        File uploadResult = FileUtil.upload(file, uploadPath);
+    public File upload(MultipartFile file, String uploadType) {
 
-        return uploadResult.getPath();
+        // 拼接上传路径
+        String uploadPath = StrUtil.removeSuffix(fileConfig.getLocation(), File.separator) + File.separator;
+        uploadPath += StrUtil.removePrefix(uploadType, File.separator);
+
+        return FileUtil.upload(file, uploadPath);
     }
 
     @Override
@@ -36,18 +39,38 @@ public class CommonServiceImpl implements CommonService {
             detachAdminAvatarFile(uploadId, uploadType);
         }
 
-        return true;
+        // 删除数据库记录
+        QueryWrapper<Upload> queryWrapper = new QueryWrapper<Upload>().eq("upload_id", uploadId).eq("upload_type", uploadType);
+        return uploadMapper.delete(queryWrapper) > 0;
+    }
+
+    @Override
+    public String attachNewFile(Long uploadId, String uploadType, File uploadedFile) {
+
+        Upload upload = new Upload();
+
+        upload.setName(uploadedFile.getName());
+        upload.setDisk(fileConfig.getActiveDisk());
+        upload.setPath(uploadedFile.getPath());
+        upload.setSize(uploadedFile.length());
+        upload.setUploadId(uploadId);
+        upload.setUploadType(uploadType);
+
+        if (uploadMapper.insert(upload) <= 0) {
+            return null;
+        }
+
+        return upload.getPath();
     }
 
     public boolean detachAdminAvatarFile(Long uploadId, String uploadType) {
         QueryWrapper<Upload> queryWrapper = new QueryWrapper<Upload>().eq("upload_id", uploadId).eq("upload_type", uploadType);
         Upload upload = uploadMapper.selectOne(queryWrapper);
-        if (upload != null) {
+        if (upload != null || upload.getPath() == null) {
             return true;
         }
 
         // 删除相关文件 TODO
-
-        return true;
+        return FileUtil.del(upload.getPath());
     }
 }

@@ -3,15 +3,15 @@
 
  Source Server         : local-docker
  Source Server Type    : MySQL
- Source Server Version : 50733
+ Source Server Version : 50734
  Source Host           : localhost:33060
  Source Schema         : shop
 
  Target Server Type    : MySQL
- Target Server Version : 50733
+ Target Server Version : 50734
  File Encoding         : 65001
 
- Date: 27/06/2021 00:02:34
+ Date: 28/06/2021 23:32:21
 */
 
 SET NAMES utf8mb4;
@@ -79,7 +79,8 @@ INSERT INTO `pms_product_categories` VALUES (48, 5, '全新整车', 1, 0, 0, '',
 INSERT INTO `pms_product_categories` VALUES (49, 5, '车载电器', 1, 0, 0, '', 0, 0, 0, '', '', '', NULL, NULL);
 INSERT INTO `pms_product_categories` VALUES (50, 5, '维修保养', 1, 0, 0, '', 0, 0, 0, '', '', '', NULL, NULL);
 INSERT INTO `pms_product_categories` VALUES (51, 5, '汽车装饰', 1, 0, 0, '', 0, 0, 0, '', '', '', NULL, NULL);
-INSERT INTO `pms_product_categories` VALUES (54, 0, '分类3', 1, 0, NULL, NULL, NULL, 1, 999, NULL, '分类3关键字', NULL, '2021-06-26 22:58:44', '2021-06-26 23:02:43');
+INSERT INTO `pms_product_categories` VALUES (54, 0, '分类3', 1, 1, NULL, NULL, NULL, 1, 999, NULL, '分类3关键字', NULL, '2021-06-26 22:58:44', '2021-06-27 12:59:05');
+INSERT INTO `pms_product_categories` VALUES (55, 54, '分类1', 0, 0, NULL, NULL, NULL, 0, 999, NULL, '分类1', NULL, '2021-06-27 12:59:05', '2021-06-27 12:59:05');
 
 -- ----------------------------
 -- Table structure for pms_products
@@ -201,7 +202,7 @@ CREATE TABLE `ums_admins`  (
 -- ----------------------------
 -- Records of ums_admins
 -- ----------------------------
-INSERT INTO `ums_admins` VALUES (1, 2, 'admin', '管理员', 'F', '18888888888', '201507802@qq.com', 'avatar-20200806032259161.png', '/Users/jie/Documents/work/me/admin/eladmin/~/avatar/avatar-20200806032259161.png', '$2a$10$IHvbumxtQoVhCjV6l6ERdubosGoFQIeYu5p458ESP3uLCuR.Z05Ku', b'1', b'1', NULL, 'admin', '2020-05-03 16:38:31', '2018-08-23 09:11:56', '2020-09-05 10:43:31');
+INSERT INTO `ums_admins` VALUES (1, 2, 'admin', '管理员', 'F', '18888888888', '201507802@qq.com', 'avataravatar-20210627061321199.png', 'H:\\\\upload', '$2a$10$PCtPpWskkvkTqC.Cu0oteu0UEKKLZpu/5YvxjUalwcxIYeTu4ykx.', b'1', b'1', NULL, 'admin', '2020-05-03 16:38:31', '2018-08-23 09:11:56', '2021-06-27 16:02:44');
 INSERT INTO `ums_admins` VALUES (2, 17, 'test', '测试', 'M', '15199999999', '231@qq.com', NULL, NULL, '$2a$10$4XcyudOYTSz6fue6KFNMHeUQnCX5jbBQypLEnGk1PmekXt5c95JcK', b'0', b'0', 'admin', 'admin', NULL, '2020-05-05 11:15:49', '2021-06-16 14:30:42');
 INSERT INTO `ums_admins` VALUES (3, 17, 'user01', 'user01', 'F', '15211111111', 'user01@test.com', NULL, NULL, '$2a$10$eYcLbbujbRyIXPpweWNTTeMs8YRT2jjIQU6r1cVoqe6tIf7bYg0RK', b'0', b'0', NULL, NULL, NULL, '2021-06-04 19:56:07', '2021-06-26 10:50:23');
 
@@ -775,5 +776,28 @@ INSERT INTO `ums_roles_menus` VALUES (112, 15);
 INSERT INTO `ums_roles_menus` VALUES (113, 15);
 INSERT INTO `ums_roles_menus` VALUES (114, 15);
 INSERT INTO `ums_roles_menus` VALUES (116, 15);
+
+-- ----------------------------
+-- Table structure for uploads
+-- ----------------------------
+DROP TABLE IF EXISTS `uploads`;
+CREATE TABLE `uploads`  (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `disk` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `size` bigint(255) UNSIGNED NULL DEFAULT 0,
+  `upload_id` bigint(20) UNSIGNED NULL DEFAULT 0,
+  `upload_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of uploads
+-- ----------------------------
+INSERT INTO `uploads` VALUES (1, 'file-20210628023711186.png', 'local', 'J:\\upload\\file-20210628023711186.png', 61889, 0, 'avatar', '2021-06-28 14:37:17', '2021-06-28 14:37:17');
+INSERT INTO `uploads` VALUES (2, '39b2ed2b769187c2ab8adf91ebae27bd.png', 'local', 'J:\\upload\\avatar\\39b2ed2b769187c2ab8adf91ebae27bd.png', 31355, 1, 'avatar', '2021-06-28 23:25:41', '2021-06-28 23:25:41');
 
 SET FOREIGN_KEY_CHECKS = 1;
