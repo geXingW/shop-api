@@ -59,7 +59,11 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 file:
-  location: J:\upload\
+  active-disk: local
+  disks:
+    local:
+      location: J:\upload
+
 
 # RSA 加密密钥
 rsa:
