@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommonServiceImpl implements CommonService {
@@ -34,24 +36,41 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public boolean detachOldFile(Long uploadId, String uploadType) {
-        // 用户头像上传
-        if (UploadConstant.UPLOAD_TYPE_ADMIN_AVATAR.equals(uploadType)) {
-            detachAdminAvatarFile(uploadId, uploadType);
+        // 删除数据库记录
+        QueryWrapper<Upload> queryWrapper = new QueryWrapper<Upload>().eq("upload_id", uploadId).eq("upload_type", uploadType);
+
+        // 已绑定文件记录
+        List<Upload> uploads = uploadMapper.selectList(queryWrapper);
+        if (uploads.size() <= 0) { // 找不老的上传文件保存记录，直接返回
+            return true;
         }
 
         // 删除数据库记录
-        QueryWrapper<Upload> queryWrapper = new QueryWrapper<Upload>().eq("upload_id", uploadId).eq("upload_type", uploadType);
-        return uploadMapper.delete(queryWrapper) > 0;
+        if (uploadMapper.deleteBatchIds(uploads.stream().map(Upload::getId).collect(Collectors.toList())) <= 0) {
+            return true;
+        }
+
+        // 检查文件是否存在
+        String filePath;
+        for (Upload upload : uploads) {
+            filePath = upload.getFullPath(); // 文件全路径
+            if (FileUtil.exist(filePath)) {
+                FileUtil.del(filePath);     // 删除文件
+            }
+        }
+
+        return true;
     }
 
     @Override
     public String attachNewFile(Long uploadId, String uploadType, File uploadedFile) {
+        String disk = fileConfig.getActiveDisk();
+        String path = StrUtil.removePrefix(uploadedFile.getPath(), fileConfig.getLocation(disk));
 
         Upload upload = new Upload();
-
         upload.setName(uploadedFile.getName());
-        upload.setDisk(fileConfig.getActiveDisk());
-        upload.setPath(uploadedFile.getPath());
+        upload.setDisk(disk);
+        upload.setPath(StrUtil.removePrefix(path, File.separator));
         upload.setSize(uploadedFile.length());
         upload.setUploadId(uploadId);
         upload.setUploadType(uploadType);

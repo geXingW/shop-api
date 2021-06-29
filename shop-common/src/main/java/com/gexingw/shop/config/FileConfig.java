@@ -1,5 +1,6 @@
 package com.gexingw.shop.config;
 
+import com.gexingw.shop.exception.UploadConfigErrorException;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Data
@@ -15,7 +17,8 @@ import java.util.Map;
 public class FileConfig {
     private String location;
 
-    private Map<String, String> diskLocation = new HashMap<>();
+
+    private Map<String, DiskItem> diskItems = new HashMap<>();
 
     private String activeDisk;
 
@@ -30,27 +33,52 @@ public class FileConfig {
     @Data
     private static class DiskItem {
         private String location;
+        private String host;
     }
 
     public String getDiskName() {
         return activeDisk;
     }
 
-    public String getDiskLocation(String diskName) {
-        try {
-            Class<Disk> aClass = Disk.class;
+    public DiskItem getDiskItem(String disk) {
+        // 先尝试从实例中获取
+        DiskItem diskItem = diskItems.get(disk);
+        if (diskItem == null) { // 实例中没有，调用方法获取
+            try {
+                Class<Disk> aClass = Disk.class;
+                disk = disk.substring(0, 1).toUpperCase() + disk.substring(1);
 
-//            String diskName = getDiskName();
-            diskName = diskName.substring(0, 1).toUpperCase() + diskName.substring(1);
+                Method method = aClass.getMethod("get" + disk);
 
-            Method method = aClass.getMethod("get" + diskName);
+                Disk disks = getDisks();
+                diskItem = (DiskItem) method.invoke(disks);
 
-            Disk disks = getDisks();
-            DiskItem diskItem = (DiskItem) method.invoke(disks);
-            return diskItem.getLocation();
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                // 重新写入实例属性
+                diskItems.put(disk.toLowerCase(Locale.ROOT), diskItem);
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                throw new UploadConfigErrorException("存储实例获取失败！");
+            }
+        }
+
+        return diskItem;
+    }
+
+    public String getDiskLocation(String disk) {
+        DiskItem diskItem = getDiskItem(disk);
+        if (diskItem == null) {
             return null;
         }
+
+        return diskItem.getLocation();
+    }
+
+    public String getDiskHost(String disk) {
+        DiskItem diskItem = getDiskItem(disk);
+        if (diskItem == null) {
+            return null;
+        }
+
+        return diskItem.getHost();
     }
 
     public String getLocation() {
@@ -58,16 +86,12 @@ public class FileConfig {
     }
 
     public String getLocation(String disk) {
-        String location = diskLocation.get(disk);
-        if (location == null) {
-            // 获取disk的location
-            location = getDiskLocation(disk);
-
-            // 重新写进去
-            diskLocation.put(disk, location);
+        DiskItem diskItem = getDiskItem(disk);
+        if (diskItem == null) {
+            return null;
         }
 
-        return location;
+        return diskItem.getLocation();
     }
 }
 

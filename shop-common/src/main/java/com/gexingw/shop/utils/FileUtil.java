@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -331,5 +329,4 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     public static String getMd5(File file) {
         return getMd5(getByte(file));
     }
-
 }

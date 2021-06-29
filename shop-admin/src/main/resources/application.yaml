@@ -63,6 +63,7 @@ file:
   disks:
     local:
       location: J:\upload
+      host: http://pic.chdt.local/upload
 
 
 # RSA 加密密钥
