@@ -63,7 +63,7 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
-    public String attachNewFile(Long uploadId, String uploadType, File uploadedFile) {
+    public Upload attachUploadFile(Long uploadId, String uploadType, File uploadedFile) {
         String disk = fileConfig.getActiveDisk();
         String path = StrUtil.removePrefix(uploadedFile.getPath(), fileConfig.getLocation(disk));
 
@@ -79,7 +79,7 @@ public class CommonServiceImpl implements CommonService {
             return null;
         }
 
-        return upload.getPath();
+        return upload;
     }
 
     public boolean detachAdminAvatarFile(Long uploadId, String uploadType) {

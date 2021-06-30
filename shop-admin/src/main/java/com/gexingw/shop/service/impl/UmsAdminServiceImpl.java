@@ -1,8 +1,11 @@
 package com.gexingw.shop.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.gexingw.shop.bean.Upload;
 import com.gexingw.shop.bo.UmsAdminDetails;
 import com.gexingw.shop.bean.ums.*;
+import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.constant.AdminConstant;
 import com.gexingw.shop.constant.AuthConstant;
 import com.gexingw.shop.dto.admin.UmsAdminRequestParam;
@@ -25,11 +28,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UmsAdminServiceImpl implements UmsAdminService {
+
+    @Autowired
+    FileConfig fileConfig;
 
     @Autowired
     UmsAdminMapper umsAdminMapper;
@@ -66,6 +73,9 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Autowired
     private RsaUtil rsaUtil;
+
+    @Autowired
+    UploadMapper uploadMapper;
 
 
     @Autowired

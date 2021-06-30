@@ -26,11 +26,12 @@ public enum RespCode {
 
     // 系统异常
     FAILURE(500000, "系统异常，请稍后重试！"),
-    QUERY_FAILURE(501, "查询失败！"),
+    QUERY_FAILURE(501000, "查询失败！"),
     SAVE_FAILURE(502000, "保存失败！"),
     UPDATE_FAILURE(503000, "更新失败！"),
     DELETE_FAILURE(504000, "删除失败！"),
     DB_OPERATION_FAILURE(505000, "数据库操作失败！"),
+    UPLOAD_FAILURE(506000, "上传失败！"),
 
     ;
 

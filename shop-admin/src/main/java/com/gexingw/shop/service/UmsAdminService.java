@@ -1,12 +1,14 @@
 package com.gexingw.shop.service;
 
 
+import com.gexingw.shop.bean.Upload;
 import com.gexingw.shop.bean.ums.UmsAdmin;
 import com.gexingw.shop.bean.ums.UmsMenu;
 import com.gexingw.shop.bean.ums.UmsRole;
 import com.gexingw.shop.dto.admin.UmsAdminRequestParam;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 

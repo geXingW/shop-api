@@ -2,6 +2,7 @@ package com.gexingw.shop.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gexingw.shop.bean.Upload;
 import com.gexingw.shop.bean.ums.UmsAdmin;
 import com.gexingw.shop.bean.ums.UmsDept;
 import com.gexingw.shop.dto.admin.UmsAdminRequestParam;
@@ -90,7 +91,7 @@ public class AdminController {
     public R upload(@RequestParam MultipartFile file, @RequestParam String uploadType, @RequestParam Long uploadId) {
         // 上传文件获取服务器文件路径
         File uploadedFile = commonService.upload(file, uploadType);
-        if(uploadedFile == null){
+        if (uploadedFile == null) {
             return R.ok("上传失败！");
         }
 
@@ -100,15 +101,12 @@ public class AdminController {
         }
 
         // 资源与新图片绑定
-        String uploadPath = commonService.attachNewFile(uploadId, uploadType, uploadedFile);
-        if (uploadPath == null) {
-            return R.ok(RespCode.SAVE_FAILURE.getCode(), "新图片绑定失败！");
+        Upload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
+        if (upload == null) {
+            return R.ok(RespCode.UPLOAD_FAILURE.getCode(), "上传失败！");
         }
 
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("path", uploadPath);
-
-        return R.ok(result, "上传成功！");
+        return R.ok("上传成功！");
     }
 
     @PutMapping()

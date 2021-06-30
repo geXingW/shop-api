@@ -3,16 +3,21 @@ package com.gexingw.shop.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gexingw.shop.bean.Upload;
 import com.gexingw.shop.bean.pms.PmsProductCategory;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
 import com.gexingw.shop.dto.product.PmsProductCategorySearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.service.PmsProductCategoryService;
+import com.gexingw.shop.service.impl.CommonServiceImpl;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +27,9 @@ public class ProductCategoryController {
 
     @Autowired
     PmsProductCategoryService categoryService;
+
+    @Autowired
+    CommonServiceImpl commonService;
 
     @GetMapping
     public R index(PmsProductCategorySearchParam searchParam) {
@@ -70,6 +78,36 @@ public class ProductCategoryController {
         }
 
         return R.ok("已保存！");
+    }
+
+    /**
+     * 上传接口
+     *
+     * @return
+     */
+    @PostMapping("/upload-pic")
+    public R upload(@RequestParam MultipartFile file, @RequestParam String uploadType, @RequestParam Long uploadId) {
+        // 上传文件获取服务器文件路径
+        File uploadedFile = commonService.upload(file, uploadType);
+        if (uploadedFile == null) {
+            return R.ok("上传失败！");
+        }
+
+        // 删除旧文件
+        if (!commonService.detachOldFile(uploadId, uploadType)) {
+            return R.ok(RespCode.DELETE_FAILURE.getCode(), "旧图片删除失败！");
+        }
+
+        // 绑定新的上传文件
+        Upload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
+        if(upload == null){
+            return R.ok("上传失败！");
+        }
+
+        HashMap<String, String> result = new HashMap<>();
+        result.put("url", upload.getFullUrl());
+
+        return R.ok(result, "上传成功！");
     }
 
     @PutMapping
