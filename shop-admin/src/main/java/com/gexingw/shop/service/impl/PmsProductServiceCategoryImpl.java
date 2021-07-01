@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bean.Upload;
 import com.gexingw.shop.bean.pms.PmsProductCategory;
+import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
 import com.gexingw.shop.mapper.PmsProductCategoryMapper;
 import com.gexingw.shop.mapper.UploadMapper;
 import com.gexingw.shop.service.PmsProductCategoryService;
+import com.gexingw.shop.service.UploadService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,9 @@ public class PmsProductServiceCategoryImpl implements PmsProductCategoryService 
 
     @Autowired
     UploadMapper uploadMapper;
+
+    @Autowired
+    UploadService uploadService;
 
     @Override
     public IPage<PmsProductCategory> searchList(QueryWrapper<PmsProductCategory> queryWrapper, IPage<PmsProductCategory> page) {

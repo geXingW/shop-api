@@ -28,11 +28,6 @@ public class CommonController {
      */
     @PostMapping("upload")
     public R upload(@RequestParam MultipartFile file, @RequestParam String uploadType, @RequestParam Long uploadId) {
-        // 删除旧文件
-        if (!commonService.detachOldFile(uploadId, uploadType)) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "旧图片删除失败！");
-        }
-
         // 上传文件获取服务器文件路径
         File uploadedFile = commonService.upload(file, uploadType);
 

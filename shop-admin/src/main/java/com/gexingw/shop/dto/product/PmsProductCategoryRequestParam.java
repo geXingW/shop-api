@@ -21,4 +21,6 @@ public class PmsProductCategoryRequestParam {
 
     private String keywords;
 
+    private String icon;
+
 }

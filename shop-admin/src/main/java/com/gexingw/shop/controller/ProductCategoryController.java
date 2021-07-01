@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bean.Upload;
 import com.gexingw.shop.bean.pms.PmsProductCategory;
+import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
 import com.gexingw.shop.dto.product.PmsProductCategorySearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.service.PmsProductCategoryService;
+import com.gexingw.shop.service.UploadService;
 import com.gexingw.shop.service.impl.CommonServiceImpl;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
@@ -30,6 +32,9 @@ public class ProductCategoryController {
 
     @Autowired
     CommonServiceImpl commonService;
+
+    @Autowired
+    UploadService uploadService;
 
     @GetMapping
     public R index(PmsProductCategorySearchParam searchParam) {
@@ -68,7 +73,8 @@ public class ProductCategoryController {
 
     @PostMapping
     public R save(@RequestBody PmsProductCategoryRequestParam requestParam) {
-        if (categoryService.save(requestParam) == 0) {
+        Long categoryId = categoryService.save(requestParam);
+        if (categoryId == 0) {
             return R.ok(RespCode.FAILURE.getCode(), "保存失败！");
         }
 
@@ -77,7 +83,10 @@ public class ProductCategoryController {
             categoryService.incrParentCategorySubCnt(requestParam.getPid());
         }
 
-        return R.ok("已保存！");
+        // 关联上传的图片
+        Upload upload = uploadService.attachPicToSource(categoryId, UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
+
+        return upload != null ? R.ok("已保存！") : R.ok("保存失败！");
     }
 
     /**
@@ -94,13 +103,15 @@ public class ProductCategoryController {
         }
 
         // 删除旧文件
-        if (!commonService.detachOldFile(uploadId, uploadType)) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "旧图片删除失败！");
+        if (uploadId != 0) {
+            if (!commonService.detachOldFile(uploadId, uploadType)) {
+                return R.ok(RespCode.DELETE_FAILURE.getCode(), "旧图片删除失败！");
+            }
         }
 
         // 绑定新的上传文件
         Upload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
-        if(upload == null){
+        if (upload == null) {
             return R.ok("上传失败！");
         }
 
@@ -135,7 +146,10 @@ public class ProductCategoryController {
             return R.ok(RespCode.FAILURE, "更新父级分类失败！");
         }
 
-        return R.ok("已更新！");
+        // 更新分类图片
+        Upload upload = uploadService.attachPicToSource(requestParam.getId(), UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
+
+        return upload != null ? R.ok("已更新！") : R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
     }
 
     @DeleteMapping
@@ -147,6 +161,11 @@ public class ProductCategoryController {
         }
         for (PmsProductCategory category : categories) {
             categoryService.decrParentCategorySubCnt(category.getPid());
+        }
+
+        // 删除关联的图片
+        for (Long id : ids) {
+            uploadService.detachSourcePic(id, UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY);
         }
 
         return R.ok("已更新！");

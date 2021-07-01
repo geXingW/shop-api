@@ -8,4 +8,7 @@ public interface UploadConstant {
     // Uplaod Type
     public static final String UPLOAD_TYPE_ADMIN_AVATAR = "avatar";
 
+    // 商品分类图片
+    public static final String UPLOAD_TYPE_PRODUCT_CATEGORY = "product-catetory";
+
 }
