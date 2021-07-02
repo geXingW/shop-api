@@ -32,4 +32,21 @@ public class PmsProductServiceImpl implements PmsProductService {
 
         return product.getId();
     }
+
+    @Override
+    public boolean update(PmsProductRequestParam requestParam) {
+        PmsProduct product = productMapper.selectById(requestParam.getId());
+        if (product == null) {
+            return false;
+        }
+
+        BeanUtils.copyProperties(requestParam, product);
+
+        return productMapper.updateById(product) <= 0;
+    }
+
+    @Override
+    public PmsProduct getById(Long id) {
+        return productMapper.selectById(id);
+    }
 }

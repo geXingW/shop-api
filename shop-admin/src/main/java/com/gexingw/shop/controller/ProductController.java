@@ -70,4 +70,39 @@ public class ProductController {
 
         return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
     }
+
+    public R update(@RequestBody PmsProductRequestParam requestParam) {
+        PmsProduct product = productService.getById(requestParam.getId());
+        if (product == null) {
+            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到商品信息！");
+        }
+
+        // 更新商品信息
+        if (!productService.update(requestParam)) {
+            return R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
+        }
+
+        // 更新商品分类数量
+        if (!product.getCategoryId().equals(requestParam.getCategoryId())) {
+            // 更新商品分类商品数
+            if (!categoryService.decrProductCntByCategoryId(product.getCategoryId())) {
+                return R.ok(RespCode.FAILURE.getCode(), "商品分类商品数更新失败！");
+            }
+
+            // 增加新商品分类商品数
+            categoryService.incrProductCntByCategoryId(requestParam.getCategoryId());
+        }
+
+        // 更新商品图片
+        if(!product.getPic().equals(requestParam.getPic())){
+            // 删除旧图片
+            uploadService.detachSourcePic(product.getId(), UploadConstant.UPLOAD_TYPE_PRODUCT);
+
+            // 绑定新图片
+            uploadService.attachPicToSource(product.getId(), UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
+
+        }
+
+        return R.ok("已更新！");
+    }
 }
