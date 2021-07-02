@@ -28,6 +28,8 @@ public class PmsProductCategory {
 
     private String keywords;
 
+    private Integer productCount;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
@@ -46,5 +48,13 @@ public class PmsProductCategory {
 
     public void decrSubCount(int decrCnt) {
         subCount = Math.max(0, subCount - decrCnt);
+    }
+
+    public void incrProductCnt(int incrCnt) {
+        productCount += incrCnt;
+    }
+
+    public void decrProductCnt(int decrCnt) {
+        productCount = Math.max(0, productCount - decrCnt);
     }
 }

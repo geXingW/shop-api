@@ -27,4 +27,8 @@ public interface PmsProductCategoryService {
     boolean delete(Set<Long> ids);
 
     List<PmsProductCategory> getByIds(Set<Long> ids);
+
+    boolean incrProductCntByCategoryId(Long categoryId);
+
+    boolean decrProductCntByCategoryId(Long categoryId);
 }

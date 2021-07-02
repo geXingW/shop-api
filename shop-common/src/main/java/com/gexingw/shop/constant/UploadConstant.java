@@ -10,5 +10,8 @@ public interface UploadConstant {
 
     // 商品分类图片
     public static final String UPLOAD_TYPE_PRODUCT_CATEGORY = "product-catetory";
+    
+    // 商品图片
+    public static final String UPLOAD_TYPE_PRODUCT = "product";
 
 }

@@ -1,7 +1,12 @@
 package com.gexingw.shop.bean.pms;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gexingw.shop.bean.Upload;
+import com.gexingw.shop.constant.UploadConstant;
+import com.gexingw.shop.mapper.UploadMapper;
+import com.gexingw.shop.utils.SpringContextUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -14,6 +19,8 @@ public class PmsProduct {
     private Long id;
 
     private String title;
+
+    private String subTitle;
 
     private Long brandId;
 
@@ -40,4 +47,12 @@ public class PmsProduct {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
+
+    public String getPic() {
+        UploadMapper uploadMapper = SpringContextUtil.getBean(UploadMapper.class);
+        Upload upload = uploadMapper.selectOne(new QueryWrapper<Upload>().eq("upload_id", id)
+                .eq("upload_type", UploadConstant.UPLOAD_TYPE_PRODUCT));
+
+        return upload.getFullUrl();
+    }
 }

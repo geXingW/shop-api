@@ -3,8 +3,10 @@ package com.gexingw.shop.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bean.pms.PmsProduct;
+import com.gexingw.shop.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.mapper.PmsProductMapper;
 import com.gexingw.shop.service.PmsProductService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +18,18 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Override
     public IPage<PmsProduct> search(QueryWrapper<PmsProduct> queryWrapper, IPage<PmsProduct> page) {
         return productMapper.selectPage(page, queryWrapper);
+    }
+
+    @Override
+    public Long save(PmsProductRequestParam requestParam) {
+        PmsProduct product = new PmsProduct();
+
+        BeanUtils.copyProperties(requestParam, product);
+
+        if (productMapper.insert(product) <= 0) {
+            return null;
+        }
+
+        return product.getId();
     }
 }

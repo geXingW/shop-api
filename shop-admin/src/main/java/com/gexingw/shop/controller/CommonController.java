@@ -38,7 +38,7 @@ public class CommonController {
         }
 
         HashMap<String, Object> result = new HashMap<>();
-        result.put("path", upload.getFullPath());
+        result.put("url", upload.getFullUrl());
 
         return R.ok(result, "上传成功！");
     }

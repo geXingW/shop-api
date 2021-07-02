@@ -92,4 +92,19 @@ public class PmsProductServiceCategoryImpl implements PmsProductCategoryService 
         return categoryMapper.selectBatchIds(ids);
     }
 
+    @Override
+    public boolean incrProductCntByCategoryId(Long categoryId) {
+        PmsProductCategory category = categoryMapper.selectById(categoryId);
+        category.incrProductCnt(1);
+
+        return categoryMapper.updateById(category) >= 0;
+    }
+
+    @Override
+    public boolean decrProductCntByCategoryId(Long categoryId) {
+        PmsProductCategory category = categoryMapper.selectById(categoryId);
+        category.decrProductCnt(1);
+
+        return categoryMapper.updateById(category) >= 0;
+    }
 }
