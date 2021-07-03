@@ -31,5 +31,5 @@ public class PmsProductRequestParam {
 
     private String keywords;
 
-    private String pic; // 图片
+    private String pic = ""; // 图片
 }
