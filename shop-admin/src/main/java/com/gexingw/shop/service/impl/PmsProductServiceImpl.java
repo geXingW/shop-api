@@ -10,6 +10,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class PmsProductServiceImpl implements PmsProductService {
     @Autowired
@@ -42,11 +44,16 @@ public class PmsProductServiceImpl implements PmsProductService {
 
         BeanUtils.copyProperties(requestParam, product);
 
-        return productMapper.updateById(product) <= 0;
+        return productMapper.updateById(product) > 0;
     }
 
     @Override
     public PmsProduct getById(Long id) {
         return productMapper.selectById(id);
+    }
+
+    @Override
+    public boolean delete(Set<Long> ids) {
+        return productMapper.deleteBatchIds(ids) > 0;
     }
 }

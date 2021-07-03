@@ -157,7 +157,7 @@ public class ProductCategoryController {
         List<PmsProductCategory> categories = categoryService.getByIds(ids);
 
         if (!categoryService.delete(ids)) {
-            return R.ok("删除失败！");
+            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
         }
         for (PmsProductCategory category : categories) {
             categoryService.decrParentCategorySubCnt(category.getPid());

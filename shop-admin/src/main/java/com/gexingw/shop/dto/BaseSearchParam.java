@@ -20,6 +20,10 @@ public class BaseSearchParam {
     // 创建时间
     private String[] createTime;
 
+    public int getPage() {
+        return ++page;
+    }
+
     public String sortBy() {
         if (sortRule == null) {
             sortRule();

@@ -7,6 +7,7 @@ import com.gexingw.shop.dto.product.PmsProductRequestParam;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Set;
 
 public interface PmsProductService {
     IPage<PmsProduct> search(QueryWrapper<PmsProduct> queryWrapper, IPage<PmsProduct> objectPage);
@@ -16,4 +17,6 @@ public interface PmsProductService {
     boolean update(PmsProductRequestParam requestParam);
 
     PmsProduct getById(Long id);
+
+    boolean delete(Set<Long> ids);
 }

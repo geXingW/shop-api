@@ -53,6 +53,6 @@ public class PmsProduct {
         Upload upload = uploadMapper.selectOne(new QueryWrapper<Upload>().eq("upload_id", id)
                 .eq("upload_type", UploadConstant.UPLOAD_TYPE_PRODUCT));
 
-        return upload.getFullUrl();
+        return upload != null ? upload.getFullUrl() : null;
     }
 }
