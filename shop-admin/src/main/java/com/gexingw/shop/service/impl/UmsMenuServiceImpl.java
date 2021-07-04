@@ -169,5 +169,48 @@ public class UmsMenuServiceImpl implements UmsMenuService {
         redisUtil.del(String.format(AdminConstant.REDIS_ADMIN_PERMISSIONS_FORMAT, adminId));
     }
 
+    @Override
+    public UmsMenu getMenuById(Long id) {
+        return umsMenuMapper.selectById(id);
+    }
+
+    @Override
+    public boolean incrParentMenuSubCount(Long pid) {
+        // pid为零代表顶级菜单，无需更新
+        if (pid == 0) {
+            return true;
+        }
+
+        // 查找父级菜单
+        UmsMenu parentMenu = umsMenuMapper.selectById(pid);
+        if (parentMenu == null) {
+            return false;
+        }
+
+        // 更新父级菜单的 subcount
+        parentMenu.incrSubCount(1);
+
+        return umsMenuMapper.updateById(parentMenu) <= 0;
+    }
+
+    @Override
+    public boolean decrParentMenuSubCount(Long pid) {
+        // pid为零代表顶级菜单，无需更新
+        if (pid == 0) {
+            return true;
+        }
+
+        // 查找父级菜单
+        UmsMenu parentMenu = umsMenuMapper.selectById(pid);
+        if (parentMenu == null) {
+            return false;
+        }
+
+        // 更新父级菜单的 subcount
+        parentMenu.decrSubCount(1);
+
+        return umsMenuMapper.updateById(parentMenu) <= 0;
+    }
+
 }
 

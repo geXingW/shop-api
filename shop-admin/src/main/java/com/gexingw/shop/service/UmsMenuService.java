@@ -47,5 +47,11 @@ public interface UmsMenuService {
     boolean setRedisAdminPermissionByAdminId(Long adminId, String permission);
 
     void delRedisAdminPermissionByAdminId(Long adminId);
+
+    boolean incrParentMenuSubCount(Long pid);
+
+    UmsMenu getMenuById(Long id);
+
+    boolean decrParentMenuSubCount(Long pid);
 }
 

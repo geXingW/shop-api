@@ -1,6 +1,9 @@
 package com.gexingw.shop.constant;
 
 public interface AdminConstant {
+
+    public static final String REDIS_ADMIN_DETAIL_FORMAT = "admin:%d:detail";
+
     // 用户菜单
     public static final String REDIS_ADMIN_MENUS_FORMAT = "admin:%d:menus";
 
@@ -21,4 +24,7 @@ public interface AdminConstant {
 
     // 根据用户ID存储的用户详情
     public static final String REDIS_ADMIN_ID_DETAILS_FORMAT = "admin:id:%d:details";
+
+    // 根据用户ID存储用户的部门信息
+    public static final String REDIS_ADMIN_DEPT_FORMAT = "admin:%d:dept";
 }

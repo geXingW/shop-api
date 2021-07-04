@@ -2,22 +2,24 @@ package com.gexingw.shop.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gexingw.shop.bean.Upload;
 import com.gexingw.shop.bean.ums.UmsAdmin;
+import com.gexingw.shop.bean.ums.UmsDept;
 import com.gexingw.shop.dto.admin.UmsAdminRequestParam;
 import com.gexingw.shop.dto.admin.UmsAdminSearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.mapper.UmsAdminMapper;
-import com.gexingw.shop.service.UmsAdminService;
-import com.gexingw.shop.service.UmsMenuService;
-import com.gexingw.shop.service.UmsRoleService;
+import com.gexingw.shop.service.*;
 import com.gexingw.shop.utils.FileUtil;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -32,10 +34,16 @@ public class AdminController {
     private UmsAdminMapper umsAdminMapper;
 
     @Autowired
+    UmsDeptService umsDeptService;
+
+    @Autowired
     UmsMenuService umsMenuService;
 
     @Autowired
     UmsRoleService umsRoleService;
+
+    @Autowired
+    CommonService commonService;
 
     @GetMapping
     @PreAuthorize("@el.check('user:list')")
@@ -74,6 +82,33 @@ public class AdminController {
         return umsAdminService.save(umsAdminRequestParam) > 0 ? R.ok("添加成功！") : R.ok("添加失败！");
     }
 
+    /**
+     * 上传接口
+     *
+     * @return
+     */
+    @PostMapping("/upload-avatar")
+    public R upload(@RequestParam MultipartFile file, @RequestParam String uploadType, @RequestParam Long uploadId) {
+        // 上传文件获取服务器文件路径
+        File uploadedFile = commonService.upload(file, uploadType);
+        if (uploadedFile == null) {
+            return R.ok("上传失败！");
+        }
+
+        // 删除旧文件
+        if (!commonService.detachOldFile(uploadId, uploadType)) {
+            return R.ok(RespCode.DELETE_FAILURE.getCode(), "旧图片删除失败！");
+        }
+
+        // 资源与新图片绑定
+        Upload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
+        if (upload == null) {
+            return R.ok(RespCode.UPLOAD_FAILURE.getCode(), "上传失败！");
+        }
+
+        return R.ok("上传成功！");
+    }
+
     @PutMapping()
     @PreAuthorize("@el.check('user:edit')")
     public R update(@RequestBody UmsAdminRequestParam umsAdminRequestParam) {
@@ -95,6 +130,20 @@ public class AdminController {
         umsMenuService.delRedisAdminPermissionByAdminId(umsAdminRequestParam.getId());
         umsRoleService.delRedisAdminRolesByAdminId(umsAdminRequestParam.getId());
         umsAdminService.delRedisAdminDataScopeByAdminId(umsAdminRequestParam.getId());
+        umsDeptService.delRedisAdminDeptByAdminId(umsAdminRequestParam.getId());
+
+        return R.ok("更新成功！");
+    }
+
+    @PutMapping("center")
+    public R updateCenter(@RequestBody UmsAdminRequestParam requestParam) {
+        try {
+            if (!umsAdminService.updateCenter(requestParam)) {
+                return R.ok(RespCode.FAILURE.getCode(), "更新失败！");
+            }
+        } catch (Exception e) {
+            return R.ok(RespCode.FAILURE.getCode(), e.getMessage());
+        }
 
         return R.ok("更新成功！");
     }
@@ -112,6 +161,7 @@ public class AdminController {
             umsMenuService.delRedisAdminPermissionByAdminId(id);
             umsAdminService.delRedisAdminDataScopeByAdminId(id);
             umsAdminService.delRedisAdminDetailByAdminId(id);
+            umsDeptService.delRedisAdminDeptByAdminId(id);
         }
 
         return R.ok("删除成功！");
