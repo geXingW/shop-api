@@ -1,7 +1,7 @@
 package com.gexingw.shop.service;
 
 
-import com.gexingw.shop.bean.ums.UmsRoleMenu;
+import com.gexingw.shop.bo.ums.UmsRoleMenu;
 
 import java.util.List;
 

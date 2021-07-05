@@ -2,12 +2,9 @@ package com.gexingw.shop.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gexingw.shop.bean.Upload;
-import com.gexingw.shop.bean.pms.PmsProductCategory;
+import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
 
-import java.io.File;
 import java.util.List;
 import java.util.Set;
 

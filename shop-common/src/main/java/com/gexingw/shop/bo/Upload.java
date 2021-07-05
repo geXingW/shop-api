@@ -1,4 +1,4 @@
-package com.gexingw.shop.bean;
+package com.gexingw.shop.bo;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.*;
@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.utils.SpringContextUtil;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.io.File;

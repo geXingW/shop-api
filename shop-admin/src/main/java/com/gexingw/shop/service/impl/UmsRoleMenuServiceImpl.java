@@ -1,6 +1,6 @@
 package com.gexingw.shop.service.impl;
 
-import com.gexingw.shop.bean.ums.UmsRoleMenu;
+import com.gexingw.shop.bo.ums.UmsRoleMenu;
 import com.gexingw.shop.mapper.UmsRoleMenuMapper;
 import com.gexingw.shop.service.UmsRoleMenuService;
 import org.springframework.beans.factory.annotation.Autowired;

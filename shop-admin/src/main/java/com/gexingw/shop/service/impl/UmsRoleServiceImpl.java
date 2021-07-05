@@ -1,10 +1,9 @@
 package com.gexingw.shop.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.gexingw.shop.bean.ums.*;
+import com.gexingw.shop.bo.ums.*;
 import com.gexingw.shop.constant.AdminConstant;
 import com.gexingw.shop.dto.role.UmsRoleRequestParam;
 import com.gexingw.shop.mapper.UmsAdminRoleMapper;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 

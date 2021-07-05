@@ -1,7 +1,7 @@
 package com.gexingw.shop.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.gexingw.shop.bean.ums.UmsRoleDept;
+import com.gexingw.shop.bo.ums.UmsRoleDept;
 import com.gexingw.shop.mapper.UmsRoleDeptMapper;
 import com.gexingw.shop.service.UmsRoleDeptService;
 import org.springframework.beans.factory.annotation.Autowired;

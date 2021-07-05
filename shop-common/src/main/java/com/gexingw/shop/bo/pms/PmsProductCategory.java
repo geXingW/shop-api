@@ -1,4 +1,4 @@
-package com.gexingw.shop.bean.pms;
+package com.gexingw.shop.bo.pms;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;

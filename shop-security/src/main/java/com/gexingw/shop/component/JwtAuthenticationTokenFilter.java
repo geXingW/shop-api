@@ -1,6 +1,5 @@
 package com.gexingw.shop.component;
 
-import com.gexingw.shop.bean.ums.UmsAdmin;
 import com.gexingw.shop.constant.AuthConstant;
 import com.gexingw.shop.util.JwtTokenUtil;
 import com.gexingw.shop.util.RedisUtil;
@@ -20,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Slf4j

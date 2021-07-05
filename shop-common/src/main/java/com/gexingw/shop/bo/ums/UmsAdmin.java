@@ -1,9 +1,9 @@
-package com.gexingw.shop.bean.ums;
+package com.gexingw.shop.bo.ums;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gexingw.shop.bean.Upload;
+import com.gexingw.shop.bo.Upload;
 import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.mapper.UploadMapper;
 import com.gexingw.shop.utils.SpringContextUtil;

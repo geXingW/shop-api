@@ -15,8 +15,7 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public R login(@RequestBody AuthLoginRequestParam requestParam) {
-        System.out.println(requestParam);
+    public R login() {
         return R.ok("登录成功！");
     }
 

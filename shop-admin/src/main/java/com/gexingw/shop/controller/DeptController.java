@@ -1,7 +1,7 @@
 package com.gexingw.shop.controller;
 
-import com.gexingw.shop.bean.ums.UmsAdmin;
-import com.gexingw.shop.bean.ums.UmsDept;
+import com.gexingw.shop.bo.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsDept;
 import com.gexingw.shop.dto.dept.UmsDeptRequestParam;
 import com.gexingw.shop.dto.dept.UmsDeptSearchParam;
 import com.gexingw.shop.enums.RespCode;

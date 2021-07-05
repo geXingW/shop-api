@@ -2,9 +2,8 @@ package com.gexingw.shop.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.gexingw.shop.bean.Upload;
+import com.gexingw.shop.bo.Upload;
 import com.gexingw.shop.config.FileConfig;
-import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.mapper.UploadMapper;
 import com.gexingw.shop.service.CommonService;
 import com.gexingw.shop.utils.FileUtil;

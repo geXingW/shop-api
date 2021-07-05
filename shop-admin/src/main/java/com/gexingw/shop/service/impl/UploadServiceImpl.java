@@ -1,7 +1,7 @@
 package com.gexingw.shop.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.gexingw.shop.bean.Upload;
+import com.gexingw.shop.bo.Upload;
 import com.gexingw.shop.mapper.UploadMapper;
 import com.gexingw.shop.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;

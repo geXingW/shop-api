@@ -2,7 +2,7 @@ package com.gexingw.shop.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gexingw.shop.bean.Upload;
+import com.gexingw.shop.bo.Upload;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

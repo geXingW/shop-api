@@ -1,13 +1,12 @@
 package com.gexingw.shop.dto.admin;
 
-import com.gexingw.shop.bean.ums.UmsDept;
-import com.gexingw.shop.bean.ums.UmsJob;
-import com.gexingw.shop.bean.ums.UmsRole;
+import com.gexingw.shop.bo.ums.UmsDept;
+import com.gexingw.shop.bo.ums.UmsJob;
+import com.gexingw.shop.bo.ums.UmsRole;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data

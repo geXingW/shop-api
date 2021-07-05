@@ -7,7 +7,7 @@
 <!--        select * from ums_member where id = #{id}-->
 <!--    </select>-->
 
-    <select id="getMenusByIds" resultType="com.gexingw.shop.bean.ums.UmsMenu">
+    <select id="getMenusByIds" resultType="com.gexingw.shop.bo.ums.UmsMenu">
         select * from ums_menus where id in
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
@@ -15,7 +15,7 @@
         order by menu_sort asc
     </select>
 
-    <select id="getByPidAndIds" resultType="com.gexingw.shop.bean.ums.UmsMenu">
+    <select id="getByPidAndIds" resultType="com.gexingw.shop.bo.ums.UmsMenu">
         select * from ums_menus where pid = #{pid} and id in
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
@@ -23,11 +23,11 @@
         order by menu_sort asc
     </select>
 
-    <select id="getByPid" resultType="com.gexingw.shop.bean.ums.UmsMenu">
+    <select id="getByPid" resultType="com.gexingw.shop.bo.ums.UmsMenu">
         select * from ums_menus where pid = #{pid} order by menu_sort asc
     </select>
 
-    <select id="testWhere" resultType="com.gexingw.shop.bean.ums.UmsMenu">
+    <select id="testWhere" resultType="com.gexingw.shop.bo.ums.UmsMenu">
         select * from ums_menus where 1 = 1
         <if test="pid != null">
             and pid = #{pid}

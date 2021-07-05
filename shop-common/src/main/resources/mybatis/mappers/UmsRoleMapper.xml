@@ -7,7 +7,7 @@
     <!--        select * from ums_member where id = #{id}-->
     <!--    </select>-->
 
-    <resultMap type="com.gexingw.shop.bean.ums.UmsRole" id="roleResultType">
+    <resultMap type="com.gexingw.shop.bo.ums.UmsRole" id="roleResultType">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="level" property="level"/>
@@ -16,7 +16,7 @@
         <result column="create_by" property="createBy"/>
     </resultMap>
 
-    <select id="getByIds" resultType="com.gexingw.shop.bean.ums.UmsRole">
+    <select id="getByIds" resultType="com.gexingw.shop.bo.ums.UmsRole">
         select * from ums_roles where id in
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
@@ -30,13 +30,13 @@
         <!--            -->
         <!--        </where> -->
     </select>
-    <select id="getRoleMenus" resultType="com.gexingw.shop.bean.ums.UmsMenu">
+    <select id="getRoleMenus" resultType="com.gexingw.shop.bo.ums.UmsMenu">
         select um.*
         from ums_roles_menus urm
                  left join ums_menus um on um.id = urm.menu_id
         where role_id = #{roleId}
     </select>
-    <select id="getRoleDepts" resultType="com.gexingw.shop.bean.ums.UmsDept">
+    <select id="getRoleDepts" resultType="com.gexingw.shop.bo.ums.UmsDept">
         select ud.*
         from ums_roles_depts urd
                  left join ums_depts ud on ud.id = urd.dept_id

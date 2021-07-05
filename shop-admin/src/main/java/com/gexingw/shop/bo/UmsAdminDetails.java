@@ -1,6 +1,6 @@
 package com.gexingw.shop.bo;
 
-import com.gexingw.shop.bean.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsAdmin;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

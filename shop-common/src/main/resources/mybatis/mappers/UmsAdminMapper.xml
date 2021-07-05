@@ -7,7 +7,7 @@
 <!--        select * from ums_member where id = #{id}-->
 <!--    </select>-->
 
-    <resultMap type="com.gexingw.shop.bean.ums.UmsAdmin" id="adminResultType">
+    <resultMap type="com.gexingw.shop.bo.ums.UmsAdmin" id="adminResultType">
         <id column="id" property="id" />
         <result column="dept_id" property="deptId" />
         <result column="password" property="password" />
@@ -20,7 +20,7 @@
         <result column="avatar_path" property="avatarPath" />
         <result column="is_admin" jdbcType="BOOLEAN" property="isAdmin" />
         <result column="enabled" property="enabled" />
-        <association javaType="com.gexingw.shop.bean.ums.UmsDept" property="dept">
+        <association javaType="com.gexingw.shop.bo.ums.UmsDept" property="dept">
             <id column="ud_id" property="id" />
             <id column="pid" property="pid" />
             <id column="sub_count" property="subCount" />
@@ -28,7 +28,7 @@
             <id column="dept_sort" property="deptSort" />
             <id column="ud_enabled" property="enabled" />
         </association>
-        <collection property="jobs" ofType="com.gexingw.shop.bean.ums.UmsJob">
+        <collection property="jobs" ofType="com.gexingw.shop.bo.ums.UmsJob">
             <id column="uj_id" property="id" />
             <id column="uj_name" property="name" />
             <id column="uj_enabled" property="enabled" />
@@ -41,7 +41,7 @@
     </select>
 
 
-    <resultMap type="com.gexingw.shop.bean.ums.UmsAdmin" id="adminResultType2">
+    <resultMap type="com.gexingw.shop.bo.ums.UmsAdmin" id="adminResultType2">
         <id column="id" property="id" />
         <result column="dept_id" property="deptId" />
         <result column="password" property="password" />
@@ -54,26 +54,26 @@
         <result column="avatar_path" property="avatarPath" />
         <result column="is_admin" jdbcType="BOOLEAN" property="isAdmin" />
         <result column="enabled" property="enabled" />
-        <association javaType="com.gexingw.shop.bean.ums.UmsDept" property="dept" column="dept_id" select="getDept"/>
-        <collection property="jobs" column="id" javaType="ArrayList" ofType="com.gexingw.shop.bean.ums.UmsJob" select="getJobs"/>
-        <collection property="roles" column="id" javaType="ArrayList" ofType="com.gexingw.shop.bean.ums.UmsRole" select="getRoles"/>
+        <association javaType="com.gexingw.shop.bo.ums.UmsDept" property="dept" column="dept_id" select="getDept"/>
+        <collection property="jobs" column="id" javaType="ArrayList" ofType="com.gexingw.shop.bo.ums.UmsJob" select="getJobs"/>
+        <collection property="roles" column="id" javaType="ArrayList" ofType="com.gexingw.shop.bo.ums.UmsRole" select="getRoles"/>
     </resultMap>
 
     <select id="getList2" resultMap="adminResultType2">
         select ua.*, ud.id ud_id, ud.enabled ud_enabled from ums_admins ua left join ums_depts ud on ud.id = ua.dept_id
     </select>
 
-    <select id="getJobs" parameterType="long" resultType="com.gexingw.shop.bean.ums.UmsJob">
+    <select id="getJobs" parameterType="long" resultType="com.gexingw.shop.bo.ums.UmsJob">
         select uj.* from ums_jobs uj
         left join ums_admins_jobs uaj on uaj.job_id = uj.id
         where uaj.admin_id = #{id}
     </select>
 
-    <select id="getDept" parameterType="long" resultType="com.gexingw.shop.bean.ums.UmsDept">
+    <select id="getDept" parameterType="long" resultType="com.gexingw.shop.bo.ums.UmsDept">
         select * from ums_depts ud where ud.id = #{id}
     </select>
 
-    <select id="getRoles" parameterType="long" resultType="com.gexingw.shop.bean.ums.UmsRole">
+    <select id="getRoles" parameterType="long" resultType="com.gexingw.shop.bo.ums.UmsRole">
         select * from ums_roles ur
         left join ums_admins_roles uar on uar.role_id = ur.id
         where uar.admin_id = #{id}

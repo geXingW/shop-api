@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.gexingw.shop.bean.ums.UmsMenu;
+import com.gexingw.shop.bo.ums.UmsMenu;
 import com.gexingw.shop.constant.AdminConstant;
 import com.gexingw.shop.dto.menu.UmsMenuRequestParam;
 import com.gexingw.shop.mapper.UmsMenuMapper;

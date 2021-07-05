@@ -2,7 +2,7 @@ package com.gexingw.shop.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.gexingw.shop.bean.pms.PmsProduct;
+import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.mapper.PmsProductMapper;
 import com.gexingw.shop.service.PmsProductService;

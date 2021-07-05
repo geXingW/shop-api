@@ -1,7 +1,7 @@
 package com.gexingw.shop.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gexingw.shop.bean.pms.PmsProductCategory;
+import com.gexingw.shop.bo.pms.PmsProductCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

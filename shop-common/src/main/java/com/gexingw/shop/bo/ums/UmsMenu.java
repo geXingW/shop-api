@@ -1,11 +1,10 @@
-package com.gexingw.shop.bean.ums;
+package com.gexingw.shop.bo.ums;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @TableName("ums_menus")

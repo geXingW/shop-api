@@ -1,6 +1,6 @@
 package com.gexingw.shop.service;
 
-import com.gexingw.shop.bean.ums.UmsDict;
+import com.gexingw.shop.bo.ums.UmsDict;
 import com.gexingw.shop.dto.dict.UmsDictRequestParam;
 
 import java.util.List;

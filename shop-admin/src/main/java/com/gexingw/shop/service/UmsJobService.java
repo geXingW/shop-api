@@ -1,9 +1,8 @@
 package com.gexingw.shop.service;
 
-import com.gexingw.shop.bean.ums.UmsAdmin;
-import com.gexingw.shop.bean.ums.UmsJob;
+import com.gexingw.shop.bo.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsJob;
 import com.gexingw.shop.dto.job.UmsJobRequestParam;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package com.gexingw.shop.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.gexingw.shop.bean.ums.UmsAdmin;
-import com.gexingw.shop.bean.ums.UmsDept;
+import com.gexingw.shop.bo.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsDept;
 import com.gexingw.shop.constant.AdminConstant;
 import com.gexingw.shop.dto.dept.UmsDeptRequestParam;
 import com.gexingw.shop.mapper.UmsAdminMapper;
@@ -13,11 +13,9 @@ import com.gexingw.shop.service.UmsDeptService;
 import com.gexingw.shop.util.RedisUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

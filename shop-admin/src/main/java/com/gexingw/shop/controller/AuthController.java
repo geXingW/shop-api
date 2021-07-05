@@ -1,6 +1,6 @@
 package com.gexingw.shop.controller;
 
-import com.gexingw.shop.bean.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.component.AdminCaptcha;
 import com.gexingw.shop.constant.AuthConstant;
 import com.gexingw.shop.dto.auth.UmsLoginRequestParam;

@@ -1,6 +1,6 @@
 package com.gexingw.shop.service.impl;
 
-import com.gexingw.shop.bean.ums.UmsDictDetail;
+import com.gexingw.shop.bo.ums.UmsDictDetail;
 import com.gexingw.shop.dto.dict.UmsDictDetailRequestParam;
 import com.gexingw.shop.exception.ResourceNotExistException;
 import com.gexingw.shop.mapper.UmsDictDetailMapper;

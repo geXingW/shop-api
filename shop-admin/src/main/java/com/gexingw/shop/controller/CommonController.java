@@ -1,6 +1,6 @@
 package com.gexingw.shop.controller;
 
-import com.gexingw.shop.bean.Upload;
+import com.gexingw.shop.bo.Upload;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.service.CommonService;
 import com.gexingw.shop.utils.R;

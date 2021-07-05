@@ -2,8 +2,8 @@ package com.gexingw.shop.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gexingw.shop.bean.ums.UmsAdmin;
-import com.gexingw.shop.bean.ums.UmsJob;
+import com.gexingw.shop.bo.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsJob;
 import com.gexingw.shop.dto.job.UmsJobRequestParam;
 import com.gexingw.shop.dto.job.UmsJobSearchParam;
 import com.gexingw.shop.enums.RespCode;

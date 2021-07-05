@@ -1,6 +1,6 @@
 package com.gexingw.shop.service;
 
-import com.gexingw.shop.bean.Upload;
+import com.gexingw.shop.bo.Upload;
 
 public interface UploadService {
     Upload attachPicToSource(Long uploadId, String uploadType, String uploadPath);

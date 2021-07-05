@@ -1,6 +1,6 @@
 package com.gexingw.shop.util;
 
-import com.gexingw.shop.bean.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.constant.AuthConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -9,7 +9,6 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 

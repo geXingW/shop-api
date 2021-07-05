@@ -8,3 +8,7 @@ spring:
       url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:shop}
       username: ${DB_USER:root}
       password: ${DB_PWD:root}
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}

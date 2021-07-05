@@ -1,6 +1,6 @@
 package com.gexingw.shop.service;
 
-import com.gexingw.shop.bean.Upload;
+import com.gexingw.shop.bo.Upload;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;

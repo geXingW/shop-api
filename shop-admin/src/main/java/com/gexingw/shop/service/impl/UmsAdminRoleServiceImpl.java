@@ -1,6 +1,6 @@
 package com.gexingw.shop.service.impl;
 
-import com.gexingw.shop.bean.ums.UmsAdminRole;
+import com.gexingw.shop.bo.ums.UmsAdminRole;
 import com.gexingw.shop.mapper.UmsAdminRoleMapper;
 import com.gexingw.shop.service.UmsAdminRoleService;
 import org.springframework.beans.factory.annotation.Autowired;

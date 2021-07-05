@@ -7,7 +7,7 @@
 <!--        select * from ums_member where id = #{id}-->
 <!--    </select>-->
 
-    <resultMap id="dictDetailWithDict" type="com.gexingw.shop.bean.ums.UmsDictDetail">
+    <resultMap id="dictDetailWithDict" type="com.gexingw.shop.bo.ums.UmsDictDetail">
         <id column="id" property="id"/>
         <result column="dict_id" property="dictId"/>
         <result column="label" property="label"/>
@@ -20,7 +20,7 @@
         select * from ums_dict_details where dict_id = #{dictId}
     </select>
 
-    <select id="getDict" resultType="com.gexingw.shop.bean.ums.UmsDict">
+    <select id="getDict" resultType="com.gexingw.shop.bo.ums.UmsDict">
         select * from ums_dicts where id  = #{id}
     </select>
 </mapper>

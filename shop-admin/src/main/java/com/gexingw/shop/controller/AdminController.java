@@ -2,9 +2,8 @@ package com.gexingw.shop.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gexingw.shop.bean.Upload;
-import com.gexingw.shop.bean.ums.UmsAdmin;
-import com.gexingw.shop.bean.ums.UmsDept;
+import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.dto.admin.UmsAdminRequestParam;
 import com.gexingw.shop.dto.admin.UmsAdminSearchParam;
 import com.gexingw.shop.enums.RespCode;

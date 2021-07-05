@@ -2,8 +2,8 @@ package com.gexingw.shop.mapper;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gexingw.shop.bean.ums.UmsDept;
-import com.gexingw.shop.bean.ums.UmsRoleDept;
+import com.gexingw.shop.bo.ums.UmsDept;
+import com.gexingw.shop.bo.ums.UmsRoleDept;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

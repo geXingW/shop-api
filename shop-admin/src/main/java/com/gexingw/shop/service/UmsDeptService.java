@@ -1,8 +1,8 @@
 package com.gexingw.shop.service;
 
 
-import com.gexingw.shop.bean.ums.UmsAdmin;
-import com.gexingw.shop.bean.ums.UmsDept;
+import com.gexingw.shop.bo.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsDept;
 import com.gexingw.shop.dto.dept.UmsDeptRequestParam;
 
 import java.util.List;

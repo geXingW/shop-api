@@ -1,8 +1,8 @@
 package com.gexingw.shop.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.gexingw.shop.bean.ums.UmsDict;
-import com.gexingw.shop.bean.ums.UmsDictDetail;
+import com.gexingw.shop.bo.ums.UmsDict;
+import com.gexingw.shop.bo.ums.UmsDictDetail;
 import com.gexingw.shop.dto.dict.UmsDictRequestParam;
 import com.gexingw.shop.exception.DBOperationException;
 import com.gexingw.shop.exception.ResourceNotExistException;
@@ -11,7 +11,6 @@ import com.gexingw.shop.mapper.UmsDictMapper;
 import com.gexingw.shop.service.UmsDictService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

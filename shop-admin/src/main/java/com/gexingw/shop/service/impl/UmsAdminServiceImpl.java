@@ -1,16 +1,12 @@
 package com.gexingw.shop.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.gexingw.shop.bean.Upload;
 import com.gexingw.shop.bo.UmsAdminDetails;
-import com.gexingw.shop.bean.ums.*;
+import com.gexingw.shop.bo.ums.*;
 import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.constant.AdminConstant;
-import com.gexingw.shop.constant.AuthConstant;
 import com.gexingw.shop.dto.admin.UmsAdminRequestParam;
 import com.gexingw.shop.enums.DataScopeEnum;
-import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.mapper.*;
 import com.gexingw.shop.service.*;
 
@@ -28,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 

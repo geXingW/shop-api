@@ -1,6 +1,6 @@
 package com.gexingw.shop.dto.dict;
 
-import com.gexingw.shop.bean.ums.UmsDict;
+import com.gexingw.shop.bo.ums.UmsDict;
 import lombok.Data;
 
 @Data
