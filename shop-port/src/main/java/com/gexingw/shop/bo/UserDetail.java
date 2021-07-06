@@ -1,11 +1,19 @@
 package com.gexingw.shop.bo;
 
+import com.gexingw.shop.bean.OAuthAccount;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
 public class UserDetail implements UserDetails {
+
+    private OAuthAccount authAccount;
+
+    public UserDetail(OAuthAccount authAccount) {
+        this.authAccount = authAccount;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -13,31 +21,31 @@ public class UserDetail implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return authAccount.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return authAccount.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return authAccount.getAccountNonExpired() == 1;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return authAccount.getAccountNonLocked() == 1;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return authAccount.getCredentialsNonExpired() == 1;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return authAccount.getEnabled() == 1;
     }
 }

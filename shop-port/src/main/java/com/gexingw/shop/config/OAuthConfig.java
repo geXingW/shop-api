@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
@@ -25,10 +27,15 @@ public class OAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("user").password(passwordEncoder().encode("123456")).roles("USER");
+        auth.userDetailsService(userDetailsService());
+//        auth.inMemoryAuthentication()
+//                .withUser("user").password(passwordEncoder().encode("123456")).roles("USER");
     }
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/oauth/check_token", "/favicon.ico", "/resources/**", "/error");
+    }
 
     //    @Override
 //    protected void configure(HttpSecurity http) throws Exception {
@@ -61,13 +68,8 @@ public class OAuthConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return (String username) -> authService.loadUserByUsername(username);
-//    }
-//
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService());
-//    }
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return (String username) -> authService.loadUserByUsername(username);
+    }
 }
