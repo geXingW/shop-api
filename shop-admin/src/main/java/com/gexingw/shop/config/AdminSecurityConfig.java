@@ -11,7 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AdminSecurityConfig extends SecurityConfig{
+//public class AdminSecurityConfig extends SecurityConfig{
+public class AdminSecurityConfig extends JwtSecurityConfig{
 
     @Autowired
     UmsAdminService umsAdminService;

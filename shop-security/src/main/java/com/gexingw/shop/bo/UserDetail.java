@@ -12,6 +12,8 @@ public class UserDetail implements UserDetails {
 
     public UserDetail(OAuthAccount authAccount) {
         this.authAccount = authAccount;
+
+        // 获取用户的全新啊
     }
 
     @Override
