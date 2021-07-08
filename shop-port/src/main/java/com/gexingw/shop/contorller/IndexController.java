@@ -12,4 +12,9 @@ public class IndexController {
     public R index() {
         return R.ok("Welcome, 无需登录！");
     }
+
+    @GetMapping("home")
+    public R home(){
+        return R.ok("Home Page，无需登录！");
+    }
 }

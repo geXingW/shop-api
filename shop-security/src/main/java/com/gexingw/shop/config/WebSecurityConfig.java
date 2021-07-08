@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -25,11 +26,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/oauth/check_token", "/favicon.ico", "/resources/**", "/error");
+        web.ignoring().antMatchers("/oauth/check_token", "/oauth/authorize", "/favicon.ico", "/resources/**", "/error");
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers("/").permitAll();
+
+        http.authorizeRequests().anyRequest().authenticated();
+////        http.formLogin().loginPage("")
+//        // 首页无需登陆
+////        http.formLogin().loginPage("/login").failureUrl("/login?error").permitAll();
+////        http.requestMatchers().antMatchers("/login", "/login-error", "/oauth/authorize", "/oauth/token")
+////                .and()
+////                .authorizeRequests()
+////                .antMatchers("/", "/login", "/oauth/authorize", "/oauth/token", "/oauth/check_token", "/favicon.ico", "/resources/**", "/error").permitAll();
+//        http.authorizeRequests().antMatchers("/", "/favicon.ico", "/resources/**", "/error").permitAll();
+//
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

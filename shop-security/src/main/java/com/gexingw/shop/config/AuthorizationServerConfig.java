@@ -53,7 +53,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-//        endpoints.pathMapping("oauth/token", "auth/token");   // 自定义token路径
+//        endpoints.pathMapping("/login", "/auth/login");   // 自定义token路径
 
         // code 存储在数据库
         endpoints.authorizationCodeServices(authorizationCodeServices());

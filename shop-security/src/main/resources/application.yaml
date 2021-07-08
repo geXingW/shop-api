@@ -1,3 +1,10 @@
+spring:
+  freemarker:
+    cache: false
+    charset: UTF-8
+    suffix: .ftl
+
+
 jwt:
   token:
     header: Authorization

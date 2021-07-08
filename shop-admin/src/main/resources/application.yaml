@@ -34,10 +34,10 @@ spring:
   validation:
     basename: classpath:lang/ValidationMessages
 
-  #  freemarker:
-  #    cache: false
-  #    charset: UTF-8
-  #    suffix: .ftl
+  freemarker:
+    cache: false
+    charset: UTF-8
+    suffix: .ftl
 
   # 验证码
 captcha:
