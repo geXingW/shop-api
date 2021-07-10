@@ -82,11 +82,11 @@ public class GlobalExceptionHandler {
         return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), e.getMessage());
     }
 
-    @ResponseBody
-    @ExceptionHandler(value = Exception.class)
-    public R exceptionHandler(HttpServletRequest req, Exception e) {
-        return R.ok(RespCode.FAILURE.getCode(), e.getMessage());
-    }
+//    @ResponseBody
+//    @ExceptionHandler(value = Exception.class)
+//    public R exceptionHandler(HttpServletRequest req, Exception e) {
+//        return R.ok(RespCode.FAILURE.getCode(), e.getMessage());
+//    }
 
     /**
      * 统一返回
