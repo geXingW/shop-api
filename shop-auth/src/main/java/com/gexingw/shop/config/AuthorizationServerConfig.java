@@ -1,14 +1,8 @@
 package com.gexingw.shop.config;
 
-import com.gexingw.shop.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -19,7 +13,6 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 import javax.sql.DataSource;
@@ -29,32 +22,22 @@ import javax.sql.DataSource;
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
-    DataSource dataSource;
+    private DataSource dataSource;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    }
+    private PasswordEncoder passwordEncoder;
 
     @Bean
-    public TokenStore tokenStore() {
+    public JdbcTokenStore tokenStore() {
         return new JdbcTokenStore(dataSource);
-    }
-
-    public ClientDetailsService clientDetailsService() {
-        return new JdbcClientDetailsService(dataSource);
     }
 
     public AuthorizationCodeServices authorizationCodeServices() {
         return new JdbcAuthorizationCodeServices(dataSource);
     }
 
-    @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.withClientDetails(clientDetailsService());
+    public ClientDetailsService clientDetailsService() {
+        return new JdbcClientDetailsService(dataSource);
     }
 
     @Override
@@ -64,30 +47,59 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-//        endpoints.pathMapping("/login", "/auth/login");   // 自定义token路径
-
         // code 存储在数据库
         endpoints.authorizationCodeServices(authorizationCodeServices());
 
-        // token 存储在数据库
-        endpoints.tokenStore(tokenStore());
+        endpoints
+//                .authenticationManager(auth)
+                .tokenStore(tokenStore())
+        ;
+    }
+
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+
+        clients.withClientDetails(clientDetailsService());
+
+//        clients.inMemory().withClient("client")
+//                .secret("secret")
+//                .authorizedGrantTypes("password", "refresh_token")
+//                .scopes("read", "write")
+//                .accessTokenValiditySeconds(3600) // 1 hour
+//                .refreshTokenValiditySeconds(2592000) // 30 days
+//                .and()
+//                .withClient("svca-service")
+//                .secret("password")
+//                .authorizedGrantTypes("client_credentials", "refresh_token")
+//                .scopes("server")
+//                .and()
+//                .withClient("svcb-service")
+//                .secret("password")
+//                .authorizedGrantTypes("client_credentials", "refresh_token")
+//                .scopes("server");
+
+        ;
+
     }
 
 //    @Configuration
+//    @Order(-20)
 //    protected static class AuthenticationManagerConfiguration extends GlobalAuthenticationConfigurerAdapter {
 //
 //        @Autowired
-//        AuthService authService;
+//        private DataSource dataSource;
 //
 //        @Override
 //        public void init(AuthenticationManagerBuilder auth) throws Exception {
-//            auth.userDetailsService(userDetailsService());
-//        }
+////            auth.inMemoryAuthentication().withUser("dave").password("secret").roles("USER")
+////                    .and()
+////                    .withUser("anil").password("password").roles("ADMIN");
 //
-//        @Bean
-//        public UserDetailsService userDetailsService() {
-//            return (String username) -> authService.loadUserByUsername(username);
+////            auth.jdbcAuthentication().dataSource(dataSource)
+////                    .withUser("dave").password("secret").roles("USER")
+////                    .and()
+////                    .withUser("anil").password("password").roles("ADMIN")
+//            ;
 //        }
 //    }
-
 }
