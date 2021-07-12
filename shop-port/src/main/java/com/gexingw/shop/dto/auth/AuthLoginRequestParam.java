@@ -4,4 +4,8 @@ import lombok.Data;
 
 @Data
 public class AuthLoginRequestParam {
+
+    private String username;
+
+    private String password;
 }
