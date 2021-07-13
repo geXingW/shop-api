@@ -82,7 +82,7 @@ public class AuthController {
         if (!passwordEncoder.matches(decodePasswd, userDetails.getPassword())) {
             throw new BadRequestException(RespCode.AUTHORIZED_FAILED.getCode(), "用户名或密码错误！");
         }
-        String token = jwtTokenUtil.generateToken(userDetails);
+        String token = jwtTokenUtil.generateToken(userDetails.getId(), userDetails.getUsername());
 
         // 获取用户已分配角色
         Map<String, Object> userInfo = new HashMap<>();
@@ -158,7 +158,7 @@ public class AuthController {
     R logout(HttpServletRequest request) {
         String token = jwtTokenUtil.getAuthToken(request);
 
-        String tokenKey = AuthConstant.ADMIN_JWT_TOKEN_PREFIX + ":" + DigestUtils.md5DigestAsHex(token.getBytes());
+        String tokenKey = AuthConstant.JWT_TOKEN_PREFIX + ":" + DigestUtils.md5DigestAsHex(token.getBytes());
 
         redisUtil.del(tokenKey);
 

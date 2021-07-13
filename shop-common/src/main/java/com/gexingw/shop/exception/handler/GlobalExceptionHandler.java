@@ -82,11 +82,24 @@ public class GlobalExceptionHandler {
         return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), e.getMessage());
     }
 
-//    @ResponseBody
-//    @ExceptionHandler(value = Exception.class)
-//    public R exceptionHandler(HttpServletRequest req, Exception e) {
-//        return R.ok(RespCode.FAILURE.getCode(), e.getMessage());
-//    }
+    /**
+     * 认证失败
+     *
+     * @param req
+     * @param e
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(value = AuthenticationErrorException.class)
+    public R exceptionHandler(HttpServletRequest req, AuthenticationErrorException e) {
+        return R.ok(RespCode.UNAUTHORIZED.getCode(), e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = Exception.class)
+    public R exceptionHandler(HttpServletRequest req, Exception e) {
+        return R.ok(RespCode.FAILURE.getCode(), e.getMessage());
+    }
 
     /**
      * 统一返回

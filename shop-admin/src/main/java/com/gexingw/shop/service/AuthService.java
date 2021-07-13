@@ -1,10 +1,7 @@
 package com.gexingw.shop.service;
 
-import java.util.List;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface AuthService {
-
-//    UserDetails loadUserByUsername(String username);
-
-    List<String> getAdminPermissionsByAdminId(Long adminId);
+    UserDetails loadUserByUsername(String username);
 }

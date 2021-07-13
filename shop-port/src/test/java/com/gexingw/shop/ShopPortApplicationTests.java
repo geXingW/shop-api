@@ -10,7 +10,7 @@ class ShopPortApplicationTests {
     @Test
     void contextLoads() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        System.out.println(passwordEncoder.encode("123456"));
+        System.out.println(passwordEncoder.encode("test"));
         System.out.println(passwordEncoder.encode("client"));
 
     }

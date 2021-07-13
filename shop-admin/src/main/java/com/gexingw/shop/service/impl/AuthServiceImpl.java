@@ -9,6 +9,7 @@ import com.gexingw.shop.exception.AuthenticationErrorException;
 import com.gexingw.shop.mapper.AuthMapper;
 import com.gexingw.shop.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Service
+@Service("authService")
+@ConditionalOnMissingClass
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private AuthMapper authMapper;
@@ -48,7 +50,6 @@ public class AuthServiceImpl implements AuthService {
         return new UserDetail(account);
     }
 
-    @Override
     public List<String> getAdminPermissionsByAdminId(Long adminId) {
         List<String> permissions = new ArrayList<>();
         // 尝试从redis获取 TODO

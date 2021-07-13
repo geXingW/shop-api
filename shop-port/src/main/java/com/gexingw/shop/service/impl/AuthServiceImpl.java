@@ -2,23 +2,26 @@ package com.gexingw.shop.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gexingw.shop.bo.UmsMemberDetail;
-import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.bo.ums.UmsMember;
 import com.gexingw.shop.mapper.UmsMemberMapper;
 import com.gexingw.shop.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
+@Service
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
     UmsMemberMapper memberMapper;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -32,6 +35,11 @@ public class AuthServiceImpl implements AuthService {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
 
         return new UmsMemberDetail(admin, authorities);
+    }
+
+    @Override
+    public boolean isPasswdMatch(String password1, String password2) {
+        return passwordEncoder.matches(password1, password2);
     }
 
     public UmsMember getMemberDetailByUsername(String username) {

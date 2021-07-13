@@ -74,7 +74,7 @@ public class JwtTokenUtil {
         redisTokenData.put("created_at", createdAt.toString());
 
         // token写入Redis
-        String redisKey = AuthConstant.ADMIN_JWT_TOKEN_PREFIX + ":" + DigestUtils.md5DigestAsHex(token.getBytes());
+        String redisKey = AuthConstant.JWT_TOKEN_PREFIX + ":" + DigestUtils.md5DigestAsHex(token.getBytes());
         redisUtil.hmset(redisKey, redisTokenData, expiration * 1000);
 
         return token;
@@ -171,10 +171,10 @@ public class JwtTokenUtil {
     /**
      * 根据用户信息生成token
      */
-    public String generateToken(UmsAdmin userDetails) {
+    public String generateToken(Long userId, String username) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
-        claims.put(CLAIM_KEY_ID, userDetails.getId());
+        claims.put(CLAIM_KEY_USERNAME, username);
+        claims.put(CLAIM_KEY_ID, userId);
         claims.put(CLAIM_KEY_CREATED, new Date());
         return generateToken(claims);
     }

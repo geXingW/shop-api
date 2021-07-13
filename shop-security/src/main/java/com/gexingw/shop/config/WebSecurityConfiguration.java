@@ -1,47 +1,38 @@
 package com.gexingw.shop.config;
 
-import com.gexingw.shop.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-@Configuration
-@EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    AuthService authService;
 
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-//        http.formLogin().permitAll();
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        // 添加登陆认证拦截器
+////        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+//        // 设置拒绝访问的处理
+////        http.exceptionHandling().accessDeniedHandler(restfulAccessDeniedHandler);
+//    }
 
-        http.authorizeRequests().anyRequest().authenticated();
-    }
+    /**
+     * 常规登录失败处理器
+     */
+//    @Bean
+//    public AuthenticationFailureHandler authenticationFailureHandler() {
+//        return (httpServletRequest, httpServletResponse, e) -> {
+//            httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            AuthResp resp = new AuthResp(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+//            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(resp));
+//        };
+//    }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
-
-//        auth.eraseCredentials(true);
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return (String username) -> authService.loadUserByUsername(username);
-    }
 }

@@ -51,4 +51,5 @@ public class R<T> {
     public static R ok(Object data, String message) {
         return new R(RespCode.SUCCESS.getCode(), message, data);
     }
+
 }

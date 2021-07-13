@@ -43,8 +43,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (!jwtTokenUtil.validateToken(authToken)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 检查Redis中是否存在
-        String redisKey = AuthConstant.ADMIN_JWT_TOKEN_PREFIX + ":" + DigestUtils.md5DigestAsHex(authToken.getBytes());
+        String redisKey = AuthConstant.JWT_TOKEN_PREFIX + ":" + DigestUtils.md5DigestAsHex(authToken.getBytes());
         if (redisUtil.hmget(redisKey).size() == 0) {
             filterChain.doFilter(request, response);
             return;
@@ -56,11 +61,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         // 获取登陆用户的详细信息
         String adminName = jwtTokenUtil.getUserNameFromToken(authToken);
         UserDetails userDetails = userDetailsService.loadUserByUsername(adminName);
-
-        if (!jwtTokenUtil.validateToken(authToken)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         // 添加 当前用户访问权限 访问权限
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
