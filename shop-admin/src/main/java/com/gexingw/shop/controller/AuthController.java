@@ -65,18 +65,18 @@ public class AuthController {
             throw new BadRequestException(RespCode.LOGOUT_CAPTCHA_ERROR.getCode(), RespCode.LOGOUT_CAPTCHA_ERROR.getMessage());
         }
 
+        UmsAdmin userDetails = umsAdminService.findByUserName(loginParams.getUsername());
+        // 生成登陆的token
+        if (userDetails == null) {
+            throw new BadRequestException(RespCode.AUTHORIZED_FAILED.getCode(), "用户名未找到！");
+        }
+
         // 解密password
         String decodePasswd;
         try {
             decodePasswd = rsaUtil.decryptByPrivateKey(loginParams.getPassword());
         } catch (Exception e) {
             throw new BadRequestException(RespCode.AUTHORIZED_FAILED.getCode(), RespCode.AUTHORIZED_FAILED.getMessage());
-        }
-
-        UmsAdmin userDetails = umsAdminService.findByUserName(loginParams.getUsername());
-        // 生成登陆的token
-        if (userDetails == null) {
-            throw new BadRequestException(RespCode.AUTHORIZED_FAILED.getCode(), "用户名未找到！");
         }
 
         if (!passwordEncoder.matches(decodePasswd, userDetails.getPassword())) {
