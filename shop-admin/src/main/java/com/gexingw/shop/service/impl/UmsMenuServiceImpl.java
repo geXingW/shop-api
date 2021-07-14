@@ -190,7 +190,7 @@ public class UmsMenuServiceImpl implements UmsMenuService {
         // 更新父级菜单的 subcount
         parentMenu.incrSubCount(1);
 
-        return umsMenuMapper.updateById(parentMenu) <= 0;
+        return umsMenuMapper.updateById(parentMenu) > 0;
     }
 
     @Override
@@ -209,7 +209,7 @@ public class UmsMenuServiceImpl implements UmsMenuService {
         // 更新父级菜单的 subcount
         parentMenu.decrSubCount(1);
 
-        return umsMenuMapper.updateById(parentMenu) <= 0;
+        return umsMenuMapper.updateById(parentMenu) > 0;
     }
 
 }

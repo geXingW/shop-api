@@ -1,5 +1,8 @@
 package com.gexingw.shop.config;
 
+import com.gexingw.shop.component.JwtAuthenticationTokenFilter;
+import com.gexingw.shop.component.RestAuthenticationEntryPoint;
+import com.gexingw.shop.component.RestfulAccessDeniedHandler;
 import com.gexingw.shop.service.UmsAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +26,19 @@ public class AdminSecurityConfig extends WebSecurityConfiguration{
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+    @Autowired
+    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+
+    @Autowired
+    RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
+    private static final String[] URL_WHITE_LIST = {
+            "/auth/login", "/auth/captcha"
+    };
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -36,16 +53,23 @@ public class AdminSecurityConfig extends WebSecurityConfiguration{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // 禁用csrf
-        http.csrf().disable();
-
-        // 禁用session
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.authorizeRequests().antMatchers("/auth/captcha", "/auth/login").permitAll();
-
-        http.authorizeRequests().anyRequest().authenticated();
-
-        super.configure(http);
+        http
+                .cors().and().csrf().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests().antMatchers(URL_WHITE_LIST).permitAll()
+                .and()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(restfulAccessDeniedHandler)
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                // 自定义权限拦截器JWT过滤器
+                .and()
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
     }
 }

@@ -4,8 +4,12 @@ import com.gexingw.shop.bo.ums.UmsMember;
 import com.gexingw.shop.dto.auth.AuthLoginRequestParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.service.AuthService;
+import com.gexingw.shop.service.MemberService;
+import com.gexingw.shop.util.AuthUtil;
 import com.gexingw.shop.util.JwtTokenUtil;
 import com.gexingw.shop.utils.R;
+import com.gexingw.shop.vo.AuthInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +27,9 @@ public class AuthController {
     @Autowired
     JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    MemberService memberService;
+
     @GetMapping
     public R index() {
         return R.ok();
@@ -37,7 +44,7 @@ public class AuthController {
         }
 
         // 校验密码
-        if(!authService.isPasswdMatch(requestParam.getPassword(), umsMember.getPassword())){
+        if (!authService.isPasswdMatch(requestParam.getPassword(), umsMember.getPassword())) {
             return R.ok(RespCode.AUTHORIZED_FAILED.getCode(), "用户名或密码错误！");
         }
 
@@ -54,26 +61,14 @@ public class AuthController {
 
     @GetMapping("info")
     public R info() {
-//        address: null
-//        balance: null
-//        description: null
-//        email: null
-//        file: null
-//        id: null
-//        message: "用户登录已过期"
-//        phone: null
-//        points: null
-//        sex: null
-//        state: 0
-//        token: null
-//        username: null
+        UmsMember member = memberService.getMemberDetailByMemberId(AuthUtil.getAuthId());
+        if (member == null) {
+            return R.ok("请先登录！");
+        }
 
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("login name:", "Wsf");
-        map.put("id", null);
-        map.put("state", 0);
-        map.put("token", null);
+        AuthInfo authInfo = new AuthInfo();
+        BeanUtils.copyProperties(member, authInfo);
 
-        return R.ok(map);
+        return R.ok(authInfo);
     }
 }

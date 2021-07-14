@@ -143,7 +143,6 @@ public class MenuController {
         }
 
         // 添加角色与菜单的绑定
-
         long authId = AuthUtil.getAuthId();
         if (id > 0) {
             umsMenuService.delRedisAdminMenuByAdminId(authId);
