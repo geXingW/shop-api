@@ -2,6 +2,7 @@ package com.gexingw.shop.bo.pms;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gexingw.shop.constant.SystemConstant;
 import lombok.Data;
 
 import java.util.Date;
@@ -30,11 +31,11 @@ public class PmsProductCategory {
 
     private Integer productCount;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 

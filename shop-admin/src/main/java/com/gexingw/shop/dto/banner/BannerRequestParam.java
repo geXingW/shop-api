@@ -1,10 +1,9 @@
 package com.gexingw.shop.dto.banner;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gexingw.shop.constant.SystemConstant;
 import lombok.Data;
 
 import java.util.Date;
@@ -22,8 +21,18 @@ public class BannerRequestParam {
 
     private String link;
 
-    private String startTime;
+    private String showStatus;
 
-    private String endTime;
+    private Date startTime;
+
+    private Date endTime;
+
+    public void setStartTime(String dateTimeStr){
+        startTime = DateUtil.parse(dateTimeStr);
+    }
+
+    public void setEndTime(String dateTimeStr){
+        endTime = DateUtil.parse(dateTimeStr);
+    }
 
 }

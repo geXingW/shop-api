@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gexingw.shop.config.FileConfig;
+import com.gexingw.shop.constant.SystemConstant;
 import com.gexingw.shop.utils.SpringContextUtil;
 import lombok.Data;
 
@@ -32,11 +33,11 @@ public class Upload {
     private String disk;
 
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     private Date createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     private Date updateTime;
 
     public String getFullPath() {

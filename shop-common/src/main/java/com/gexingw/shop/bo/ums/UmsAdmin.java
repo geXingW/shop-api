@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.constant.SystemConstant;
 import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.mapper.UploadMapper;
 import com.gexingw.shop.utils.SpringContextUtil;
@@ -45,11 +46,11 @@ public class UmsAdmin {
     @Getter(value = AccessLevel.NONE)
     private int enabled;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 

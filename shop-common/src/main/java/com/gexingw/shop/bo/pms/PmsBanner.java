@@ -4,7 +4,13 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.constant.SystemConstant;
+import com.gexingw.shop.constant.UploadConstant;
+import com.gexingw.shop.mapper.UploadMapper;
+import com.gexingw.shop.utils.SpringContextUtil;
 import lombok.Data;
 
 import java.util.Date;
@@ -18,16 +24,25 @@ public class PmsBanner {
 
     private Integer sort;
 
-    private String pic;
-
     private String link;
 
+    private String showStatus;
+
+    @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     private Date startTime;
 
-    private Data endTime;
+    @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
+    private Date endTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
+    public String getPic() {
+        UploadMapper uploadMapper = SpringContextUtil.getBean(UploadMapper.class);
+        Upload upload = uploadMapper.selectOne(new QueryWrapper<Upload>().eq("upload_id", id)
+                .eq("upload_type", UploadConstant.UPLOAD_TYPE_BANNER));
+
+        return upload != null ? upload.getFullUrl() : "";
+    }
 }
