@@ -43,12 +43,23 @@ public class ProductController {
             queryWrapper.and(q -> q.like("title", searchParam.getBlurry()).or().like("sub_title", searchParam.getBlurry()));
         }
 
+        // 添加时间
         if (searchParam.getCreateTimeBegin() != null) {
             queryWrapper.ge("create_time", searchParam.getCreateTimeBegin());
         }
 
         if (searchParam.getCreateTimeEnd() != null) {
             queryWrapper.lt("create_time", searchParam.getCreateTimeEnd());
+        }
+
+        // 新品推荐
+        if(searchParam.getIsNew() != null){
+            queryWrapper.eq("is_new", searchParam.getIsNew());
+        }
+
+        // 商品推荐
+        if(searchParam.getIsRecommend() != null){
+            queryWrapper.eq("is_recommend", searchParam.getIsRecommend());
         }
 
         // 分页条件

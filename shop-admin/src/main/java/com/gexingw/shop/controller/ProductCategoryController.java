@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -69,6 +70,22 @@ public class ProductCategoryController {
         IPage<PmsProductCategory> page = new Page<>(searchParam.getPage(), searchParam.getSize());
 
         return R.ok(PageUtil.format(categoryService.searchList(queryWrapper, page)));
+    }
+
+    @GetMapping("tree")
+    public R tree() {
+        // 查询顶级分类
+        List<Map<String, Object>> categories = categoryService.getByPid(0L);
+        for (Map<String, Object> category : categories) {
+            boolean hasChildren = (boolean) category.get("hasChildren");
+            if (!hasChildren) { // 没有子分类的话，无需查询子分类
+                continue;
+            }
+            List<Map<String, Object>> children = categoryService.getByPid((Long) category.get("id"));
+            category.put("children", children);
+        }
+
+        return R.ok(categories);
     }
 
     @PostMapping

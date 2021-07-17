@@ -41,6 +41,10 @@ public class PmsProduct {
 
     private String keywords;
 
+    private String isNew;  // 新品
+
+    private String isRecommend; // 推荐
+
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;

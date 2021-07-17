@@ -6,6 +6,7 @@ import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface PmsProductCategoryService {
@@ -28,4 +29,6 @@ public interface PmsProductCategoryService {
     boolean incrProductCntByCategoryId(Long categoryId);
 
     boolean decrProductCntByCategoryId(Long categoryId);
+
+    List<Map<String, Object>> getByPid(long pid);
 }

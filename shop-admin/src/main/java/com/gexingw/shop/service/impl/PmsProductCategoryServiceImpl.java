@@ -12,11 +12,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
-public class PmsProductServiceCategoryImpl implements PmsProductCategoryService {
+public class PmsProductCategoryServiceImpl implements PmsProductCategoryService {
 
     @Autowired
     PmsProductCategoryMapper categoryMapper;
@@ -102,5 +101,30 @@ public class PmsProductServiceCategoryImpl implements PmsProductCategoryService 
         category.decrProductCnt(1);
 
         return categoryMapper.updateById(category) >= 0;
+    }
+
+    @Override
+    public List<Map<String, Object>> getByPid(long pid) {
+        ArrayList<Map<String, Object>> results = new ArrayList<>();
+
+        QueryWrapper<PmsProductCategory> queryWrapper = new QueryWrapper<PmsProductCategory>().eq("pid", pid).orderByAsc("sort");
+        List<PmsProductCategory> categories = categoryMapper.selectList(queryWrapper);
+        for (PmsProductCategory category : categories) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", category.getId());
+            map.put("pid", category.getPid());
+            map.put("name", category.getName());
+            map.put("label", category.getName());
+            map.put("subCount", category.getSubCount());
+            map.put("hasChildren", category.isHasChildren());
+
+            if (category.isHasChildren()) { // 如果有子分类的话，添加子分类列表
+                map.put("children", new HashMap<String, Object>());
+            }
+
+            results.add(map);
+        }
+
+        return results;
     }
 }

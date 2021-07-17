@@ -29,4 +29,8 @@ public class PmsProductSearchParam extends BaseSearchParam {
 
     private String keywords;
 
+    private Integer isNew;  // 新品推荐
+
+    private Integer isRecommend;    // 商品推荐
+
 }

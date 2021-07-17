@@ -32,4 +32,8 @@ public class PmsProductRequestParam {
     private String keywords;
 
     private String pic = ""; // 图片
+
+    private String isNew;  // 新品
+
+    private String isRecommend; // 推荐
 }
