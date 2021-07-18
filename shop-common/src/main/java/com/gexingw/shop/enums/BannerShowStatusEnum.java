@@ -1,9 +1,11 @@
 package com.gexingw.shop.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum BannerShowStatusEnum {
     SHOW(1, "展示"),
     HIDDEN(0, "隐藏");
@@ -12,8 +14,4 @@ public enum BannerShowStatusEnum {
 
     final private String message;
 
-    BannerShowStatusEnum(Integer code, String message) {
-        this.code = code;
-        this.message = message;
-    }
 }

@@ -54,7 +54,7 @@ public class AuthController {
         // 返回结果
         Map<String, Object> result = new HashMap<>();
         result.put("token", token);
-        result.put("id", umsMember.getId());
+        result.put("info", umsMember);
 
         return R.ok(result, "登录成功！");
     }

@@ -20,6 +20,18 @@ jwt:
     secret: mall-member-secret
     period: 7200  #秒
 
+file:
+  active-disk: local
+  disks:
+    local:
+      location: J:\upload
+      host: http://pic.chdt.local/upload
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 # RSA 加密密钥
 rsa:
   public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArPCt5JguBsVO8xOSW3jjQIk7qFyjbSxdLaeb4M8P46on5dSXZPph+wfKmNK1rzPNSNzCIzM5H+wDCrxJ8QAfnNTzoQ+NxLkoVtVy/eKF1qFOGdZQn4m68hDbVsrzwaPrX/LDs+VsX39sKOLvogLw738LNgrJCQMUbQcSiPb3N675UVMaDjixzzLZGvAWVsFBp+fyQRs+GeozgPdzx4dT2AsdMghCzV/6DQYqIQ78bKs4ZaVD6D3j4JKEn6byeSYXBmVw7UwWHN7v+AzVTPO79o8ohGtxlv70awZri4qkPEoyMKvtoesy+mG9toc0+GgrM0zRBaLnV3coYOV2ZNia4QIDAQAB

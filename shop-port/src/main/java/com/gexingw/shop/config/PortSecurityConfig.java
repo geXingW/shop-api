@@ -34,7 +34,7 @@ public class PortSecurityConfig extends WebSecurityConfiguration {
     private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
 
     private static final String[] URL_WHITE_LIST = {
-            "/auth/login", "/auth/captcha"
+            "/auth/login", "/auth/captcha", "/banner", "/hot-product", "/recommend-product", "/new-product"
     };
 
     @Bean

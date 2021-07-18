@@ -33,4 +33,19 @@ public class IndexController {
     public R banner() {
         return R.ok(indexService.getBannerList());
     }
+
+    @GetMapping("hot-product")
+    public R hotProduct(){
+        return R.ok(indexService.getHotProduct());
+    }
+
+    @GetMapping("recommend-product")
+    public R recommendProduct(){
+        return R.ok(indexService.getRecommendProduct());
+    }
+
+    @GetMapping("new-product")
+    public R newProduct(){
+        return R.ok(indexService.getNewProduct());
+    }
 }

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.dto.product.PmsProductRequestParam;
-import com.gexingw.shop.mapper.PmsProductMapper;
+import com.gexingw.shop.mapper.pms.PmsProductMapper;
 import com.gexingw.shop.service.PmsProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.gexingw.shop.mapper;
+package com.gexingw.shop.mapper.pms;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gexingw.shop.bo.pms.PmsProduct;
