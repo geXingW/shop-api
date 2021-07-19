@@ -8,7 +8,7 @@ import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.enums.BannerShowStatusEnum;
 import com.gexingw.shop.enums.PmsProductIsNewEnum;
 import com.gexingw.shop.enums.PmsProductIsRecommendEnum;
-import com.gexingw.shop.enums.ProductOnSaleEnum;
+import com.gexingw.shop.enums.PmsProductOnSaleEnum;
 import com.gexingw.shop.mapper.pms.PmsBannerMapper;
 import com.gexingw.shop.mapper.pms.PmsProductMapper;
 import com.gexingw.shop.service.IndexService;
@@ -58,7 +58,7 @@ public class IndexServiceImpl implements IndexService {
         QueryWrapper<PmsProduct> queryWrapper = new QueryWrapper<PmsProduct>().orderByDesc("sale");
 
         // 已上架
-        queryWrapper.eq("on_sale", ProductOnSaleEnum.ON_SALE.getCode());
+        queryWrapper.eq("on_sale", PmsProductOnSaleEnum.ON_SALE.getCode());
 
         // 分页
         Page<PmsProduct> page = new Page<>(1, 8);
@@ -76,7 +76,7 @@ public class IndexServiceImpl implements IndexService {
         QueryWrapper<PmsProduct> queryWrapper = new QueryWrapper<>();
 
         // 推荐状态
-        queryWrapper.eq("on_sale", ProductOnSaleEnum.ON_SALE.getCode())
+        queryWrapper.eq("on_sale", PmsProductOnSaleEnum.ON_SALE.getCode())
                 .eq("is_recommend", PmsProductIsRecommendEnum.RECOMMEND.getCode());
 
         // 分页
@@ -95,7 +95,7 @@ public class IndexServiceImpl implements IndexService {
         QueryWrapper<PmsProduct> queryWrapper = new QueryWrapper<>();
 
         // 推荐状态
-        queryWrapper.eq("on_sale", ProductOnSaleEnum.ON_SALE.getCode())
+        queryWrapper.eq("on_sale", PmsProductOnSaleEnum.ON_SALE.getCode())
                 .eq("is_new", PmsProductIsNewEnum.NEW.getCode());
 
         // 分页

@@ -23,6 +23,7 @@ public enum RespCode {
 
     // 资源不存在
     RESOURCE_NOT_EXIST(404001, "请求资源不存在！"),
+    RESOURCE_UNAVAILABLE(404002, "请求资源不可用！"),
 
     // 系统异常
     FAILURE(500000, "系统异常，请稍后重试！"),

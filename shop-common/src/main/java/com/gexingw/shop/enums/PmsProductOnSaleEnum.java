@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ProductOnSaleEnum {
+public enum PmsProductOnSaleEnum {
     ON_SALE(1, "上架"),
     OFF_SALE(0, "下架"),
     ;
