@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gexingw.shop.constant.SystemConstant;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -16,7 +17,7 @@ public class OmsCartItem {
 
     private Long itemId;
 
-    private Long itemPrice;
+    private BigDecimal itemPrice;
 
     private Integer itemQuantity;
 

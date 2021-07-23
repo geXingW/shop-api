@@ -34,6 +34,7 @@ public class CartServiceImpl implements CartService {
     public Long save(OmsCartRequestParam requestParam) {
         OmsCartItem cartItem = new OmsCartItem();
         BeanUtils.copyProperties(requestParam, cartItem);
+        cartItem.setItemPrice(requestParam.getItemPrice());
 
         if (cartItemMapper.insert(cartItem) <= 0) {
             return null;
@@ -46,6 +47,7 @@ public class CartServiceImpl implements CartService {
     public boolean update(OmsCartRequestParam requestParam) {
         OmsCartItem cartItem = new OmsCartItem();
         BeanUtils.copyProperties(requestParam, cartItem);
+        cartItem.setItemPrice(requestParam.getItemPrice());
 
         return cartItemMapper.updateById(cartItem) > 0;
     }
