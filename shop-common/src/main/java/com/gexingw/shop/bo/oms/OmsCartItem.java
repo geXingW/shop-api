@@ -27,6 +27,8 @@ public class OmsCartItem {
 
     private String itemSubTitle;
 
+    private Integer checked;
+
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     private Date createTime;

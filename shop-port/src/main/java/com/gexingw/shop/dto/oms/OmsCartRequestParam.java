@@ -8,6 +8,9 @@ import java.util.Date;
 
 @Data
 public class OmsCartRequestParam {
+
+    private Long id;
+
     private Long itemId;
 
     private BigDecimal itemPrice;
@@ -23,6 +26,8 @@ public class OmsCartRequestParam {
     private Date createTime;
 
     private Long memberId;
+
+    private Integer checked;
 
     public Long getMemberId() {
         return AuthUtil.getAuthId();

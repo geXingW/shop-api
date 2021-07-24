@@ -32,6 +32,8 @@ public class CartController {
             return cartService.save(requestParam) != null ? R.ok("已添加！") : R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
         }
 
+        requestParam.setId(cartItem.getId());
+
         // 更新当前商品的购物车数量
         requestParam.setItemQuantity(cartItem.getItemQuantity() + requestParam.getItemQuantity());
         if (!cartService.update(requestParam)) {
@@ -48,6 +50,7 @@ public class CartController {
             return cartService.save(requestParam) != null ? R.ok("已更新！") : R.ok(RespCode.SAVE_FAILURE.getCode(), "更新失败！");
         }
 
+        requestParam.setId(cartItem.getId());
         if (!cartService.update(requestParam)) {
             return R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
         }
