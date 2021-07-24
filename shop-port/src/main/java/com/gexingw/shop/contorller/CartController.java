@@ -60,6 +60,6 @@ public class CartController {
 
     @DeleteMapping
     R delete(@RequestBody Set<Long> ids) {
-        return cartService.deleteByIds(ids) ? R.ok("已移除！") : R.ok(RespCode.DELETE_FAILURE.getCode(), "移除失败！");
+        return cartService.deleteByItemIds(ids) ? R.ok("已移除！") : R.ok(RespCode.DELETE_FAILURE.getCode(), "移除失败！");
     }
 }

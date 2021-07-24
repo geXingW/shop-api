@@ -18,4 +18,6 @@ public interface CartService {
     boolean update(OmsCartRequestParam requestParam);
 
     boolean deleteByIds(Set<Long> ids);
+
+    boolean deleteByItemIds(Set<Long> ids);
 }

@@ -72,4 +72,9 @@ public class CartServiceImpl implements CartService {
     public boolean deleteByIds(Set<Long> ids) {
         return cartItemMapper.deleteBatchIds(ids) > 0;
     }
+
+    @Override
+    public boolean deleteByItemIds(Set<Long> ids) {
+        return cartItemMapper.delete(new QueryWrapper<OmsCartItem>().in("item_id", ids)) > 0;
+    }
 }
