@@ -10,11 +10,11 @@ public class UmsMemberRecvAddressRequestParam {
 
     private String name;
 
-    private Integer phoneNumber;
+    private String phoneNumber;
 
     private Integer defaultStatus;
 
-    private Integer postCode;
+    private String postCode;
 
     private String province;
 

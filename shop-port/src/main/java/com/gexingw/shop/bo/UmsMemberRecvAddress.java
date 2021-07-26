@@ -16,7 +16,7 @@ public class UmsMemberRecvAddress {
 
     private Integer defaultStatus;
 
-    private Integer postCode;
+    private String postCode;
 
     private String province;
 

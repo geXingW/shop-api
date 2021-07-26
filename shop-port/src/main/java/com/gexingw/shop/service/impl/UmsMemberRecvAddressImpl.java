@@ -2,6 +2,7 @@ package com.gexingw.shop.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gexingw.shop.bo.UmsMemberRecvAddress;
+import com.gexingw.shop.dto.ums.UmsMemberRecvAddressRequestParam;
 import com.gexingw.shop.exception.ResourceNotExistException;
 import com.gexingw.shop.mapper.ums.UmsMemberRecvAddressMapper;
 import com.gexingw.shop.service.UmsMemberRecvAddressService;
@@ -26,10 +27,10 @@ public class UmsMemberRecvAddressImpl implements UmsMemberRecvAddressService {
     }
 
     @Override
-    public Long save(UmsMemberRecvAddress requestParam) {
+    public Long save(UmsMemberRecvAddressRequestParam requestParam) {
         UmsMemberRecvAddress address = new UmsMemberRecvAddress();
         BeanUtils.copyProperties(requestParam, address);
-        if (addressMapper.insert(address) > 0) {
+        if (addressMapper.insert(address) <= 0) {
             return null;
         }
 
