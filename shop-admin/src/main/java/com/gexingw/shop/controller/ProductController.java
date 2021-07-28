@@ -3,7 +3,7 @@ package com.gexingw.shop.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.constant.UploadConstant;
@@ -81,7 +81,7 @@ public class ProductController {
         }
 
         // 将商品与图片进行绑定
-        Upload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
+        SysUpload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
 
         return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
     }

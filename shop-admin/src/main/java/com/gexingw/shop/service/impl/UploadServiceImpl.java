@@ -1,7 +1,7 @@
 package com.gexingw.shop.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.mapper.UploadMapper;
 import com.gexingw.shop.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +13,14 @@ public class UploadServiceImpl implements UploadService {
     UploadMapper uploadMapper;
 
     @Override
-    public Upload attachPicToSource(Long uploadId, String uploadType, String uploadPath) {
+    public SysUpload attachPicToSource(Long uploadId, String uploadType, String uploadPath) {
         // 根据path + uploadType，获取唯一的Upload记录
         uploadPath = uploadPath.substring(uploadPath.indexOf(uploadType));
 
-        QueryWrapper<Upload> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysUpload> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("upload_type", uploadType).eq("path", uploadPath);
 
-        Upload upload = uploadMapper.selectOne(queryWrapper);
+        SysUpload upload = uploadMapper.selectOne(queryWrapper);
         if (upload == null) {
             return null;
         }
@@ -35,7 +35,7 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     public boolean detachSourcePic(Long uploadId, String uploadType) {
-        QueryWrapper<Upload> queryWrapper = new QueryWrapper<Upload>().eq("upload_id", uploadId).eq("upload_type", uploadType);
+        QueryWrapper<SysUpload> queryWrapper = new QueryWrapper<SysUpload>().eq("upload_id", uploadId).eq("upload_type", uploadType);
         return uploadMapper.delete(queryWrapper) >= 0;
     }
 }

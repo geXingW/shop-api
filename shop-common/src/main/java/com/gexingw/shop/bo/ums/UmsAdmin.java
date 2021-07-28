@@ -3,7 +3,7 @@ package com.gexingw.shop.bo.ums;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.constant.SystemConstant;
 import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.mapper.UploadMapper;
@@ -74,10 +74,10 @@ public class UmsAdmin {
     }
 
     public String getAvatar() {
-        QueryWrapper<Upload> queryWrapper = new QueryWrapper<Upload>().eq("upload_id", id)
+        QueryWrapper<SysUpload> queryWrapper = new QueryWrapper<SysUpload>().eq("upload_id", id)
                 .eq("upload_type", UploadConstant.UPLOAD_TYPE_ADMIN_AVATAR);
         UploadMapper mapper = SpringContextUtil.getBean(UploadMapper.class);
-        Upload upload = mapper.selectOne(queryWrapper);
+        SysUpload upload = mapper.selectOne(queryWrapper);
         if(upload == null){
            return null;
         }

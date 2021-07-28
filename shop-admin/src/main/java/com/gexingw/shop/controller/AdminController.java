@@ -2,7 +2,7 @@ package com.gexingw.shop.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.dto.admin.UmsAdminRequestParam;
 import com.gexingw.shop.dto.admin.UmsAdminSearchParam;
@@ -100,7 +100,7 @@ public class AdminController {
         }
 
         // 资源与新图片绑定
-        Upload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
+        SysUpload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
         if (upload == null) {
             return R.ok(RespCode.UPLOAD_FAILURE.getCode(), "上传失败！");
         }

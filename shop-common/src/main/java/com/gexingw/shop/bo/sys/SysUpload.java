@@ -1,4 +1,4 @@
-package com.gexingw.shop.bo;
+package com.gexingw.shop.bo.sys;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.*;
@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Data
 @TableName("uploads")
-public class Upload {
+public class SysUpload {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;

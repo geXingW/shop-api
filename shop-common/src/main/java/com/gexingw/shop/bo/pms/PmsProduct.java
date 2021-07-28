@@ -3,7 +3,7 @@ package com.gexingw.shop.bo.pms;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.constant.SystemConstant;
 import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.mapper.UploadMapper;
@@ -55,7 +55,7 @@ public class PmsProduct {
 
     public String getPic() {
         UploadMapper uploadMapper = SpringContextUtil.getBean(UploadMapper.class);
-        Upload upload = uploadMapper.selectOne(new QueryWrapper<Upload>().eq("upload_id", id)
+        SysUpload upload = uploadMapper.selectOne(new QueryWrapper<SysUpload>().eq("upload_id", id)
                 .eq("upload_type", UploadConstant.UPLOAD_TYPE_PRODUCT));
 
         return upload != null ? upload.getFullUrl() : "";

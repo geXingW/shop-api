@@ -3,7 +3,7 @@ package com.gexingw.shop.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
@@ -101,7 +101,7 @@ public class ProductCategoryController {
         }
 
         // 关联上传的图片
-        Upload upload = uploadService.attachPicToSource(categoryId, UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
+        SysUpload upload = uploadService.attachPicToSource(categoryId, UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
 
         return upload != null ? R.ok("已保存！") : R.ok("保存失败！");
     }
@@ -127,7 +127,7 @@ public class ProductCategoryController {
         }
 
         // 绑定新的上传文件
-        Upload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
+        SysUpload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
         if (upload == null) {
             return R.ok("上传失败！");
         }
@@ -164,7 +164,7 @@ public class ProductCategoryController {
         }
 
         // 更新分类图片
-        Upload upload = uploadService.attachPicToSource(requestParam.getId(), UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
+        SysUpload upload = uploadService.attachPicToSource(requestParam.getId(), UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
 
         return upload != null ? R.ok("已更新！") : R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
     }

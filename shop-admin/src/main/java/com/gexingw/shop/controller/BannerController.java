@@ -3,7 +3,7 @@ package com.gexingw.shop.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.bo.pms.PmsBanner;
 import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.dto.banner.BannerRequestParam;
@@ -67,7 +67,7 @@ public class BannerController {
         }
 
         // TODO 删除已经无用的图片
-        Upload upload = uploadService.attachPicToSource(bannerId, UploadConstant.UPLOAD_TYPE_BANNER, requestParam.getPic());
+        SysUpload upload = uploadService.attachPicToSource(bannerId, UploadConstant.UPLOAD_TYPE_BANNER, requestParam.getPic());
 
         return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
     }

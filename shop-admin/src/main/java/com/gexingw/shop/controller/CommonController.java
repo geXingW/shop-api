@@ -1,6 +1,6 @@
 package com.gexingw.shop.controller;
 
-import com.gexingw.shop.bo.Upload;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.service.CommonService;
 import com.gexingw.shop.utils.R;
@@ -32,7 +32,7 @@ public class CommonController {
         File uploadedFile = commonService.upload(file, uploadType);
 
         // 资源与新图片绑定
-        Upload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
+        SysUpload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
         if (upload == null) {
             return R.ok(RespCode.SAVE_FAILURE.getCode(), "新图片绑定失败！");
         }
