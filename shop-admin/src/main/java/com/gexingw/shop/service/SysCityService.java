@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.sys.SysCity;
 import com.gexingw.shop.dto.city.SysCityRequestParam;
 
+import java.util.List;
 import java.util.Set;
 
 public interface SysCityService {
@@ -15,4 +16,6 @@ public interface SysCityService {
     Integer save(SysCityRequestParam requestParam);
 
     boolean update(SysCityRequestParam requestParam);
+
+    List<SysCity> getListByParentCode(Integer code);
 }

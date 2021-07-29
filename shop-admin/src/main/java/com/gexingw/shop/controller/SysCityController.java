@@ -8,12 +8,11 @@ import com.gexingw.shop.dto.city.SysCityRequestParam;
 import com.gexingw.shop.dto.city.SysCitySearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.service.SysCityService;
-import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("sys/city")
@@ -31,11 +30,37 @@ public class SysCityController {
             queryWrapper.like("name", searchParam.getBlurry());
         }
 
-        if (searchParam.getParentCode() != null) {   // 父Id
-            queryWrapper.eq("parent_code", searchParam.getParentCode());
+        // 父级城市Id
+        Integer parentCode = searchParam.getParentCode() != null ? searchParam.getParentCode() : 0;
+        queryWrapper.eq("parent_code", parentCode);
+
+        IPage<SysCity> pageResult = cityService.searchList(queryWrapper, page);
+        List<SysCity> pageRecords = pageResult.getRecords();
+
+        ArrayList<Map<String, Object>> records = new ArrayList<>();
+        for (SysCity city : pageRecords) {
+            HashMap<String, Object> record = new HashMap<>();
+            record.put("id", city.getId());
+            record.put("name", city.getName());
+            record.put("code", city.getCode());
+
+            // 查询子城市
+            List<SysCity> children = cityService.getListByParentCode(city.getCode());
+            record.put("hasChildren", children.size() > 0);
+//            if (children.size() > 0) {
+//                record.put("children", children);
+//            }
+
+            records.add(record);
         }
 
-        return R.ok(PageUtil.format(cityService.searchList(queryWrapper, page)));
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("records", records);
+        result.put("total", pageResult.getTotal());
+        result.put("size", pageResult.getSize());
+        result.put("page", pageResult.getCurrent());
+
+        return R.ok(result);
     }
 
     @PostMapping
@@ -46,7 +71,7 @@ public class SysCityController {
 
     @PutMapping
     R update(@RequestBody SysCityRequestParam requestParam) {
-        return cityService.update(requestParam) ? R.ok("已更新！"):R.ok(RespCode.UPDATE_FAILURE.getCode(), "保存失败！");
+        return cityService.update(requestParam) ? R.ok("已更新！") : R.ok(RespCode.UPDATE_FAILURE.getCode(), "保存失败！");
     }
 
     @DeleteMapping

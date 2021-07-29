@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -44,5 +45,10 @@ public class SysCityServiceImpl implements SysCityService {
         BeanUtils.copyProperties(requestParam, sysCity);
 
         return cityMapper.updateById(sysCity) > 0;
+    }
+
+    @Override
+    public List<SysCity> getListByParentCode(Integer code) {
+        return cityMapper.selectList(new QueryWrapper<SysCity>().eq("parent_code", code));
     }
 }
