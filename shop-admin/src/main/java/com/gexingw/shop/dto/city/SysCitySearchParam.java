@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SysCitySearchParam extends BaseSearchParam {
+    private Long id;
+
     private String blurry;
 
     private Integer code;

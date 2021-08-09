@@ -26,6 +26,8 @@ public class SysCityController {
         IPage<SysCity> page = new Page<>(searchParam.getPage(), searchParam.getSize());
         // 查询条件
         QueryWrapper<SysCity> queryWrapper = new QueryWrapper<>();
+
+        // 模糊搜索
         if (searchParam.getBlurry() != null) {   // 名字搜索
             queryWrapper.like("name", searchParam.getBlurry());
         }
@@ -47,9 +49,6 @@ public class SysCityController {
             // 查询子城市
             List<SysCity> children = cityService.getListByParentCode(city.getCode());
             record.put("hasChildren", children.size() > 0);
-//            if (children.size() > 0) {
-//                record.put("children", children);
-//            }
 
             records.add(record);
         }
@@ -61,6 +60,19 @@ public class SysCityController {
         result.put("page", pageResult.getCurrent());
 
         return R.ok(result);
+    }
+
+    @GetMapping("build-tree")
+    R buildTree(SysCitySearchParam searchParam) {
+        Integer parentCode = 0;
+        // 查找父级城市code
+        if (searchParam.getId() > 0) {
+            SysCity sysCity = cityService.findById(searchParam.getId());
+            parentCode = sysCity.getParentCode();
+        }
+
+        // 查找同级和同级的所有父级
+        return R.ok(cityService.getPeerAndParentListByParentCode(0, parentCode));
     }
 
     @PostMapping
