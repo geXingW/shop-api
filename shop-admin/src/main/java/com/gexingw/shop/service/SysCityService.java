@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.sys.SysCity;
 import com.gexingw.shop.dto.city.SysCityRequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,9 +18,9 @@ public interface SysCityService {
 
     boolean update(SysCityRequestParam requestParam);
 
-    List<SysCity> getListByParentCode(Integer code);
+    List<SysCity> getListByParentCode(Integer parentCode);
 
     SysCity findById(Long id);
 
-    List<Map<String, Object>> getPeerAndParentListByParentCode(Integer parentCode, Integer targetParentCode);
+    List<Map<String, Object>> buildCityTree(Integer parentCode);
 }

@@ -45,6 +45,7 @@ public class SysCityController {
             record.put("id", city.getId());
             record.put("name", city.getName());
             record.put("code", city.getCode());
+            record.put("parentCode", city.getParentCode());
 
             // 查询子城市
             List<SysCity> children = cityService.getListByParentCode(city.getCode());
@@ -64,15 +65,8 @@ public class SysCityController {
 
     @GetMapping("build-tree")
     R buildTree(SysCitySearchParam searchParam) {
-        Integer parentCode = 0;
-        // 查找父级城市code
-        if (searchParam.getId() > 0) {
-            SysCity sysCity = cityService.findById(searchParam.getId());
-            parentCode = sysCity.getParentCode();
-        }
-
-        // 查找同级和同级的所有父级
-        return R.ok(cityService.getPeerAndParentListByParentCode(0, parentCode));
+        // 城市层级列表
+        return R.ok(cityService.buildCityTree(0));
     }
 
     @PostMapping
@@ -83,11 +77,16 @@ public class SysCityController {
 
     @PutMapping
     R update(@RequestBody SysCityRequestParam requestParam) {
+//        // 检查code是否已存在
+//        if(cityService.findById(requestParam.getCo)){
+//
+//        }
+
         return cityService.update(requestParam) ? R.ok("已更新！") : R.ok(RespCode.UPDATE_FAILURE.getCode(), "保存失败！");
     }
 
     @DeleteMapping
-    R delete(Set<Integer> ids) {
+    R delete(@RequestBody Set<Integer> ids) {
         return cityService.deleteByIds(ids) ? R.ok("已删除！") : R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
     }
 }
