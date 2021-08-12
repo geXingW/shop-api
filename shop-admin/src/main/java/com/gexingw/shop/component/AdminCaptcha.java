@@ -1,7 +1,7 @@
 package com.gexingw.shop.component;
 
 import com.gexingw.shop.constant.AuthConstant;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 import lombok.Data;

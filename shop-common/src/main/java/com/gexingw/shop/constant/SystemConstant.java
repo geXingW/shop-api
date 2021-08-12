@@ -10,4 +10,6 @@ public interface SystemConstant {
     // 轮播图隐藏
     public static final Integer BANNER_SHOW_STATUS_HIDDEN = 0;
 
+    // 城市树状列表
+    public static final String REDIS_SYSTEM_CITY_TREE = "system-city-tree";
 }

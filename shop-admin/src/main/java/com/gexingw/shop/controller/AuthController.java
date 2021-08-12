@@ -11,7 +11,7 @@ import com.gexingw.shop.service.UmsDeptService;
 import com.gexingw.shop.service.UmsJobService;
 import com.gexingw.shop.util.AuthUtil;
 import com.gexingw.shop.util.JwtTokenUtil;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.utils.R;
 import com.gexingw.shop.utils.RsaUtil;
 import com.wf.captcha.SpecCaptcha;

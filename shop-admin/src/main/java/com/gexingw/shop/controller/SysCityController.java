@@ -66,27 +66,43 @@ public class SysCityController {
     @GetMapping("build-tree")
     R buildTree(SysCitySearchParam searchParam) {
         // 城市层级列表
-        return R.ok(cityService.buildCityTree(0));
+        return R.ok(cityService.getCityTree());
     }
 
     @PostMapping
     R save(@RequestBody SysCityRequestParam requestParam) {
         Integer cityId = cityService.save(requestParam);
-        return cityId != null ? R.ok("已保存！") : R.ok(RespCode.SAVE_FAILURE.getCode(), "保存失败！");
+        if (cityService.save(requestParam) == null) {
+            return R.ok(RespCode.SAVE_FAILURE.getCode(), "保存失败！");
+        }
+
+        // 删除redis缓存
+        cityService.delRedisCityTree();
+
+        return R.ok("已保存！");
     }
 
     @PutMapping
     R update(@RequestBody SysCityRequestParam requestParam) {
-//        // 检查code是否已存在
-//        if(cityService.findById(requestParam.getCo)){
-//
-//        }
+        if (!cityService.update(requestParam)) {
+            R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
+        }
 
-        return cityService.update(requestParam) ? R.ok("已更新！") : R.ok(RespCode.UPDATE_FAILURE.getCode(), "保存失败！");
+        // 删除redis缓存
+        cityService.delRedisCityTree();
+
+        return R.ok("已更新！");
     }
 
     @DeleteMapping
     R delete(@RequestBody Set<Integer> ids) {
-        return cityService.deleteByIds(ids) ? R.ok("已删除！") : R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+        if (!cityService.deleteByIds(ids)) {
+            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+        }
+
+        // 删除redis缓存
+        cityService.delRedisCityTree();
+
+        return R.ok("已删除！");
     }
 }

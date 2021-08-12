@@ -9,7 +9,7 @@ import com.gexingw.shop.constant.AdminConstant;
 import com.gexingw.shop.dto.menu.UmsMenuRequestParam;
 import com.gexingw.shop.mapper.UmsMenuMapper;
 import com.gexingw.shop.service.UmsMenuService;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.utils.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

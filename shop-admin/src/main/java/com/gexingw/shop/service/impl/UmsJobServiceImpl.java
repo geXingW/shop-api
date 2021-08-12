@@ -15,7 +15,7 @@ import com.gexingw.shop.mapper.UmsAdminJobMapper;
 import com.gexingw.shop.mapper.UmsAdminMapper;
 import com.gexingw.shop.mapper.UmsJobMapper;
 import com.gexingw.shop.service.UmsJobService;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

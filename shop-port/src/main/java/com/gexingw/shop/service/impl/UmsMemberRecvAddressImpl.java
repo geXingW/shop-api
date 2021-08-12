@@ -29,7 +29,9 @@ public class UmsMemberRecvAddressImpl implements UmsMemberRecvAddressService {
     @Override
     public Long save(UmsMemberRecvAddressRequestParam requestParam) {
         UmsMemberRecvAddress address = new UmsMemberRecvAddress();
+
         BeanUtils.copyProperties(requestParam, address);
+
         if (addressMapper.insert(address) <= 0) {
             return null;
         }

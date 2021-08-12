@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 
 @Service
-public class SysCityServiceImpl implements SysCityService {
+public class SysCityServiceImpl extends CityServiceImpl implements SysCityService {
     @Autowired
     SysCityMapper cityMapper;
 
@@ -55,36 +55,5 @@ public class SysCityServiceImpl implements SysCityService {
     @Override
     public SysCity findById(Long id) {
         return cityMapper.selectById(id);
-    }
-
-    @Override
-    public List<Map<String, Object>> buildCityTree(Integer parentCode) {
-        QueryWrapper<SysCity> queryWrapper = new QueryWrapper<SysCity>().eq("parent_code", parentCode);
-        List<SysCity> sysCities = cityMapper.selectList(queryWrapper);
-
-        List<Map<String, Object>> cities = new ArrayList<>();
-
-        for (SysCity city : sysCities) {
-            HashMap<String, Object> item = new HashMap<>();
-            item.put("id", city.getId());
-            item.put("name", city.getName());
-            item.put("label", city.getName());
-            item.put("code", city.getCode());
-            item.put("parentCode", city.getParentCode());
-
-            // 如果城市代码不是以00结尾的，属于县区一级，不再向下查询
-            if(StringUtils.endsWithIgnoreCase(city.getCode().toString(), "00")){
-                // 子级城市
-                List<Map<String, Object>> children = buildCityTree(city.getCode());
-                if (children.size() > 0) {
-                    item.put("children", children);
-                    item.put("hasChildren", children.size() > 0);
-                }
-            }
-
-            cities.add(item);
-        }
-
-        return cities;
     }
 }

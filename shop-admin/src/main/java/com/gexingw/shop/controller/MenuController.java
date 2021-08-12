@@ -16,7 +16,7 @@ import com.gexingw.shop.service.UmsMenuService;
 import com.gexingw.shop.service.UmsRoleMenuService;
 import com.gexingw.shop.service.UmsRoleService;
 import com.gexingw.shop.util.AuthUtil;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;

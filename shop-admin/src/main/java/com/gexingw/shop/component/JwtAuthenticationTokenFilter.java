@@ -2,7 +2,7 @@ package com.gexingw.shop.component;
 
 import com.gexingw.shop.constant.AuthConstant;
 import com.gexingw.shop.util.JwtTokenUtil;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

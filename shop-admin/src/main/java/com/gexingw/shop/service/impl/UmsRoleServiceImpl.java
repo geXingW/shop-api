@@ -12,7 +12,7 @@ import com.gexingw.shop.mapper.UmsRoleMapper;
 import com.gexingw.shop.mapper.UmsRoleMenuMapper;
 import com.gexingw.shop.service.UmsRoleService;
 import com.gexingw.shop.util.AuthUtil;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

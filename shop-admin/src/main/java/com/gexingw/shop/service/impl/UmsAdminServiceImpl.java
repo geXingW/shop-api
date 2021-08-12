@@ -12,7 +12,7 @@ import com.gexingw.shop.service.*;
 
 import com.alibaba.fastjson.JSON;
 import com.gexingw.shop.util.AuthUtil;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.utils.RsaUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,9 @@
 package com.gexingw.shop.component;
 
-import com.gexingw.shop.bo.ums.UmsMember;
 import com.gexingw.shop.constant.AuthConstant;
 import com.gexingw.shop.service.AuthService;
 import com.gexingw.shop.util.JwtTokenUtil;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

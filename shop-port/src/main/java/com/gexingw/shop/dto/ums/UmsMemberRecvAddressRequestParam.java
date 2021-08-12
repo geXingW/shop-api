@@ -1,9 +1,17 @@
 package com.gexingw.shop.dto.ums;
 
+import com.gexingw.shop.mapper.sys.SysCityMapper;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Data
 public class UmsMemberRecvAddressRequestParam {
+
+    @Autowired
+    SysCityMapper cityMapper;
+
     private Long id;
 
     private Long memberId;
@@ -14,7 +22,7 @@ public class UmsMemberRecvAddressRequestParam {
 
     private Integer defaultStatus;
 
-    private String postCode;
+    private Integer postCode;
 
     private String province;
 
@@ -23,4 +31,6 @@ public class UmsMemberRecvAddressRequestParam {
     private String region;
 
     private String detailAddress;
+
+    private List<String> cityIds;
 }

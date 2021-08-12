@@ -22,5 +22,7 @@ public interface SysCityService {
 
     SysCity findById(Long id);
 
-    List<Map<String, Object>> buildCityTree(Integer parentCode);
+    List<Map<String, Object>> getCityTree();
+
+    void delRedisCityTree();
 }

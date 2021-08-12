@@ -5,7 +5,7 @@ import com.gexingw.shop.bo.ums.UmsMember;
 import com.gexingw.shop.constant.MemberConstant;
 import com.gexingw.shop.mapper.UmsMemberMapper;
 import com.gexingw.shop.service.MemberService;
-import com.gexingw.shop.util.RedisUtil;
+import com.gexingw.shop.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.gexingw.shop.util;
 
-import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.constant.AuthConstant;
+import com.gexingw.shop.utils.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

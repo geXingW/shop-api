@@ -1,4 +1,4 @@
-package com.gexingw.shop.util;
+package com.gexingw.shop.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
