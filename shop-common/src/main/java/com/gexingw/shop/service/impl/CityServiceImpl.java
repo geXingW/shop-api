@@ -90,7 +90,7 @@ public class CityServiceImpl implements CityService {
         return JSON.parseObject(redisObj.toString(), reference);
     }
 
-    public void delRedisCityTree(){
+    public void delRedisCityTree() {
         redisUtil.del(SystemConstant.REDIS_SYSTEM_CITY_TREE);
     }
 
@@ -98,5 +98,33 @@ public class CityServiceImpl implements CityService {
     public Integer findByName(String region) {
         SysCity city = cityMapper.selectOne(new QueryWrapper<SysCity>().eq("name", region));
         return city != null ? city.getCode() : 0;
+    }
+
+    @Override
+    public SysCity findByPCRNames(String province, String city, String region) {
+        // 查找区县匹配数量，如果有多个，根据省、市、区（县）一同判定
+        Integer count = cityMapper.selectCount(new QueryWrapper<SysCity>().eq("name", region));
+
+        if (count == 0) {// 未找到，返回null
+            return null;
+        }
+
+        if (count == 1) {   // 找到一条直接返回
+            return cityMapper.selectOne(new QueryWrapper<SysCity>().eq("name", region));
+        }
+
+        // 找到多条，根据上级城市post code判定
+
+        SysCity provinceBo = cityMapper.findByName(province);   // 根据省份查找
+        if (provinceBo == null) {
+            return null;
+        }
+
+        SysCity cityBo = cityMapper.findByNameAndParentCode(city, provinceBo.getCode());
+        if (cityBo == null) {
+            return null;
+        }
+
+        return cityMapper.findByNameAndParentCode(region, cityBo.getCode());
     }
 }

@@ -14,4 +14,6 @@ public interface UmsMemberRecvAddressService {
     boolean deleteByIds(Set<Long> ids);
 
     boolean update(UmsMemberRecvAddress requestParam);
+
+    boolean updateAddressDefaultStatusExcludeId(Long id);
 }

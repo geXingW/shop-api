@@ -51,6 +51,20 @@ public class UmsMemberRecvAddressImpl implements UmsMemberRecvAddressService {
         return addressMapper.updateById(address) > 0;
     }
 
+    /**
+     * 将不等于该 `id` 的记录 `default_status` 更新为0
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean updateAddressDefaultStatusExcludeId(Long id) {
+        UmsMemberRecvAddress recvAddress = new UmsMemberRecvAddress();
+        recvAddress.setDefaultStatus(0);
+
+        return addressMapper.update(recvAddress, new QueryWrapper<UmsMemberRecvAddress>().ne("id", id)) > 0;
+    }
+
     @Override
     public boolean deleteByIds(Set<Long> ids) {
         return addressMapper.deleteBatchIds(ids) > 0;

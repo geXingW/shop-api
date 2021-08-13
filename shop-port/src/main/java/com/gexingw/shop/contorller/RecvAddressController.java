@@ -1,6 +1,7 @@
 package com.gexingw.shop.contorller;
 
 import com.gexingw.shop.bo.UmsMemberRecvAddress;
+import com.gexingw.shop.bo.sys.SysCity;
 import com.gexingw.shop.dto.ums.UmsMemberRecvAddressRequestParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.service.CityService;
@@ -37,11 +38,23 @@ public class RecvAddressController {
         // 设置收货地址的用户ID为当前登陆用户
         requestParam.setMemberId(AuthUtil.getAuthId());
 
+        // 根据省、市、区（县）确定唯一的postcode
+        SysCity PCRCity = cityService.findByPCRNames(requestParam.getProvince(), requestParam.getCity(), requestParam.getRegion());
+
         // 设置postcode
-        requestParam.setPostCode(cityService.findByName(requestParam.getRegion()));
+        requestParam.setPostCode(PCRCity.getCode());
 
         Long addressId = addressService.save(requestParam);
-        return addressId != null ? R.ok(addressId, "已保存！") : R.ok(RespCode.SAVE_FAILURE.getCode(), "保存失败！");
+        if (addressId == null) {
+            return R.ok(RespCode.SAVE_FAILURE.getCode(), "保存失败！");
+        }
+
+        // 如果同时设置的默认选中，清除其他的选中
+        if (requestParam.getDefaultStatus() == 1) {
+            addressService.updateAddressDefaultStatusExcludeId(addressId);
+        }
+
+        return R.ok(addressId, "已保存！");
     }
 
     @PutMapping
@@ -49,10 +62,20 @@ public class RecvAddressController {
         // 设置收货地址的用户ID为当前登陆用户
         requestParam.setMemberId(AuthUtil.getAuthId());
 
-        // 设置postcode
-        requestParam.setPostCode(cityService.findByName(requestParam.getRegion()));
+        // 根据省、市、区（县）确定唯一的postcode
+        SysCity PCRCity = cityService.findByPCRNames(requestParam.getProvince(), requestParam.getCity(), requestParam.getRegion());
 
-        return addressService.update(requestParam) ? R.ok("已更新！") : R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
+        // 设置postcode
+        requestParam.setPostCode(PCRCity.getCode());
+        if (!addressService.update(requestParam)) {
+            return R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
+        }
+
+        if (requestParam.getDefaultStatus() == 1) {
+            addressService.updateAddressDefaultStatusExcludeId(requestParam.getId());
+        }
+
+        return R.ok("已更新！");
     }
 
     @DeleteMapping
