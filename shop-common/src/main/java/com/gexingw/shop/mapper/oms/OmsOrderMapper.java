@@ -1,0 +1,10 @@
+package com.gexingw.shop.mapper.oms;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.gexingw.shop.bo.oms.OmsOrder;
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface OmsOrderMapper extends BaseMapper<OmsOrder> {
+
+}

@@ -7,6 +7,8 @@ import com.gexingw.shop.service.PmsProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PmsProductServiceImpl implements PmsProductService {
     @Autowired
@@ -20,5 +22,10 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Override
     public PmsProduct getById(Long id) {
         return productMapper.selectById(id);
+    }
+
+    @Override
+    public List<PmsProduct> getByIds(List<Long> ids) {
+        return productMapper.selectBatchIds(ids);
     }
 }
