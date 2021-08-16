@@ -1,6 +1,7 @@
 package com.gexingw.shop.bo.oms;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Data
 public class OmsOrderItemDetail {
 
-    @TableId(value = "id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     private Long itemId;

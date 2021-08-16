@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.gexingw.shop.bo.oms.OmsOrderItemDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,34 +16,45 @@ public class OmsOrderRequestParam {
 
     private Long memberId;
 
-//    private BigDecimal totalAmount;
-//
-//    private BigDecimal freightAmount;
-//
-//    private BigDecimal payAmount;
-
-//    private Integer payType;
-
     private Integer sourceType;
 
-//    private Integer status;
+    private Integer status = 0;
 
     private String note;
 
-    private Integer recvPostCode;
+    private List<OrderItems> orderItems;
 
-    private String recvProvince;
+    private RecvAddress recvAddress;
 
-    private String recvCity;
-
-    private String recvRegion;
-
-    private List<OmsOrderItemRequestParam> orderItems;
-
+    /**
+     * 订单商品信息
+     */
     @Data
-    public class OmsOrderItemRequestParam {
+    public static class OrderItems {
         private Long itemId;
 
         private Integer itemQuantity;
+    }
+
+    /**
+     * 订单收货地址
+     */
+    @Data
+    public static class RecvAddress {
+        private Long recvAddressId;
+
+        private String recvName;
+
+        private String recvPhone;
+
+        private Integer recvPostCode;
+
+        private String recvProvince;
+
+        private String recvCity;
+
+        private String recvRegion;
+
+        private String recvDetailAddress;
     }
 }

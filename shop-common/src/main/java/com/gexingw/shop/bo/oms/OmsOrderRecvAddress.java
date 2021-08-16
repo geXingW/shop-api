@@ -8,30 +8,20 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gexingw.shop.constant.SystemConstant;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class OmsOrder {
-
+public class OmsOrderRecvAddress {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    private Long memberId;
+    private Long orderId;
 
-    private BigDecimal totalAmount;
+    private Long recvAddressId;
 
-    private BigDecimal freightAmount;
+    private String recvName;
 
-    private BigDecimal payAmount;
-
-    private Integer payType;
-
-    private Integer sourceType;
-
-    private Integer status;
-
-    private String note;
+    private String recvPhone;
 
     private Integer recvPostCode;
 
@@ -41,6 +31,8 @@ public class OmsOrder {
 
     private String recvRegion;
 
+    private String recvDetailAdddress;
+
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     private Date createTime;
@@ -48,4 +40,5 @@ public class OmsOrder {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     private Date updateTime;
+
 }

@@ -8,6 +8,7 @@ import com.gexingw.shop.dto.oms.OmsOrderRequestParam;
 import com.gexingw.shop.dto.oms.OmsOrderSearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.service.OrderService;
+import com.gexingw.shop.util.AuthUtil;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,10 @@ public class OrderController {
 
     @PostMapping
     public R save(@RequestBody OmsOrderRequestParam requestParam) {
+        // 设置订单用户
+        requestParam.setMemberId(AuthUtil.getAuthId());
+
+        // 保存订单
         Long orderId = orderService.save(requestParam);
         if (orderId == null) {
             return R.ok(RespCode.SAVE_FAILURE.getCode(), "订单创建失败！");
