@@ -20,4 +20,6 @@ public interface CartService {
     boolean deleteByIds(Set<Long> ids);
 
     boolean deleteByItemIds(Set<Long> ids);
+
+    boolean delCartItemByItemIds(List<Long> itemIds);
 }

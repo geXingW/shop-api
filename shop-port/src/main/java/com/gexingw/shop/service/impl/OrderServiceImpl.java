@@ -13,6 +13,7 @@ import com.gexingw.shop.mapper.oms.OmsOrderItemDetailMapper;
 import com.gexingw.shop.mapper.oms.OmsOrderItemMapper;
 import com.gexingw.shop.mapper.oms.OmsOrderMapper;
 import com.gexingw.shop.mapper.oms.OmsOrderRecvAddressMapper;
+import com.gexingw.shop.service.CartService;
 import com.gexingw.shop.service.OrderService;
 import com.gexingw.shop.service.PmsProductService;
 import org.springframework.beans.BeanUtils;
@@ -41,6 +42,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OmsOrderRecvAddressMapper addressMapper;
+
+    @Autowired
+    CartService cartService;
 
     @Override
     public IPage<OmsOrder> search(QueryWrapper<OmsOrder> queryWrapper, IPage<OmsOrder> page) {
@@ -94,6 +98,9 @@ public class OrderServiceImpl implements OrderService {
 
         // 保存订单收货地址信息
         saveOrderRecvAddress(order.getId(), requestParam.getRecvAddress());
+
+        // 移除购物车中的商品
+        cartService.delCartItemByItemIds(itemIds);
 
         return order.getId();
     }
