@@ -21,6 +21,8 @@ public class OmsOrder {
 
     private BigDecimal totalAmount;
 
+    private BigDecimal itemAmount;
+
     private BigDecimal freightAmount;
 
     private BigDecimal payAmount;

@@ -45,8 +45,10 @@ public class OrderController {
 
         OmsOrderDetailVO orderDetailVO = new OmsOrderDetailVO();
         orderDetailVO.setId(order.getId());
+        orderDetailVO.setMemberId(order.getMemberId());
         orderDetailVO.setStatus(order.getStatus());
         orderDetailVO.setTotalAmount(order.getTotalAmount());
+        orderDetailVO.setItemAmount(order.getItemAmount());
         orderDetailVO.setFreightAmount(order.getFreightAmount());
 
         // 查询订单商品信息

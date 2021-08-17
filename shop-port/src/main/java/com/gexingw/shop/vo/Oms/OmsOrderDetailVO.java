@@ -24,6 +24,8 @@ public class OmsOrderDetailVO {
 
     private BigDecimal totalAmount;
 
+    private BigDecimal itemAmount;
+
     private BigDecimal freightAmount;
 
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -35,6 +37,8 @@ public class OmsOrderDetailVO {
     @NoArgsConstructor
     private static class OrderItem {
         private Long itemId;
+
+        private String itemName;
 
         private Integer itemQuantity;
 
@@ -58,6 +62,7 @@ public class OmsOrderDetailVO {
         for (OmsOrderItemDetail orderItemDetail : orderItemDetails) {
             OrderItem orderItem = new OrderItem();
             orderItem.setItemId(orderItemDetail.getItemId());
+            orderItem.setItemName(orderItemDetail.getItemName());
             orderItem.setItemQuantity(orderItemDetail.getItemQuantity());
             orderItem.setItemPrice(orderItemDetail.getItemPrice());
             orderItem.setItemAmount(orderItemDetail.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getItemQuantity())));

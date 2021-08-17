@@ -72,11 +72,14 @@ public class OrderServiceImpl implements OrderService {
             orderProductDetailMap.put(product.getId(), product);
         }
 
+        // 订单商品金额
+        order.setItemAmount(calcOrderItemTotalAmount(reqOrderItems, orderProductDetailMap));
+
         // 计算订单总运费
         order.setFreightAmount(calcOrderFreightAmount(reqOrderItems, orderProductDetailMap));
 
         // 计算订单金额 = 订单商品总金额 + 订单运费总金额
-        order.setTotalAmount(calcOrderItemTotalAmount(reqOrderItems, orderProductDetailMap).add(order.getFreightAmount()));
+        order.setTotalAmount(order.getItemAmount().add(order.getFreightAmount()));
 
         // 保存订单信息
         if (orderMapper.insert(order) <= 0) {
@@ -144,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
             // 总金额加上商品金额 × 商品数量
-            orderTotalAmount.add(productDetail.getPrice().multiply(BigDecimal.valueOf(orderItem.getItemQuantity())));
+            orderTotalAmount = orderTotalAmount.add(productDetail.getPrice().multiply(BigDecimal.valueOf(orderItem.getItemQuantity())));
         }
 
         return orderTotalAmount;
