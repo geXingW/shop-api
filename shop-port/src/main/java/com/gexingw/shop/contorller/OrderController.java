@@ -11,6 +11,7 @@ import com.gexingw.shop.service.OrderService;
 import com.gexingw.shop.util.AuthUtil;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
+import com.gexingw.shop.vo.Oms.OmsOrderDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,18 @@ public class OrderController {
             return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到该订单！");
         }
 
-        return R.ok(order);
+        OmsOrderDetailVO orderDetailVO = new OmsOrderDetailVO();
+        orderDetailVO.setId(order.getId());
+        orderDetailVO.setStatus(order.getStatus());
+        orderDetailVO.setTotalAmount(order.getTotalAmount());
+        orderDetailVO.setFreightAmount(order.getFreightAmount());
+
+        // 查询订单商品信息
+        orderDetailVO.setOrderItems(orderService.getOrderItemDetailsByOrderId(id));
+
+        orderDetailVO.setRecvAddress(orderService.getOrderRecvAddressByOrderId(id));
+
+        return R.ok(orderDetailVO);
     }
 
     @PostMapping

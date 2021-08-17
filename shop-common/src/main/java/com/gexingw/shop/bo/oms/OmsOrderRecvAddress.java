@@ -31,7 +31,7 @@ public class OmsOrderRecvAddress {
 
     private String recvRegion;
 
-    private String recvDetailAdddress;
+    private String recvDetailAddress;
 
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")

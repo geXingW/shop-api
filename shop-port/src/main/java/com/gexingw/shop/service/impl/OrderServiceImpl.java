@@ -246,4 +246,18 @@ public class OrderServiceImpl implements OrderService {
 
         return true;
     }
+
+    @Override
+    public List<OmsOrderItemDetail> getOrderItemDetailsByOrderId(Long orderId) {
+
+        List<OmsOrderItem> orderItems = itemMapper.selectList(new QueryWrapper<OmsOrderItem>().eq("order_id", orderId));
+        List<Long> itemDetailIds = orderItems.stream().map(OmsOrderItem::getOrderItemDetailId).distinct().collect(Collectors.toList());
+
+        return itemDetailMapper.selectBatchIds(itemDetailIds);
+    }
+
+    @Override
+    public OmsOrderRecvAddress getOrderRecvAddressByOrderId(Long orderId) {
+        return addressMapper.selectOne(new QueryWrapper<OmsOrderRecvAddress>().eq("order_id", orderId));
+    }
 }

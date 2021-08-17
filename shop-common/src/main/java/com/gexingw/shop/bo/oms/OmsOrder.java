@@ -33,14 +33,6 @@ public class OmsOrder {
 
     private String note;
 
-    private Integer recvPostCode;
-
-    private String recvProvince;
-
-    private String recvCity;
-
-    private String recvRegion;
-
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     private Date createTime;
