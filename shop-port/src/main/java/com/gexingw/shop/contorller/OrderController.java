@@ -64,8 +64,15 @@ public class OrderController {
         // 设置订单用户
         requestParam.setMemberId(AuthUtil.getAuthId());
 
+        Long orderId;   // 订单Id
+
         // 保存订单
-        Long orderId = orderService.save(requestParam);
+        try {
+            orderId = orderService.save(requestParam);
+        } catch (Exception e) {
+            return R.ok(RespCode.SAVE_FAILURE.getCode(), e.getMessage());
+        }
+
         if (orderId == null) {
             return R.ok(RespCode.SAVE_FAILURE.getCode(), "订单创建失败！");
         }

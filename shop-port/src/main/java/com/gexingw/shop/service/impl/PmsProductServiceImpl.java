@@ -2,6 +2,8 @@ package com.gexingw.shop.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gexingw.shop.bo.pms.PmsProduct;
+import com.gexingw.shop.exception.DBOperationException;
+import com.gexingw.shop.exception.ResourceNotExistException;
 import com.gexingw.shop.mapper.pms.PmsProductMapper;
 import com.gexingw.shop.service.PmsProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +29,14 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Override
     public List<PmsProduct> getByIds(List<Long> ids) {
         return productMapper.selectBatchIds(ids);
+    }
+
+    @Override
+    public boolean decrProductStockById(Long id, Integer quantity) {
+        try {
+            return productMapper.decrStock(id, quantity) > 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -10,4 +10,6 @@ public interface PmsProductService {
     PmsProduct getById(Long id);
 
     List<PmsProduct> getByIds(List<Long> ids);
+
+    boolean decrProductStockById(Long id, Integer quantity);
 }

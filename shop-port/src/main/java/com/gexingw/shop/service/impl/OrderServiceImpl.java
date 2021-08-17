@@ -66,6 +66,13 @@ public class OrderServiceImpl implements OrderService {
         // 用户端传来的商品信息
         List<OmsOrderRequestParam.OrderItems> reqOrderItems = requestParam.getOrderItems();
 
+        // 扣除商品库存
+        for (OmsOrderRequestParam.OrderItems reqOrderItem : reqOrderItems) {
+            if (!productService.decrProductStockById(reqOrderItem.getItemId(), reqOrderItem.getItemQuantity())) {
+                throw new DBOperationException("商品库存扣除失败！");
+            }
+        }
+
         // 根据itemId，查询所有商品详情
         List<Long> itemIds = reqOrderItems.stream().map(OmsOrderRequestParam.OrderItems::getItemId).collect(Collectors.toList());
 
