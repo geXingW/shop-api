@@ -61,6 +61,10 @@ public class MenuController {
     @PreAuthorize("@el.check('menu:list')")
     public R index(UmsMenuSearchParam searchParam) {
         QueryWrapper<UmsMenu> queryWrapper = new QueryWrapper<UmsMenu>().eq("pid", searchParam.getPid());
+
+        // 默认按照sort排序
+        queryWrapper.orderByAsc("menu_sort");
+
         if (searchParam.getId() != null) {
             queryWrapper.eq("id", searchParam.getId());
         }
