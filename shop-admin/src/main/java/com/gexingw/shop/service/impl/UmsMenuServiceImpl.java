@@ -4,20 +4,23 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.gexingw.shop.bo.ums.UmsAdminRole;
 import com.gexingw.shop.bo.ums.UmsMenu;
+import com.gexingw.shop.bo.ums.UmsRoleMenu;
 import com.gexingw.shop.constant.AdminConstant;
 import com.gexingw.shop.dto.menu.UmsMenuRequestParam;
+import com.gexingw.shop.mapper.UmsAdminRoleMapper;
 import com.gexingw.shop.mapper.UmsMenuMapper;
+import com.gexingw.shop.mapper.UmsRoleMenuMapper;
 import com.gexingw.shop.service.UmsMenuService;
+import com.gexingw.shop.service.UmsRoleService;
 import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.utils.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +35,15 @@ import java.util.stream.Collectors;
 public class UmsMenuServiceImpl implements UmsMenuService {
     @Autowired
     UmsMenuMapper umsMenuMapper;
+
+    @Autowired
+    UmsRoleMenuMapper roleMenuMapper;
+
+    @Autowired
+    UmsAdminRoleMapper adminRoleMapper;
+
+    @Autowired
+    UmsRoleService roleService;
 
     @Autowired
     StringUtil strUtil;
@@ -210,6 +222,56 @@ public class UmsMenuServiceImpl implements UmsMenuService {
         parentMenu.decrSubCount(1);
 
         return umsMenuMapper.updateById(parentMenu) > 0;
+    }
+
+    @Override
+    public List<Long> delRoleMenusByMenuId(Long menuId) {
+        // 根据menuId 查询
+        List<Long> roleIds = getMenuRoleIdsListByMenuId(menuId);
+
+        if (roleMenuMapper.delete(new QueryWrapper<UmsRoleMenu>().eq("menu_id", menuId)) > 0) {
+            return new ArrayList<>();
+        }
+
+        return roleIds;
+    }
+
+    @Override
+    public boolean delAdminMenuAndPermissionCacheByRoleIds(List<Long> roleIds) {
+        if (roleIds.size() == 0) {
+            return false;
+        }
+
+        // 查询所有与菜单绑定的管理员Id
+        List<Long> adminIds = adminRoleMapper.selectList(new QueryWrapper<UmsAdminRole>().in("role_id", roleIds))
+                .stream().map(UmsAdminRole::getAdminId).collect(Collectors.toList());
+
+        for (Long adminId : adminIds) {
+            delRedisAdminMenuByAdminId(adminId);    // 清除菜单缓存
+            delRedisAdminPermissionByAdminId(adminId);  // 清除权限缓存
+        }
+
+        return true;
+    }
+
+    @Override
+    public List<Long> getMenuRoleIdsListByMenuId(Long menuId) {
+        return roleMenuMapper.selectList(new QueryWrapper<UmsRoleMenu>().eq("menu_id", menuId))
+                .stream().map(UmsRoleMenu::getRoleId).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean addMenuToAdminRole(Long menuId) {
+        // 查询超级管理员的角色Id，假定所有超级管理员的level为1
+        List<Long> superAdminRoleIds = roleService.getSuperAdminRoleIds();
+        for (Long superAdminRoleId : superAdminRoleIds) {
+            UmsRoleMenu umsRoleMenu = new UmsRoleMenu(menuId, superAdminRoleId);
+            if (roleMenuMapper.insert(umsRoleMenu) <= 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

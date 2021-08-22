@@ -214,4 +214,10 @@ public class UmsRoleServiceImpl implements UmsRoleService {
         List<UmsAdminRole> adminRoles = umsAdminRoleMapper.selectList(new QueryWrapper<UmsAdminRole>().in("role_id", ids));
         return adminRoles.stream().map(UmsAdminRole::getAdminId).collect(Collectors.toList());
     }
+
+    @Override
+    public List<Long> getSuperAdminRoleIds() {
+        return umsRoleMapper.selectList(new QueryWrapper<UmsRole>().eq("level", 1))
+                .stream().map(UmsRole::getId).collect(Collectors.toList());
+    }
 }

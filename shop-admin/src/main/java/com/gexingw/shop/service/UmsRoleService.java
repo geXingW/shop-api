@@ -42,4 +42,6 @@ public interface UmsRoleService {
     public void delRedisAdminRolesByAdminId(Long adminId);
 
     List<Long> getAdminIdsByRoleIds(List<Long> ids);
+
+    List<Long> getSuperAdminRoleIds();
 }

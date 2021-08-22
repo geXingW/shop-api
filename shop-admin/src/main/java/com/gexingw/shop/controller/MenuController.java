@@ -146,11 +146,17 @@ public class MenuController {
             return R.ok(RespCode.FAILURE.getCode(), "更新父级菜单子菜单数量失败！");
         }
 
-        // 添加角色与菜单的绑定
+        // 添加管理员角色与菜单的绑定
         long authId = AuthUtil.getAuthId();
         if (id > 0) {
-            umsMenuService.delRedisAdminMenuByAdminId(authId);
-            umsMenuService.delRedisAdminPermissionByAdminId(authId);
+            // 为超级管理员添加该菜单和权限
+            umsMenuService.addMenuToAdminRole(id);
+
+            // 清除菜单和权限缓存
+            List<Long> roleIds = umsMenuService.getMenuRoleIdsListByMenuId(id);
+
+            // 清除关联用户的菜单和权限缓存
+            umsMenuService.delAdminMenuAndPermissionCacheByRoleIds(roleIds);
         }
 
         return R.ok(id);
@@ -225,15 +231,16 @@ public class MenuController {
             }
 
             // 新的父级菜单 +1
-            if (umsMenuService.incrParentMenuSubCount(menuRequestParam.getPid())) {
+            if (!umsMenuService.incrParentMenuSubCount(menuRequestParam.getPid())) {
                 return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), "父级菜单更新失败！");
             }
         }
 
-        // 清除缓存
-        long authId = AuthUtil.getAuthId();
-        umsMenuService.delRedisAdminMenuByAdminId(authId);
-        umsMenuService.delRedisAdminPermissionByAdminId(authId);
+        // 清除菜单和权限缓存
+        List<Long> roleIds = umsMenuService.getMenuRoleIdsListByMenuId(umsMenu.getId());
+
+        // 清除关联用户的菜单和权限缓存
+        umsMenuService.delAdminMenuAndPermissionCacheByRoleIds(roleIds);
 
         return R.ok("已更新！");
     }
@@ -255,8 +262,11 @@ public class MenuController {
         }
 
         for (Long id : ids) {
-            umsMenuService.delRedisAdminMenuByAdminId(id);
-            umsMenuService.delRedisAdminPermissionByAdminId(id);
+            // 删除角色与菜单的绑定关系
+            List<Long> roleIds = umsMenuService.delRoleMenusByMenuId(id);
+
+            // 清除关联用户的菜单和权限缓存
+            umsMenuService.delAdminMenuAndPermissionCacheByRoleIds(roleIds);
         }
 
         return R.ok("已删除！");

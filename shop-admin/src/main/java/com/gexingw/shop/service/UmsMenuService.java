@@ -6,6 +6,7 @@ import com.gexingw.shop.dto.menu.UmsMenuRequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -53,5 +54,13 @@ public interface UmsMenuService {
     UmsMenu getMenuById(Long id);
 
     boolean decrParentMenuSubCount(Long pid);
+
+    List<Long> delRoleMenusByMenuId(Long menuId);
+
+    boolean delAdminMenuAndPermissionCacheByRoleIds(List<Long> roleIds);
+
+    List<Long> getMenuRoleIdsListByMenuId(Long menuId);
+
+    boolean addMenuToAdminRole(Long menuId);
 }
 
