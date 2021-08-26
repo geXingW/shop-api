@@ -16,7 +16,7 @@ import java.util.Date;
 @Data
 @TableName("pms_products")
 public class PmsProduct {
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     private String title;
