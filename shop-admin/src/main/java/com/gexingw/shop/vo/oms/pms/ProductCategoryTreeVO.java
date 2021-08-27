@@ -19,7 +19,7 @@ public class ProductCategoryTreeVO {
     private List<ProductCategoryTreeVO> children;
 
     public void setChildren(List<ProductCategoryTreeVO> children) {
-        this.children = children.size() > 0 ? children: null;
+        this.children = children;
 
         // 列表大于0，代表有子分类
         this.leaf = children.size() <= 0;
