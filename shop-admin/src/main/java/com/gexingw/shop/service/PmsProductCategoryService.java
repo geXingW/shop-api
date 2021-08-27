@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
+import com.gexingw.shop.vo.oms.pms.ProductCategoryTreeVO;
 
 import java.util.List;
 import java.util.Map;
@@ -31,4 +32,14 @@ public interface PmsProductCategoryService {
     boolean decrProductCntByCategoryId(Long categoryId);
 
     List<Map<String, Object>> getByPid(long pid);
+
+    List<ProductCategoryTreeVO> getCategoryTreeByPid(Long pid);
+
+    List<ProductCategoryTreeVO> getCategoryTree();
+
+    Boolean setCategoryTreeToRedis(List<ProductCategoryTreeVO> categoryTreeVOS);
+
+    List<ProductCategoryTreeVO> getCategoryTreeFromRedis();
+
+    void delCategoryTreeFromRedis();
 }

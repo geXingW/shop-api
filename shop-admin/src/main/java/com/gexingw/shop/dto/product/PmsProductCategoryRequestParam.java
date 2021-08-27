@@ -13,8 +13,6 @@ public class PmsProductCategoryRequestParam {
 
     private String name;
 
-    private Integer level;
-
     private Integer sort;
 
     private Integer showStatus;

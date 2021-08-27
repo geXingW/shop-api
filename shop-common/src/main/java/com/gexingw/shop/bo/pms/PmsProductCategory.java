@@ -17,8 +17,6 @@ public class PmsProductCategory {
 
     private String name;
 
-    private Integer level;
-
     private Integer subCount;
 
     private Integer showStatus;

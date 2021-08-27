@@ -3,8 +3,8 @@ package com.gexingw.shop.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
 import com.gexingw.shop.dto.product.PmsProductCategorySearchParam;
@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -74,18 +73,7 @@ public class ProductCategoryController {
 
     @GetMapping("tree")
     public R tree() {
-        // 查询顶级分类
-        List<Map<String, Object>> categories = categoryService.getByPid(0L);
-        for (Map<String, Object> category : categories) {
-            boolean hasChildren = (boolean) category.get("hasChildren");
-            if (!hasChildren) { // 没有子分类的话，无需查询子分类
-                continue;
-            }
-            List<Map<String, Object>> children = categoryService.getByPid((Long) category.get("id"));
-            category.put("children", children);
-        }
-
-        return R.ok(categories);
+        return R.ok(categoryService.getCategoryTree());
     }
 
     @PostMapping
@@ -100,10 +88,17 @@ public class ProductCategoryController {
             categoryService.incrParentCategorySubCnt(requestParam.getPid());
         }
 
+        // 清理商品分类缓存
+        categoryService.delCategoryTreeFromRedis();
+
+        if (requestParam.getIcon() == null || requestParam.getIcon().isEmpty()) {   // 没有上传图片无需更新图片
+            return R.ok("已保存！");
+        }
+
         // 关联上传的图片
         SysUpload upload = uploadService.attachPicToSource(categoryId, UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
 
-        return upload != null ? R.ok("已保存！") : R.ok("保存失败！");
+        return upload != null ? R.ok("已保存！") : R.ok(RespCode.UPLOAD_FAILURE.getCode(), "保存失败！");
     }
 
     /**
@@ -163,6 +158,13 @@ public class ProductCategoryController {
             return R.ok(RespCode.FAILURE, "更新父级分类失败！");
         }
 
+        // 清理商品分类缓存
+        categoryService.delCategoryTreeFromRedis();
+
+        if (requestParam.getIcon() == null || requestParam.getIcon().isEmpty()) {
+            return R.ok("已更新！");
+        }
+
         // 更新分类图片
         SysUpload upload = uploadService.attachPicToSource(requestParam.getId(), UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
 
@@ -179,6 +181,9 @@ public class ProductCategoryController {
         for (PmsProductCategory category : categories) {
             categoryService.decrParentCategorySubCnt(category.getPid());
         }
+
+        // 清理商品分类缓存
+        categoryService.delCategoryTreeFromRedis();
 
         // 删除关联的图片
         for (Long id : ids) {
