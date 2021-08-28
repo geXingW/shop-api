@@ -14,7 +14,7 @@ import com.gexingw.shop.mapper.UploadMapper;
 import com.gexingw.shop.service.PmsProductCategoryService;
 import com.gexingw.shop.service.UploadService;
 import com.gexingw.shop.utils.RedisUtil;
-import com.gexingw.shop.vo.oms.pms.ProductCategoryTreeVO;
+import com.gexingw.shop.vo.pms.ProductCategoryTreeVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,7 +76,36 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
 
     @Override
     public PmsProductCategory getById(Long id) {
-        return categoryMapper.selectById(id);
+        // 首先尝试从Redis获取
+        PmsProductCategory productCategory = getProductCategoryFromRedisById(id);
+        if (productCategory != null) {
+            return productCategory;
+        }
+
+        // 从DB查询
+        productCategory = categoryMapper.selectById(id);
+
+        // 从新写入redis
+        setProductCategoryRedisById(id, productCategory);
+
+        return productCategory;
+    }
+
+    public PmsProductCategory getProductCategoryFromRedisById(Long id) {
+        Object redisObj = redisUtil.get(String.format(ProductConstant.REDIS_PRODUCT_CATEGORY_FORMAT, id));
+        if (redisObj == null) {
+            return null;
+        }
+
+        return JSONObject.parseObject(redisObj.toString(), PmsProductCategory.class);
+    }
+
+    public Boolean setProductCategoryRedisById(Long id, PmsProductCategory productCategory) {
+        return redisUtil.set(String.format(ProductConstant.REDIS_PRODUCT_CATEGORY_FORMAT, id), productCategory);
+    }
+
+    public void delProductCategoryRedisById(Long id){
+        redisUtil.del(String.format(ProductConstant.REDIS_PRODUCT_CATEGORY_FORMAT, id));
     }
 
     @Override

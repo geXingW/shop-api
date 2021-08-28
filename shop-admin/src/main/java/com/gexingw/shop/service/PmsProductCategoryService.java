@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
-import com.gexingw.shop.vo.oms.pms.ProductCategoryTreeVO;
+import com.gexingw.shop.vo.pms.ProductCategoryTreeVO;
 
 import java.util.List;
 import java.util.Map;

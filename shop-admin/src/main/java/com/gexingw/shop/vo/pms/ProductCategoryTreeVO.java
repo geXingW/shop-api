@@ -1,4 +1,4 @@
-package com.gexingw.shop.vo.oms.pms;
+package com.gexingw.shop.vo.pms;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
