@@ -34,7 +34,7 @@ public class ProductAttributeController {
     public R save(@RequestBody PmsProductAttributeRequestParam requestParam) {
         Long id = attributeService.save(requestParam);
 
-        return id == null ? R.ok(id) : R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
+        return id != null ? R.ok(id) : R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
     }
 
     @PutMapping("/{id}")

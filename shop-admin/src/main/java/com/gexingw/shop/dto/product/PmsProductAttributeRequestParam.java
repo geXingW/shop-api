@@ -14,7 +14,7 @@ public class PmsProductAttributeRequestParam {
 
     private String inputValue;
 
-    private Boolean searchable;
+    private Integer searchable;
 
     private Integer sort;
 
