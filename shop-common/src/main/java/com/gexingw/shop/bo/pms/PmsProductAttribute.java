@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @TableName("pms_product_attribute")
 public class PmsProductAttribute {
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     private Long categoryId;

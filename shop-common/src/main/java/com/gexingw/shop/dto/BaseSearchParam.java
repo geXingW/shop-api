@@ -21,7 +21,7 @@ public class BaseSearchParam {
     private String[] createTime;
 
     public int getPage() {
-        return ++page;
+        return page == 0 ? ++page : page;
     }
 
     public String sortBy() {

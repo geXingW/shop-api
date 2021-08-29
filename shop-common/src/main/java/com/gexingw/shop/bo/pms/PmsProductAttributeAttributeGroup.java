@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @TableName("pms_product_attribute_attribute_group")
 public class PmsProductAttributeAttributeGroup {
-    private Long product_attribute_id;
+    private Long productAttributeId;
 
-    private Long product_attribute_group_id;
+    private Long productAttributeGroupId;
 }
