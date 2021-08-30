@@ -105,6 +105,22 @@ public class PmsProductAttributeGroupServiceImpl implements PmsProductAttributeG
         return attributeGroup;
     }
 
+    @Override
+    public List<PmsProductAttributeGroup> getAttributeGroupsByCategoryId(Long categoryId) {
+        QueryWrapper<PmsProductAttributeGroup> queryWrapper = new QueryWrapper<PmsProductAttributeGroup>()
+                .eq("category_id", categoryId);
+        return groupMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<Long> getAttachAttributeIdsByGroupIds(List<Long> attributeGroupIds) {
+        // 查询与该group绑定的属性Id
+        QueryWrapper<PmsProductAttributeAttributeGroup> queryWrapper = new QueryWrapper<PmsProductAttributeAttributeGroup>()
+                .in("product_attribute_group_id", attributeGroupIds).select("product_attribute_id");
+        return attributeAttributeGroupMapper.selectList(queryWrapper).stream()
+                .map(PmsProductAttributeAttributeGroup::getProductAttributeId).collect(Collectors.toList());
+    }
+
     public PmsProductAttributeGroup getGroupFromRedisById(Long id) {
         Object redisObj = redisUtil.get(String.format(ProductConstant.REDIS_PRODUCT_ATTRIBUTE_GROUP_FORMAT, id));
         return redisObj != null ? JSON.parseObject(redisObj.toString(), PmsProductAttributeGroup.class) : null;

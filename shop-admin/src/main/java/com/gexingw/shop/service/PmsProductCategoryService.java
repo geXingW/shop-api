@@ -2,8 +2,11 @@ package com.gexingw.shop.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.gexingw.shop.bo.pms.PmsProductAttribute;
+import com.gexingw.shop.bo.pms.PmsProductAttributeGroup;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
+import com.gexingw.shop.vo.pms.PmsProductCategoryAttributeVO;
 import com.gexingw.shop.vo.pms.ProductCategoryTreeVO;
 
 import java.util.List;
@@ -42,4 +45,6 @@ public interface PmsProductCategoryService {
     List<ProductCategoryTreeVO> getCategoryTreeFromRedis();
 
     void delCategoryTreeFromRedis();
+
+    PmsProductCategoryAttributeVO.Attribute getFormatCategoryAttributeVO(PmsProductAttribute saleAttribute);
 }

@@ -1,4 +1,4 @@
-package com.gexingw.shop.controller;
+package com.gexingw.shop.controller.pms;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

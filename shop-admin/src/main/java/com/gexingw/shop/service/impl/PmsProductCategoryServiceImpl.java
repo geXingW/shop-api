@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.gexingw.shop.bo.pms.PmsProductAttribute;
+import com.gexingw.shop.bo.pms.PmsProductAttributeGroup;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.constant.AdminConstant;
 import com.gexingw.shop.constant.ProductConstant;
@@ -14,6 +16,7 @@ import com.gexingw.shop.mapper.UploadMapper;
 import com.gexingw.shop.service.PmsProductCategoryService;
 import com.gexingw.shop.service.UploadService;
 import com.gexingw.shop.utils.RedisUtil;
+import com.gexingw.shop.vo.pms.PmsProductCategoryAttributeVO;
 import com.gexingw.shop.vo.pms.ProductCategoryTreeVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +107,7 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         return redisUtil.set(String.format(ProductConstant.REDIS_PRODUCT_CATEGORY_FORMAT, id), productCategory);
     }
 
-    public void delProductCategoryRedisById(Long id){
+    public void delProductCategoryRedisById(Long id) {
         redisUtil.del(String.format(ProductConstant.REDIS_PRODUCT_CATEGORY_FORMAT, id));
     }
 
@@ -227,5 +230,17 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     @Override
     public void delCategoryTreeFromRedis() {
         redisUtil.del(ProductConstant.REDIS_PRODUCT_CATEGORY_TREE);
+    }
+
+    @Override
+    public PmsProductCategoryAttributeVO.Attribute getFormatCategoryAttributeVO(PmsProductAttribute saleAttribute) {
+        PmsProductCategoryAttributeVO.Attribute attribute = new PmsProductCategoryAttributeVO.Attribute();
+        attribute.setAttributeId(saleAttribute.getId());
+        attribute.setAttributeName(saleAttribute.getName());
+        attribute.setAttributeType(saleAttribute.getType());
+        attribute.setInputType(saleAttribute.getInputType());
+        attribute.setInputValue(saleAttribute.getInputValue());
+
+        return attribute;
     }
 }

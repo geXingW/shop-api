@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.pms.PmsProductAttribute;
 import com.gexingw.shop.dto.product.PmsProductAttributeRequestParam;
+import com.gexingw.shop.vo.pms.PmsProductCategoryAttributeVO;
 
+import java.util.List;
 import java.util.Set;
 
 public interface PmsProductAttributeService {
@@ -19,4 +21,6 @@ public interface PmsProductAttributeService {
     PmsProductAttribute findById(Long id);
 
     boolean deleteByIds(Set<Long> ids);
+
+    List<PmsProductAttribute> getAttributesByTypeAndIds(Integer type, List<Long> ids);
 }

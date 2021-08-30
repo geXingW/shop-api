@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -48,5 +49,11 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
     @Override
     public boolean deleteByIds(Set<Long> ids) {
         return attributeMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public List<PmsProductAttribute> getAttributesByTypeAndIds(Integer type, List<Long> ids) {
+        QueryWrapper<PmsProductAttribute> queryWrapper = new QueryWrapper<PmsProductAttribute>().eq("type", type).in("id", ids);
+        return attributeMapper.selectList(queryWrapper);
     }
 }

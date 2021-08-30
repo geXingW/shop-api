@@ -1,27 +1,36 @@
-package com.gexingw.shop.controller;
+package com.gexingw.shop.controller.pms;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gexingw.shop.bo.pms.PmsProductAttribute;
+import com.gexingw.shop.bo.pms.PmsProductAttributeGroup;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.dto.product.PmsProductCategoryRequestParam;
 import com.gexingw.shop.dto.product.PmsProductCategorySearchParam;
+import com.gexingw.shop.enums.PmsProductAttributeTypeEnum;
 import com.gexingw.shop.enums.RespCode;
+import com.gexingw.shop.service.PmsProductAttributeService;
 import com.gexingw.shop.service.PmsProductCategoryService;
 import com.gexingw.shop.service.UploadService;
 import com.gexingw.shop.service.impl.CommonServiceImpl;
+import com.gexingw.shop.service.pms.PmsProductAttributeGroupService;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
+import com.gexingw.shop.vo.pms.PmsProductAttributeGroupVO;
+import com.gexingw.shop.vo.pms.PmsProductCategoryAttributeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("product/category")
@@ -29,6 +38,12 @@ public class ProductCategoryController {
 
     @Autowired
     PmsProductCategoryService categoryService;
+
+    @Autowired
+    PmsProductAttributeGroupService attributeGroupService;
+
+    @Autowired
+    PmsProductAttributeService attributeService;
 
     @Autowired
     CommonServiceImpl commonService;
@@ -191,5 +206,41 @@ public class ProductCategoryController {
         }
 
         return R.ok("已更新！");
+    }
+
+    @GetMapping("attribute")
+    public R attribute(PmsProductCategorySearchParam searchParam) {
+        PmsProductCategory productCategory = categoryService.getById(searchParam.getCategoryId());
+        if (productCategory == null) {
+            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到该分类!");
+        }
+
+        PmsProductCategoryAttributeVO productCategoryAttributeVO = new PmsProductCategoryAttributeVO();
+        productCategoryAttributeVO.setCategoryId(productCategory.getId());
+        productCategoryAttributeVO.setCategoryName(productCategory.getName());
+
+        List<PmsProductAttributeGroup> attributeGroups = attributeGroupService.getAttributeGroupsByCategoryId(searchParam.getCategoryId());
+        List<Long> attributeGroupIds = attributeGroups.stream().map(PmsProductAttributeGroup::getId).collect(Collectors.toList());
+        List<Long> attachAttributeIds = attributeGroupService.getAttachAttributeIdsByGroupIds(attributeGroupIds);
+
+        for (PmsProductAttributeGroup attributeGroup : attributeGroups) {
+            PmsProductCategoryAttributeVO.Group group = new PmsProductCategoryAttributeVO.Group(attributeGroup.getId(), attributeGroup.getName());
+
+            // 基本属性
+            List<PmsProductAttribute> baseAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.BASE_ATTRIBUTE.getCode(), attachAttributeIds);
+            for (PmsProductAttribute baseAttribute : baseAttributes) {
+                group.baseAttributes.add(categoryService.getFormatCategoryAttributeVO(baseAttribute));
+            }
+
+            // 销售属性
+            List<PmsProductAttribute> saleAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.SALE_ATTRIBUTE.getCode(), attachAttributeIds);
+            for (PmsProductAttribute saleAttribute : saleAttributes) {
+                group.saleAttributes.add(categoryService.getFormatCategoryAttributeVO(saleAttribute));
+            }
+
+            productCategoryAttributeVO.groups.add(group);
+        }
+
+        return R.ok(productCategoryAttributeVO);
     }
 }

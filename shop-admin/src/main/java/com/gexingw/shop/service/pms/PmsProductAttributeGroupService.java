@@ -28,4 +28,8 @@ public interface PmsProductAttributeGroupService {
     boolean detachAttributeToGroup(Long groupId, Set<Long> attributeIds);
 
     PmsProductAttributeGroup findById(Long id);
+
+    List<PmsProductAttributeGroup> getAttributeGroupsByCategoryId(Long categoryId);
+
+    List<Long> getAttachAttributeIdsByGroupIds(List<Long> attributeGroupIds);
 }
