@@ -14,23 +14,29 @@ public class PmsProductCategoryAttributeVO {
 
     private String categoryName;
 
-    public List<Group> groups = new ArrayList<>();
+//    public List<Attribute> attributes = new ArrayList<>();
 
-    @Data
-    public static class Group {
-        private Long groupId;
+    public List<Attribute> baseAttributes = new ArrayList<>();
 
-        private String groupName;
+    public List<Attribute> saleAttributes = new ArrayList<>();
 
-        public List<Attribute> baseAttributes = new ArrayList<>();
-
-        public List<Attribute> saleAttributes = new ArrayList<>();
-
-        public Group(Long groupId, String groupName) {
-            this.groupId = groupId;
-            this.groupName = groupName;
-        }
-    }
+//    public List<Group> groups = new ArrayList<>();
+//
+//    @Data
+//    public static class Group {
+//        private Long groupId;
+//
+//        private String groupName;
+//
+//        public List<Attribute> baseAttributes = new ArrayList<>();
+//
+//        public List<Attribute> saleAttributes = new ArrayList<>();
+//
+//        public Group(Long groupId, String groupName) {
+//            this.groupId = groupId;
+//            this.groupName = groupName;
+//        }
+//    }
 
     @Data
     @AllArgsConstructor

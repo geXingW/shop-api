@@ -118,7 +118,7 @@ public class PmsProductAttributeGroupServiceImpl implements PmsProductAttributeG
         QueryWrapper<PmsProductAttributeAttributeGroup> queryWrapper = new QueryWrapper<PmsProductAttributeAttributeGroup>()
                 .in("product_attribute_group_id", attributeGroupIds).select("product_attribute_id");
         return attributeAttributeGroupMapper.selectList(queryWrapper).stream()
-                .map(PmsProductAttributeAttributeGroup::getProductAttributeId).collect(Collectors.toList());
+                .map(PmsProductAttributeAttributeGroup::getProductAttributeId).distinct().collect(Collectors.toList());
     }
 
     public PmsProductAttributeGroup getGroupFromRedisById(Long id) {

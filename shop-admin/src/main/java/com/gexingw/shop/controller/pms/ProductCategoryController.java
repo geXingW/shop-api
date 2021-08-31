@@ -221,25 +221,43 @@ public class ProductCategoryController {
 
         List<PmsProductAttributeGroup> attributeGroups = attributeGroupService.getAttributeGroupsByCategoryId(searchParam.getCategoryId());
         List<Long> attributeGroupIds = attributeGroups.stream().map(PmsProductAttributeGroup::getId).collect(Collectors.toList());
+
+        // 如果该分类下没有属性组，也就没有绑定属性，直接返回空集合
+        if(attributeGroupIds.size() == 0){
+            return R.ok(productCategoryAttributeVO);
+        }
+
         List<Long> attachAttributeIds = attributeGroupService.getAttachAttributeIdsByGroupIds(attributeGroupIds);
 
-        for (PmsProductAttributeGroup attributeGroup : attributeGroups) {
-            PmsProductCategoryAttributeVO.Group group = new PmsProductCategoryAttributeVO.Group(attributeGroup.getId(), attributeGroup.getName());
-
-            // 基本属性
-            List<PmsProductAttribute> baseAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.BASE_ATTRIBUTE.getCode(), attachAttributeIds);
-            for (PmsProductAttribute baseAttribute : baseAttributes) {
-                group.baseAttributes.add(categoryService.getFormatCategoryAttributeVO(baseAttribute));
-            }
-
-            // 销售属性
-            List<PmsProductAttribute> saleAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.SALE_ATTRIBUTE.getCode(), attachAttributeIds);
-            for (PmsProductAttribute saleAttribute : saleAttributes) {
-                group.saleAttributes.add(categoryService.getFormatCategoryAttributeVO(saleAttribute));
-            }
-
-            productCategoryAttributeVO.groups.add(group);
+        // 基本属性
+        List<PmsProductAttribute> attachedBaseAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.BASE_ATTRIBUTE.getCode(), attachAttributeIds);
+        for (PmsProductAttribute attachedBaseAttribute : attachedBaseAttributes) {
+            productCategoryAttributeVO.baseAttributes.add(categoryService.getFormatCategoryAttributeVO(attachedBaseAttribute));
         }
+
+        // 销售属性
+        List<PmsProductAttribute> attachedSaleAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.SALE_ATTRIBUTE.getCode(), attachAttributeIds);
+        for (PmsProductAttribute attachedSaleAttribute : attachedSaleAttributes) {
+            productCategoryAttributeVO.saleAttributes.add(categoryService.getFormatCategoryAttributeVO(attachedSaleAttribute));
+        }
+//
+//        for (PmsProductAttributeGroup attributeGroup : attributeGroups) {
+//            PmsProductCategoryAttributeVO.Group group = new PmsProductCategoryAttributeVO.Group(attributeGroup.getId(), attributeGroup.getName());
+//
+//            // 基本属性
+//            List<PmsProductAttribute> baseAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.BASE_ATTRIBUTE.getCode(), attachAttributeIds);
+//            for (PmsProductAttribute baseAttribute : baseAttributes) {
+//                group.baseAttributes.add(categoryService.getFormatCategoryAttributeVO(baseAttribute));
+//            }
+//
+//            // 销售属性
+//            List<PmsProductAttribute> saleAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.SALE_ATTRIBUTE.getCode(), attachAttributeIds);
+//            for (PmsProductAttribute saleAttribute : saleAttributes) {
+//                group.saleAttributes.add(categoryService.getFormatCategoryAttributeVO(saleAttribute));
+//            }
+//
+//            productCategoryAttributeVO.groups.add(group);
+//        }
 
         return R.ok(productCategoryAttributeVO);
     }
