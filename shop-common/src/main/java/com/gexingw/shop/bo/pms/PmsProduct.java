@@ -12,6 +12,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("pms_products")
@@ -45,6 +46,13 @@ public class PmsProduct {
 
     private String isRecommend; // 推荐
 
+    @TableField(value = "detail_pc_html")
+    private String detailPCHtml; // PC端详情显示
+
+    private String detailMobileHtml; // 手机端详情显示
+
+    private String albumPics; // 商品相册
+
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
@@ -59,5 +67,9 @@ public class PmsProduct {
                 .eq("upload_type", UploadConstant.UPLOAD_TYPE_PRODUCT));
 
         return upload != null ? upload.getFullUrl() : "";
+    }
+
+    public void setAlbumPics(List<String> pics) {
+        this.albumPics = String.join(",", pics);
     }
 }

@@ -6,9 +6,11 @@ import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.mapper.pms.PmsProductMapper;
 import com.gexingw.shop.service.PmsProductService;
+import com.gexingw.shop.service.pms.PmsProductAttributeValueService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -17,22 +19,33 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Autowired
     PmsProductMapper productMapper;
 
+    @Autowired
+    PmsProductAttributeValueService attributeValueService;
+
     @Override
     public IPage<PmsProduct> search(QueryWrapper<PmsProduct> queryWrapper, IPage<PmsProduct> page) {
         return productMapper.selectPage(page, queryWrapper);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long save(PmsProductRequestParam requestParam) {
         PmsProduct product = new PmsProduct();
 
         BeanUtils.copyProperties(requestParam, product);
+        product.setAlbumPics(requestParam.getPics());   // 相册
 
         if (productMapper.insert(product) <= 0) {
             return null;
         }
 
-        return product.getId();
+        Long productId = product.getId();   // 新的商品ID
+
+        if(!attributeValueService.save(productId, requestParam.getAttributeList())){
+            throw new RuntimeException("商品基本属性保存失败!");
+        }
+
+        return productId;
     }
 
     @Override

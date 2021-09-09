@@ -38,7 +38,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 从Header中获取Token
         String authToken = jwtTokenUtil.getAuthToken(request);
-        if (authToken == null || request.getRequestURI().contains("/auth/captcha")) {
+        if(authToken == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String requestURI = request.getRequestURI();
+        if (requestURI.contains("/auth/captcha")) {
             filterChain.doFilter(request, response);
             return;
         }

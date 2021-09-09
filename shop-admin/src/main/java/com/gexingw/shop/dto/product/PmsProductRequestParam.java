@@ -3,6 +3,8 @@ package com.gexingw.shop.dto.product;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class PmsProductRequestParam {
@@ -17,7 +19,7 @@ public class PmsProductRequestParam {
 
     private Long categoryId;
 
-    private String onSale;
+    private Integer sort;
 
     private BigDecimal price;
 
@@ -27,7 +29,19 @@ public class PmsProductRequestParam {
 
     private Integer lowStock; // 预警库存
 
-    private String unit; // 单位
+    private String unit;
+
+    private String detailPCHtml;
+
+    private String detailMobileHtml;
+
+    private List<String> pics = new ArrayList<>();
+
+    private List<SKU> skuList = new ArrayList<>();
+
+    private List<Attribute> attributeList = new ArrayList<>();
+
+    private String onSale;
 
     private String keywords;
 
@@ -36,4 +50,24 @@ public class PmsProductRequestParam {
     private String isNew;  // 新品
 
     private String isRecommend; // 推荐
+
+    @Data
+    public static class SKU {
+        private BigDecimal price;
+
+        private Integer stock;
+
+        private BigDecimal originPrice;
+
+        private List<Attribute> sku = new ArrayList<>();
+    }
+
+    @Data
+    public static class Attribute {
+        private Long id;
+
+        private String name;
+
+        private String value;
+    }
 }

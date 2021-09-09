@@ -53,12 +53,12 @@ public class ProductController {
         }
 
         // 新品推荐
-        if(searchParam.getIsNew() != null){
+        if (searchParam.getIsNew() != null) {
             queryWrapper.eq("is_new", searchParam.getIsNew());
         }
 
         // 商品推荐
-        if(searchParam.getIsRecommend() != null){
+        if (searchParam.getIsRecommend() != null) {
             queryWrapper.eq("is_recommend", searchParam.getIsRecommend());
         }
 
@@ -70,6 +70,8 @@ public class ProductController {
 
     @PostMapping
     public R add(@RequestBody PmsProductRequestParam requestParam) {
+//        System.out.println(requestParam);
+//        return R.ok(requestParam);
         Long productId = productService.save(requestParam);
         if (productId == null) {
             return R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
@@ -81,6 +83,10 @@ public class ProductController {
         }
 
         // 将商品与图片进行绑定
+        if (requestParam.getPic().isEmpty()) {
+            return R.ok("已添加！");
+        }
+
         SysUpload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
 
         return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
