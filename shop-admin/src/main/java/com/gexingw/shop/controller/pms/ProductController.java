@@ -16,6 +16,7 @@ import com.gexingw.shop.service.UploadService;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -69,27 +70,27 @@ public class ProductController {
     }
 
     @PostMapping
-    public R add(@RequestBody PmsProductRequestParam requestParam) {
-//        System.out.println(requestParam);
-//        return R.ok(requestParam);
-        Long productId = productService.save(requestParam);
-        if (productId == null) {
-            return R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
-        }
-
-        // 更新商品分类的商品数量
-        if (!categoryService.incrProductCntByCategoryId(requestParam.getCategoryId())) {
-            return R.ok(RespCode.UPDATE_FAILURE.getCode(), "商品分类商品数更新失败！");
-        }
-
-        // 将商品与图片进行绑定
-        if (requestParam.getPic().isEmpty()) {
-            return R.ok("已添加！");
-        }
-
-        SysUpload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
-
-        return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
+    public R add(@Validated @RequestBody PmsProductRequestParam requestParam) {
+        System.out.println(requestParam);
+        return R.ok(requestParam);
+//        Long productId = productService.save(requestParam);
+//        if (productId == null) {
+//            return R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
+//        }
+//
+//        // 更新商品分类的商品数量
+//        if (!categoryService.incrProductCntByCategoryId(requestParam.getCategoryId())) {
+//            return R.ok(RespCode.UPDATE_FAILURE.getCode(), "商品分类商品数更新失败！");
+//        }
+//
+//        // 将商品与图片进行绑定
+//        if (requestParam.getPic().isEmpty()) {
+//            return R.ok("已添加！");
+//        }
+//
+//        SysUpload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
+//
+//        return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
     }
 
     @PutMapping

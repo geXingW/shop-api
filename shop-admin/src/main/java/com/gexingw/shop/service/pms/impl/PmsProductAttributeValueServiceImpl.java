@@ -21,10 +21,15 @@ public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeV
     public boolean save(Long productId, List<PmsProductRequestParam.Attribute> attributeList) {
         ArrayList<Map<String, Object>> list = new ArrayList<>();
         for (PmsProductRequestParam.Attribute attribute : attributeList) {
+            String attributeValue = attribute.getValue();
+            if(attributeValue ==null || attributeValue.isEmpty()) { // 属性值为空的属性无需存储，亦不进行展示
+                continue;
+            }
+
             HashMap<String, Object> item = new HashMap<>();
             item.put("productId", productId);
             item.put("attributeId", attribute.getId());
-            item.put("attributeValue", attribute.getValue());
+            item.put("attributeValue", attributeValue);
 
             list.add(item);
         }
