@@ -3,6 +3,8 @@ package com.gexingw.shop.controller.pms;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gexingw.shop.bo.pms.PmsProductAttribute;
+import com.gexingw.shop.bo.pms.PmsProductAttributeValue;
 import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
@@ -10,17 +12,23 @@ import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.dto.product.PmsProductSearchParam;
 import com.gexingw.shop.enums.RespCode;
+import com.gexingw.shop.service.PmsProductAttributeService;
 import com.gexingw.shop.service.PmsProductCategoryService;
 import com.gexingw.shop.service.PmsProductService;
 import com.gexingw.shop.service.UploadService;
+import com.gexingw.shop.service.pms.PmsProductAttributeValueService;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
+import com.gexingw.shop.vo.pms.PmsProductInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("product")
@@ -31,6 +39,12 @@ public class ProductController {
 
     @Autowired
     PmsProductCategoryService categoryService;
+
+    @Autowired
+    PmsProductAttributeService attributeService;
+
+    @Autowired
+    PmsProductAttributeValueService attributeValueService;
 
     @Autowired
     UploadService uploadService;
@@ -69,28 +83,48 @@ public class ProductController {
         return R.ok(PageUtil.format(productService.search(queryWrapper, page)));
     }
 
+    @GetMapping("/{id}")
+    public R show(@PathVariable Long id) {
+        PmsProduct product = productService.getById(id);
+
+        PmsProductInfoVO productInfoVO = new PmsProductInfoVO();
+        productInfoVO.setProductInfo(product);
+
+        // 属性值
+        List<PmsProductAttributeValue> attributeValues = attributeValueService.getAttributeValuesByPid(id);
+
+        // 根据所有的属性值获取属性属性信息
+        List<Long> attributeIds = attributeValues.stream().map(PmsProductAttributeValue::getProductAttributeId).collect(Collectors.toList());
+        Map<Long, PmsProductAttribute> attributes = attributeService.getAttrsMapKeyByAttrIdByAttrIds(attributeIds);
+
+        ArrayList<PmsProductInfoVO.SkuListItem> skuListItem = new ArrayList<PmsProductInfoVO.SkuListItem>();
+        for (PmsProductAttributeValue attributeValue : attributeValues) {
+
+        }
+
+        return R.ok(productInfoVO);
+    }
+
     @PostMapping
     public R add(@Validated @RequestBody PmsProductRequestParam requestParam) {
-        System.out.println(requestParam);
-        return R.ok(requestParam);
-//        Long productId = productService.save(requestParam);
-//        if (productId == null) {
-//            return R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
-//        }
-//
-//        // 更新商品分类的商品数量
-//        if (!categoryService.incrProductCntByCategoryId(requestParam.getCategoryId())) {
-//            return R.ok(RespCode.UPDATE_FAILURE.getCode(), "商品分类商品数更新失败！");
-//        }
-//
-//        // 将商品与图片进行绑定
-//        if (requestParam.getPic().isEmpty()) {
-//            return R.ok("已添加！");
-//        }
-//
-//        SysUpload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
-//
-//        return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
+        Long productId = productService.save(requestParam);
+        if (productId == null) {
+            return R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
+        }
+
+        // 更新商品分类的商品数量
+        if (!categoryService.incrProductCntByCategoryId(requestParam.getCategoryId())) {
+            return R.ok(RespCode.UPDATE_FAILURE.getCode(), "商品分类商品数更新失败！");
+        }
+
+        // 将商品与图片进行绑定
+        if (requestParam.getPic().isEmpty()) {
+            return R.ok("已添加！");
+        }
+
+        SysUpload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
+
+        return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
     }
 
     @PutMapping
@@ -119,10 +153,10 @@ public class ProductController {
         // 更新商品图片
         if (!product.getPic().equals(requestParam.getPic())) {
             // 删除旧图片
-            uploadService.detachSourcePic(product.getId(), UploadConstant.UPLOAD_TYPE_PRODUCT);
+            uploadService.detachSourcePic(Long.valueOf(product.getId()), UploadConstant.UPLOAD_TYPE_PRODUCT);
 
             // 绑定新图片
-            uploadService.attachPicToSource(product.getId(), UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
+            uploadService.attachPicToSource(Long.valueOf(product.getId()), UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
         }
 
         return R.ok("已更新！");

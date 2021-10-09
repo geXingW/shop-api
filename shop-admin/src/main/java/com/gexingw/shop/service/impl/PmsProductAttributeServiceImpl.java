@@ -12,7 +12,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -55,5 +57,16 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
     public List<PmsProductAttribute> getAttributesByTypeAndIds(Integer type, List<Long> ids) {
         QueryWrapper<PmsProductAttribute> queryWrapper = new QueryWrapper<PmsProductAttribute>().eq("type", type).in("id", ids);
         return attributeMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public Map<Long, PmsProductAttribute> getAttrsMapKeyByAttrIdByAttrIds(List<Long> attributeIds) {
+        List<PmsProductAttribute> productAttributes = attributeMapper.selectBatchIds(attributeIds);
+        HashMap<Long, PmsProductAttribute> attributeHashMap = new HashMap<>();
+        productAttributes.forEach( attribute -> {
+            attributeHashMap.put(attribute.getId(), attribute);
+        });
+
+        return attributeHashMap;
     }
 }

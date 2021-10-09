@@ -8,6 +8,7 @@ import com.gexingw.shop.dto.product.PmsProductAttributeRequestParam;
 import com.gexingw.shop.vo.pms.PmsProductCategoryAttributeVO;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface PmsProductAttributeService {
@@ -23,4 +24,6 @@ public interface PmsProductAttributeService {
     boolean deleteByIds(Set<Long> ids);
 
     List<PmsProductAttribute> getAttributesByTypeAndIds(Integer type, List<Long> ids);
+
+    Map<Long, PmsProductAttribute> getAttrsMapKeyByAttrIdByAttrIds(List<Long> attributeIds);
 }

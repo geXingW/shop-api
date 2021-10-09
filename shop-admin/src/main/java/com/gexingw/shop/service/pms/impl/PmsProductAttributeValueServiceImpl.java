@@ -1,5 +1,7 @@
 package com.gexingw.shop.service.pms.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.gexingw.shop.bo.pms.PmsProductAttributeValue;
 import com.gexingw.shop.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.mapper.pms.PmsProductAttributeValueMapper;
 import com.gexingw.shop.service.pms.PmsProductAttributeValueService;
@@ -22,7 +24,7 @@ public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeV
         ArrayList<Map<String, Object>> list = new ArrayList<>();
         for (PmsProductRequestParam.Attribute attribute : attributeList) {
             String attributeValue = attribute.getValue();
-            if(attributeValue ==null || attributeValue.isEmpty()) { // 属性值为空的属性无需存储，亦不进行展示
+            if (attributeValue == null || attributeValue.isEmpty()) { // 属性值为空的属性无需存储，亦不进行展示
                 continue;
             }
 
@@ -35,6 +37,11 @@ public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeV
         }
 
         return valueMapper.batchSave(list) > 0;
+    }
+
+    @Override
+    public List<PmsProductAttributeValue> getAttributeValuesByPid(Long id) {
+        return valueMapper.selectList(new QueryWrapper<PmsProductAttributeValue>().eq("product_id", id));
     }
 
     private boolean delProductAttributeValues(Long productId) {

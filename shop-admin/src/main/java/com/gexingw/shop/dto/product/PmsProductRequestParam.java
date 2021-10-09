@@ -30,11 +30,11 @@ public class PmsProductRequestParam {
     private Integer sort;
 
     @DecimalMin("0.01")
-    @DecimalMax("10000000.01")
+    @DecimalMax("10000000")
     private BigDecimal price;
 
     @DecimalMin("0.01")
-    @DecimalMax("10000000.01")
+    @DecimalMax("10000000")
     private BigDecimal originalPrice;
 
     @Range(min = 1L, max = 10000000L)
@@ -52,7 +52,7 @@ public class PmsProductRequestParam {
     @Size(min = 1, max = 5)
     private List<String> pics = new ArrayList<>();
 
-    private List<SKU> skuList = new ArrayList<>();
+    private List<Sku> skuList = new ArrayList<>();
 
     private List<Attribute> attributeList = new ArrayList<>();
 
@@ -67,10 +67,12 @@ public class PmsProductRequestParam {
     private String isRecommend; // 推荐
 
     @Data
-    public static class SKU {
+    public static class Sku {
         private BigDecimal price;
 
         private Integer stock;
+
+        private Integer lowStock;
 
         private BigDecimal originPrice;
 

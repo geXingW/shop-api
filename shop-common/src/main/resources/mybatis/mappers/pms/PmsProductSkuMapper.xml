@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gexingw.shop.mapper.PmsProductSkuMapper">
+    <insert id="batchInsert">
+        insert into pms_product_sku (product_id, price, stock, low_stock, sp_data) VALUES
+        <foreach collection="productSkuList" item="productSku" separator=",">
+            ( #{productSku.productId}, #{productSku.price}, #{productSku.stock}, #{productSku.lowStock}, #{productSku.spData})
+        </foreach>
+    </insert>
+</mapper>

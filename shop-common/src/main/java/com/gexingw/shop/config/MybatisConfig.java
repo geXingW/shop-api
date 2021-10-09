@@ -7,11 +7,16 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.gexingw.shop.component.MybatisMetaObjectHandler;
 import com.gexingw.shop.component.MybatisInterceptor;
+import com.gexingw.shop.utils.IdGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MybatisConfig {
+
+    @Autowired
+    IdGenerator idGenerator;
 
     /**
      * 自动填充
@@ -22,6 +27,8 @@ public class MybatisConfig {
     public GlobalConfig globalConfig() {
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setMetaObjectHandler(new MybatisMetaObjectHandler());
+        globalConfig.setIdentifierGenerator(idGenerator);
+
         return globalConfig;
     }
 

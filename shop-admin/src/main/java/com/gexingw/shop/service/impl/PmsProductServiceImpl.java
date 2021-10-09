@@ -3,15 +3,19 @@ package com.gexingw.shop.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.pms.PmsProduct;
+import com.gexingw.shop.bo.pms.PmsProductAttribute;
 import com.gexingw.shop.dto.product.PmsProductRequestParam;
+import com.gexingw.shop.exception.DBOperationException;
 import com.gexingw.shop.mapper.pms.PmsProductMapper;
 import com.gexingw.shop.service.PmsProductService;
 import com.gexingw.shop.service.pms.PmsProductAttributeValueService;
+import com.gexingw.shop.service.pms.PmsProductSkuService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -21,6 +25,9 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Autowired
     PmsProductAttributeValueService attributeValueService;
+
+    @Autowired
+    PmsProductSkuService productSkuService;
 
     @Override
     public IPage<PmsProduct> search(QueryWrapper<PmsProduct> queryWrapper, IPage<PmsProduct> page) {
@@ -39,10 +46,14 @@ public class PmsProductServiceImpl implements PmsProductService {
             return null;
         }
 
-        Long productId = product.getId();   // 新的商品ID
+        Long productId = Long.valueOf(product.getId());   // 新的商品ID
+        if (!attributeValueService.save(productId, requestParam.getAttributeList())) {
+            throw new DBOperationException("商品基本属性保存失败!");
+        }
 
-        if(!attributeValueService.save(productId, requestParam.getAttributeList())){
-            throw new RuntimeException("商品基本属性保存失败!");
+        // 保存商品Sku信息
+        if (!productSkuService.save(productId, requestParam.getSkuList())) {
+            throw new DBOperationException("商品Sku信息保存失败！");
         }
 
         return productId;
@@ -69,4 +80,5 @@ public class PmsProductServiceImpl implements PmsProductService {
     public boolean delete(Set<Long> ids) {
         return productMapper.deleteBatchIds(ids) > 0;
     }
+
 }

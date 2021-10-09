@@ -33,15 +33,15 @@ public class OrderController {
 
         ArrayList<OrderListVO> orderListVOS = new ArrayList<>();
         for (OmsOrder record : searchResultRecords) {
-            OrderListVO orderListVO = new OrderListVO(record.getId(), record.getMemberId(), record.getTotalAmount(), record.getItemAmount(),
+            OrderListVO orderListVO = new OrderListVO(Long.valueOf(record.getId()), record.getMemberId(), record.getTotalAmount(), record.getItemAmount(),
                     record.getFreightAmount(), record.getPayType(), record.getSourceType(), record.getSourceType(), record.getStatus(),
                     record.getNote(), record.getCreateTime(), record.getUpdateTime());
 
             // 订单商品详情
-            orderListVO.setItems(orderService.getOrderItemDetailsByOrderId(record.getId()));
+            orderListVO.setItems(orderService.getOrderItemDetailsByOrderId(Long.valueOf(record.getId())));
 
             // 订单收货地址
-            orderListVO.setRecvAddress(orderService.getOrderRecvAddressByOrderId(record.getId()));
+            orderListVO.setRecvAddress(orderService.getOrderRecvAddressByOrderId(Long.valueOf(record.getId())));
 
             orderListVOS.add(orderListVO);
         }

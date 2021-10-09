@@ -18,7 +18,7 @@ import java.util.List;
 @TableName("pms_products")
 public class PmsProduct {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     private String title;
 
@@ -30,9 +30,18 @@ public class PmsProduct {
 
     private String onSale;
 
-    private BigDecimal price;
+    // 销售价
+    private BigDecimal salePrice;
 
+    // 市场价
     private BigDecimal originalPrice;
+
+    // 促销价
+    private BigDecimal promotionPrice;
+
+    private Integer sort;
+
+    private Integer saleCnt;
 
     private Integer stock;  // 库存
 
@@ -72,4 +81,5 @@ public class PmsProduct {
     public void setAlbumPics(List<String> pics) {
         this.albumPics = String.join(",", pics);
     }
+
 }

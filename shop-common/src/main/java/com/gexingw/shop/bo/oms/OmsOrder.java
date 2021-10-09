@@ -15,7 +15,7 @@ import java.util.Date;
 public class OmsOrder {
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private String id;
 
     private Long memberId;
 

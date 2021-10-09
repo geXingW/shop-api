@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Data
 public class OmsOrderItem {
-    private Long orderId;
+    private String orderId;
 
     private Long orderItemDetailId;
 
