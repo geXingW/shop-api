@@ -10,6 +10,8 @@ import java.util.List;
 
 @Data
 public class PmsProductInfoVO {
+    private String id;
+
     private String title;
 
     private String subTitle;
@@ -56,9 +58,11 @@ public class PmsProductInfoVO {
 
         private Integer stock;
 
+        private Integer lowStock;
+
         private BigDecimal originPrice;
 
-        private SkuItem sku;
+        private List<SkuItem> sku;
     }
 
     @Data

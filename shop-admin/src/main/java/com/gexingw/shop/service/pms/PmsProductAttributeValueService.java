@@ -11,4 +11,6 @@ public interface PmsProductAttributeValueService {
     List<PmsProductAttributeValue> getAttributeValuesByPid(Long id);
 
     boolean delProductAttributesByPid(Long productId);
+
+    boolean updateAttributeNameByAttributeId(Long attributeId, String attributeName);
 }

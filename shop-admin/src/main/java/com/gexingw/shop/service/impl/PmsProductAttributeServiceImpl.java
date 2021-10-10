@@ -5,11 +5,15 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.pms.PmsProductAttribute;
 import com.gexingw.shop.dto.product.PmsProductAttributeRequestParam;
+import com.gexingw.shop.exception.DBOperationException;
 import com.gexingw.shop.mapper.pms.PmsProductAttributeMapper;
 import com.gexingw.shop.service.PmsProductAttributeService;
+import com.gexingw.shop.service.pms.PmsProductAttributeValueService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -21,6 +25,9 @@ import java.util.Set;
 public class PmsProductAttributeServiceImpl implements PmsProductAttributeService {
     @Resource
     PmsProductAttributeMapper attributeMapper;
+
+    @Autowired
+    PmsProductAttributeValueService attributeValueService;
 
     @Override
     public IPage<PmsProductAttribute> searchList(QueryWrapper<PmsProductAttribute> queryWrapper, Page<PmsProductAttribute> page) {
@@ -36,11 +43,26 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean update(PmsProductAttributeRequestParam requestParam) {
-        PmsProductAttribute productAttribute = new PmsProductAttribute();
-        BeanUtils.copyProperties(requestParam, productAttribute);
+        PmsProductAttribute productAttribute = attributeMapper.selectById(requestParam.getId());
 
-        return attributeMapper.updateById(productAttribute) > 0;
+        boolean nameChanged = !productAttribute.getName().equals(requestParam.getName());
+
+        // 更新属性信息
+        BeanUtils.copyProperties(requestParam, productAttribute);
+        if (attributeMapper.updateById(productAttribute) <= 0) {
+            throw new DBOperationException("商品属性信息更新失败！");
+        }
+
+        // 如果属性的名称没有改变，无需更新商品属性值表中的商品名称
+
+        // 更新商品属性值表中的商品属性
+        if (nameChanged && !attributeValueService.updateAttributeNameByAttributeId(requestParam.getId(), requestParam.getName())) {
+            throw new DBOperationException("商品属性值表商品属性名更新失败！");
+        }
+
+        return true;
     }
 
     @Override
@@ -63,7 +85,7 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
     public Map<Long, PmsProductAttribute> getAttrsMapKeyByAttrIdByAttrIds(List<Long> attributeIds) {
         List<PmsProductAttribute> productAttributes = attributeMapper.selectBatchIds(attributeIds);
         HashMap<Long, PmsProductAttribute> attributeHashMap = new HashMap<>();
-        productAttributes.forEach( attribute -> {
+        productAttributes.forEach(attribute -> {
             attributeHashMap.put(attribute.getId(), attribute);
         });
 

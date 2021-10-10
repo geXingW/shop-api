@@ -39,4 +39,9 @@ public class PmsProductSkuServiceImpl implements PmsProductSkuService {
     public boolean delProductAttributesByPid(Long productId) {
         return skuMapper.delete(new QueryWrapper<PmsProductSku>().eq("product_id", productId)) >= 0;
     }
+
+    @Override
+    public List<PmsProductSku> getSkuListByProductId(Long productId) {
+        return skuMapper.selectList(new QueryWrapper<PmsProductSku>().eq("product_id", productId));
+    }
 }

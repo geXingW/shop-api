@@ -5,6 +5,7 @@ import com.gexingw.shop.bo.pms.PmsProductAttributeValue;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -22,4 +23,7 @@ public interface PmsProductAttributeValueMapper extends BaseMapper<PmsProductAtt
 
     @Delete("DELETE FROM pms_product_attribute_value WHERE `product_id` = #{productId}")
     int deleteByProductId(Long productId);
+
+    @Update("UPDATE pms_product_attribute_value SET `product_attribute_name` = #{productAttributeName} WHERE `product_attribute_id` = #{productAttributeId}")
+    int updateAttributeNameByAttributeId(Long productAttributeId, String productAttributeName);
 }

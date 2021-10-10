@@ -36,7 +36,7 @@ public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeV
             list.add(item);
         }
 
-        return valueMapper.batchSave(list) == attributeList.size() ;
+        return valueMapper.batchSave(list) == attributeList.size();
     }
 
     @Override
@@ -47,6 +47,11 @@ public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeV
     @Override
     public boolean delProductAttributesByPid(Long productId) {
         return valueMapper.delete(new QueryWrapper<PmsProductAttributeValue>().eq("product_id", productId)) >= 0;
+    }
+
+    @Override
+    public boolean updateAttributeNameByAttributeId(Long attributeId, String attributeName) {
+        return valueMapper.updateAttributeNameByAttributeId(attributeId, attributeName) > 0;
     }
 
 }
