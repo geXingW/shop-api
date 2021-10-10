@@ -14,7 +14,7 @@ public interface PmsProductService {
 
     Long save(PmsProductRequestParam requestParam);
 
-    boolean update(PmsProductRequestParam requestParam);
+    boolean update(Long productId, PmsProductRequestParam requestParam);
 
     PmsProduct getById(Long id);
 

@@ -60,15 +60,39 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
-    public boolean update(PmsProductRequestParam requestParam) {
-        PmsProduct product = productMapper.selectById(requestParam.getId());
+    @Transactional(rollbackFor = Exception.class)
+    public boolean update(Long productId, PmsProductRequestParam requestParam) {
+        PmsProduct product = productMapper.selectById(productId);
         if (product == null) {
             return false;
         }
 
         BeanUtils.copyProperties(requestParam, product);
+        if (productMapper.updateById(product) <= 0) {
+            throw new DBOperationException("商品信息保存失败！");
+        }
 
-        return productMapper.updateById(product) > 0;
+        // 删除原有商品基本属性
+        if(!attributeValueService.delProductAttributesByPid(productId)){
+            throw new DBOperationException("原商品基本属性删除失败！");
+        }
+
+        // 保存新的商品基本属性
+        if(!attributeValueService.save(productId, requestParam.getAttributeList())){
+            throw new DBOperationException("商品基本属性保存失败！");
+        }
+
+        // 删除商品Sku信息
+        if(!productSkuService.delProductAttributesByPid(productId)){
+            throw new DBOperationException("原商品Sku信息删除失败！");
+        }
+
+        // 保存商品Sku信息
+        if(!productSkuService.save(productId, requestParam.getSkuList())){
+            throw new DBOperationException("商品Sku信息保存失败！");
+        }
+
+        return true;
     }
 
     @Override

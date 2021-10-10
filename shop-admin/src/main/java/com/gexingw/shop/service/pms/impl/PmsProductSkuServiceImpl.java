@@ -1,6 +1,7 @@
 package com.gexingw.shop.service.pms.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gexingw.shop.bo.pms.PmsProductSku;
 import com.gexingw.shop.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.mapper.PmsProductSkuMapper;
@@ -31,6 +32,11 @@ public class PmsProductSkuServiceImpl implements PmsProductSkuService {
             productSkuList.add(pmsProductSku);
         }
 
-        return skuMapper.batchInsert(productSkuList) > 0;
+        return skuMapper.batchInsert(productSkuList) == skuList.size();
+    }
+
+    @Override
+    public boolean delProductAttributesByPid(Long productId) {
+        return skuMapper.delete(new QueryWrapper<PmsProductSku>().eq("product_id", productId)) >= 0;
     }
 }

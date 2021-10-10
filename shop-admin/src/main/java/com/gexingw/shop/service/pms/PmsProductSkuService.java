@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PmsProductSkuService {
     boolean save(Long productId, List<PmsProductRequestParam.Sku> skuList);
+
+    boolean delProductAttributesByPid(Long productId);
 }

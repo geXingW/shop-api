@@ -127,15 +127,15 @@ public class ProductController {
         return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
     }
 
-    @PutMapping
-    public R update(@RequestBody PmsProductRequestParam requestParam) {
-        PmsProduct product = productService.getById(requestParam.getId());
+    @PutMapping("{id}")
+    public R update(@PathVariable("id") Long productId, @RequestBody PmsProductRequestParam requestParam) {
+        PmsProduct product = productService.getById(productId);
         if (product == null) {
             return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到商品信息！");
         }
 
         // 更新商品信息
-        if (!productService.update(requestParam)) {
+        if (!productService.update(productId, requestParam)) {
             return R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
         }
 
@@ -153,10 +153,10 @@ public class ProductController {
         // 更新商品图片
         if (!product.getPic().equals(requestParam.getPic())) {
             // 删除旧图片
-            uploadService.detachSourcePic(Long.valueOf(product.getId()), UploadConstant.UPLOAD_TYPE_PRODUCT);
+            uploadService.detachSourcePic(productId, UploadConstant.UPLOAD_TYPE_PRODUCT);
 
             // 绑定新图片
-            uploadService.attachPicToSource(Long.valueOf(product.getId()), UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
+            uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
         }
 
         return R.ok("已更新！");

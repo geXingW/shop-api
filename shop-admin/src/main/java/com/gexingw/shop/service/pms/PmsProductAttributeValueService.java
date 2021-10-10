@@ -9,4 +9,6 @@ public interface PmsProductAttributeValueService {
     boolean save(Long productId, List<PmsProductRequestParam.Attribute> attributeList);
 
     List<PmsProductAttributeValue> getAttributeValuesByPid(Long id);
+
+    boolean delProductAttributesByPid(Long productId);
 }
