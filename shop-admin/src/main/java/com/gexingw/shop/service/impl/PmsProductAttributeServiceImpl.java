@@ -83,11 +83,14 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
 
     @Override
     public Map<Long, PmsProductAttribute> getAttrsMapKeyByAttrIdByAttrIds(List<Long> attributeIds) {
-        List<PmsProductAttribute> productAttributes = attributeMapper.selectBatchIds(attributeIds);
         HashMap<Long, PmsProductAttribute> attributeHashMap = new HashMap<>();
-        productAttributes.forEach(attribute -> {
-            attributeHashMap.put(attribute.getId(), attribute);
-        });
+
+        if (!attributeIds.isEmpty()) {
+            List<PmsProductAttribute> productAttributes = attributeMapper.selectBatchIds(attributeIds);
+            productAttributes.forEach(attribute -> {
+                attributeHashMap.put(attribute.getId(), attribute);
+            });
+        }
 
         return attributeHashMap;
     }

@@ -8,10 +8,7 @@ import com.gexingw.shop.service.pms.PmsProductAttributeValueService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeValueService {
@@ -52,6 +49,11 @@ public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeV
     @Override
     public boolean updateAttributeNameByAttributeId(Long attributeId, String attributeName) {
         return valueMapper.updateAttributeNameByAttributeId(attributeId, attributeName) > 0;
+    }
+
+    @Override
+    public boolean batchDelProductAttributesByProductIds(Set<Long> ids) {
+        return valueMapper.delete(new QueryWrapper<PmsProductAttributeValue>().in("product_id", ids)) >= 0;
     }
 
 }

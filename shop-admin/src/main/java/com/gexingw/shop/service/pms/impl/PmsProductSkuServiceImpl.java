@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PmsProductSkuServiceImpl implements PmsProductSkuService {
@@ -43,5 +44,10 @@ public class PmsProductSkuServiceImpl implements PmsProductSkuService {
     @Override
     public List<PmsProductSku> getSkuListByProductId(Long productId) {
         return skuMapper.selectList(new QueryWrapper<PmsProductSku>().eq("product_id", productId));
+    }
+
+    @Override
+    public boolean batchDelProductSkuByProductIds(Set<Long> ids) {
+        return skuMapper.delete(new QueryWrapper<PmsProductSku>().in("product_id", ids)) >= 0;
     }
 }
