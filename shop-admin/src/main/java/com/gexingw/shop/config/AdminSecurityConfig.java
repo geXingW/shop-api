@@ -3,7 +3,7 @@ package com.gexingw.shop.config;
 import com.gexingw.shop.component.JwtAuthenticationTokenFilter;
 import com.gexingw.shop.component.RestAuthenticationEntryPoint;
 import com.gexingw.shop.component.RestfulAccessDeniedHandler;
-import com.gexingw.shop.service.UmsAdminService;
+import com.gexingw.shop.modules.ums.service.UmsAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

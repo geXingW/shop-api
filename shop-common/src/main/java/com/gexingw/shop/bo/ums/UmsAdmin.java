@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.constant.SystemConstant;
 import com.gexingw.shop.constant.UploadConstant;
-import com.gexingw.shop.mapper.UploadMapper;
+import com.gexingw.shop.mapper.sys.SysUploadMapper;
 import com.gexingw.shop.utils.SpringContextUtil;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -76,7 +76,7 @@ public class UmsAdmin {
     public String getAvatar() {
         QueryWrapper<SysUpload> queryWrapper = new QueryWrapper<SysUpload>().eq("upload_id", id)
                 .eq("upload_type", UploadConstant.UPLOAD_TYPE_ADMIN_AVATAR);
-        UploadMapper mapper = SpringContextUtil.getBean(UploadMapper.class);
+        SysUploadMapper mapper = SpringContextUtil.getBean(SysUploadMapper.class);
         SysUpload upload = mapper.selectOne(queryWrapper);
         if(upload == null){
            return null;

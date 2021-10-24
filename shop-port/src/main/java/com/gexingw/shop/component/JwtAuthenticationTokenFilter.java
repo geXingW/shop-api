@@ -1,7 +1,7 @@
 package com.gexingw.shop.component;
 
 import com.gexingw.shop.constant.AuthConstant;
-import com.gexingw.shop.service.AuthService;
+import com.gexingw.shop.modules.sys.service.AuthService;
 import com.gexingw.shop.util.JwtTokenUtil;
 import com.gexingw.shop.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.constant.SystemConstant;
 import com.gexingw.shop.constant.UploadConstant;
-import com.gexingw.shop.mapper.UploadMapper;
+import com.gexingw.shop.mapper.sys.SysUploadMapper;
 import com.gexingw.shop.utils.SpringContextUtil;
 import lombok.Data;
 
@@ -39,8 +39,8 @@ public class PmsBanner {
     private Date createTime;
 
     public String getPic() {
-        UploadMapper uploadMapper = SpringContextUtil.getBean(UploadMapper.class);
-        SysUpload upload = uploadMapper.selectOne(new QueryWrapper<SysUpload>().eq("upload_id", id)
+        SysUploadMapper sysUploadMapper = SpringContextUtil.getBean(SysUploadMapper.class);
+        SysUpload upload = sysUploadMapper.selectOne(new QueryWrapper<SysUpload>().eq("upload_id", id)
                 .eq("upload_type", UploadConstant.UPLOAD_TYPE_BANNER));
 
         return upload != null ? upload.getFullUrl() : "";

@@ -120,6 +120,16 @@
                 <artifactId>spring-security-oauth2-autoconfigure</artifactId>
                 <version>2.5.1</version>
             </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>3.4.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity-engine-core</artifactId>
+                <version>latest-velocity-version</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

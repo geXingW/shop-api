@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gexingw.shop.mapper.ums.UmsRoleMapper">
+    <!--    <select id="getById" resultType="com.gexingw.chdtadmin.bean.Member">-->
+    <!--        select * from ums_member where id = #{id}-->
+    <!--    </select>-->
+
+    <resultMap type="com.gexingw.shop.bo.ums.UmsRole" id="roleResultType">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="level" property="level"/>
+        <result column="description" property="description"/>
+        <result column="data_scope" property="dataScope"/>
+        <result column="create_by" property="createBy"/>
+    </resultMap>
+
+    <select id="getByIds" resultType="com.gexingw.shop.bo.ums.UmsRole">
+        select * from ums_roles where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryList" resultMap="roleResultType">
+        select id, name, level, description, data_scope, create_by, create_time
+        from ums_roles
+        <!--        <where>-->
+        <!--            -->
+        <!--        </where> -->
+    </select>
+    <select id="getRoleMenus" resultType="com.gexingw.shop.bo.ums.UmsMenu">
+        select um.*
+        from ums_roles_menus urm
+                 left join ums_menus um on um.id = urm.menu_id
+        where role_id = #{roleId}
+    </select>
+    <select id="getRoleDepts" resultType="com.gexingw.shop.bo.ums.UmsDept">
+        select ud.*
+        from ums_roles_depts urd
+                 left join ums_depts ud on ud.id = urd.dept_id
+        where role_id = #{roleId}
+    </select>
+</mapper>
