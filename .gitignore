@@ -41,5 +41,6 @@ resources/**/conf
 resources/**/data
 resources/**/html
 resources/**/log
+resources/static
 
 !.gitkeep

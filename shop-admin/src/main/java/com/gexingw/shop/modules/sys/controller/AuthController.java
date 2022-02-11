@@ -62,7 +62,7 @@ public class AuthController {
     public R login(@Validated @RequestBody UmsLoginRequestParam loginParams) {
         // 检查校验码是否正确
         if (!adminCaptcha.checkCode(loginParams.getUuid(), loginParams.getCode())) {
-            throw new BadRequestException(RespCode.LOGOUT_CAPTCHA_ERROR.getCode(), RespCode.LOGOUT_CAPTCHA_ERROR.getMessage());
+            throw new BadRequestException(RespCode.LOGIN_CAPTCHA_ERROR.getCode(), RespCode.LOGIN_CAPTCHA_ERROR.getMessage());
         }
 
         UmsAdmin userDetails = umsAdminService.findByUserName(loginParams.getUsername());
@@ -163,7 +163,7 @@ public class AuthController {
         redisUtil.del(tokenKey);
 
         if (redisUtil.hasKey(tokenKey)) {
-            return R.ok(RespCode.LOGOUT_FAILED.getCode(), RespCode.LOGOUT_FAILED.getMessage());
+            return R.ok(RespCode.LOGIN_FAILED.getCode(), RespCode.LOGIN_FAILED.getMessage());
         }
 
         return R.ok("已登出！");

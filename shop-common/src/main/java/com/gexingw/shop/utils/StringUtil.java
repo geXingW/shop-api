@@ -1,5 +1,6 @@
 package com.gexingw.shop.utils;
 
+import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,5 +11,9 @@ public class StringUtil {
             ch[0] = (char) (ch[0] - 32);
         }
         return new String(ch);
+    }
+
+    public static String trim(CharSequence string, CharSequence suffix) {
+        return StrUtil.removePrefix(StrUtil.removeSuffix(string, suffix), suffix);
     }
 }

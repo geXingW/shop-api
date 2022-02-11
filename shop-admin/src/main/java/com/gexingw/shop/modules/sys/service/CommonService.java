@@ -6,8 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 
 public interface CommonService {
-    File upload(MultipartFile file, String uploadType);
+    File upload(MultipartFile file, String uploadType, String uploadModule);
 
-    boolean detachOldFile(Long uploadId, String uploadType);
-    SysUpload attachUploadFile(Long uploadId, String uploadType, File uploadedFile);
+    boolean detachOldFile(Long uploadId, String uploadModule);
+    SysUpload attachUploadFile(Long uploadId, String uploadModule, File uploadedFile);
 }

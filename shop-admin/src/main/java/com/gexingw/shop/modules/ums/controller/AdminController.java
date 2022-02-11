@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.bo.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsDept;
 import com.gexingw.shop.modules.sys.service.CommonService;
 import com.gexingw.shop.modules.ums.dto.admin.UmsAdminRequestParam;
 import com.gexingw.shop.modules.ums.dto.admin.UmsAdminSearchParam;
@@ -25,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/admin")
@@ -51,8 +54,29 @@ public class AdminController {
     @GetMapping
     @PreAuthorize("@el.check('user:list')")
     public R index(UmsAdminSearchParam requestParams) {
-        IPage<UmsAdmin> page = adminUmsAdminMapper.queryList(new Page<>(requestParams.getPage(), requestParams.getSize()), requestParams);
-        return R.ok(PageUtil.format(page));
+        IPage<UmsAdmin> page = new Page<>(requestParams.getPage(), requestParams.getSize());
+        IPage<UmsAdmin> umsAdminsPage = umsAdminService.queryList(page, requestParams);
+
+        List<UmsAdmin> umsAdminsRecords = umsAdminsPage.getRecords();
+
+        Map<String, Object> result = PageUtil.format(umsAdminsPage);
+
+        // 获取所有admin所属的部门信息
+        List<Long> umsAdminDeptIds = umsAdminsRecords.stream().map(UmsAdmin::getDeptId).collect(Collectors.toList());
+        if (umsAdminDeptIds.size() <= 0) {
+            return R.ok(result);
+        }
+
+        HashMap<Long, UmsDept> umsDeptHashMap = new HashMap<>();
+        umsDeptService.getDeptsByDeptId(umsAdminDeptIds).forEach(umsDept -> umsDeptHashMap.put(umsDept.getId(), umsDept));
+
+        for (UmsAdmin umsadmin : umsAdminsRecords) {
+            umsadmin.setDept(umsDeptHashMap.get(umsadmin.getDeptId()));
+        }
+
+        result.put("records", umsAdminsRecords);
+
+        return R.ok(result);
     }
 
     @GetMapping("download")
@@ -91,9 +115,12 @@ public class AdminController {
      * @return
      */
     @PostMapping("/upload-avatar")
-    public R upload(@RequestParam MultipartFile file, @RequestParam String uploadType, @RequestParam Long uploadId) {
+    public R upload(@RequestParam MultipartFile file,
+                    @RequestParam String uploadType,
+                    @RequestParam Long uploadId,
+                    @RequestParam String uploadModule) {
         // 上传文件获取服务器文件路径
-        File uploadedFile = commonService.upload(file, uploadType);
+        File uploadedFile = commonService.upload(file, uploadType, uploadModule);
         if (uploadedFile == null) {
             return R.ok("上传失败！");
         }

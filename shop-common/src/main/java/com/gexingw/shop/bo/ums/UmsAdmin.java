@@ -75,7 +75,7 @@ public class UmsAdmin {
 
     public String getAvatar() {
         QueryWrapper<SysUpload> queryWrapper = new QueryWrapper<SysUpload>().eq("upload_id", id)
-                .eq("upload_type", UploadConstant.UPLOAD_TYPE_ADMIN_AVATAR);
+                .eq("upload_module", UploadConstant.UPLOAD_MODULE_ADMIN_AVATAR);
         SysUploadMapper mapper = SpringContextUtil.getBean(SysUploadMapper.class);
         SysUpload upload = mapper.selectOne(queryWrapper);
         if(upload == null){

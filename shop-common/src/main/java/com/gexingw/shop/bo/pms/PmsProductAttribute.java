@@ -13,7 +13,7 @@ public class PmsProductAttribute {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    private Long categoryId;
+//    private Long categoryId;
 
     private String name;
 

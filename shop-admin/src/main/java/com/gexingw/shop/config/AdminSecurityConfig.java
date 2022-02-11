@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AdminSecurityConfig extends WebSecurityConfiguration{
+public class AdminSecurityConfig extends WebSecurityConfiguration {
 
     @Autowired
     UmsAdminService umsAdminService;
@@ -37,7 +37,7 @@ public class AdminSecurityConfig extends WebSecurityConfiguration{
     RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     private static final String[] URL_WHITE_LIST = {
-            "/auth/login", "/auth/captcha"
+            "/auth/login", "/auth/captcha", "/static/**", "/favicon.ico",
     };
 
     @Bean

@@ -9,8 +9,9 @@ public enum RespCode {
     // 用户认证
     UNAUTHORIZED(401001, "请先登录！"),
     AUTHORIZED_FAILED(401002, "用户名或密码错误！"),
-    LOGOUT_FAILED(401003, "登出失败！"),
-    LOGOUT_CAPTCHA_ERROR(401004, "验证码错误！"),
+    LOGIN_FAILED(401003, "登出失败！"),
+    LOGIN_CAPTCHA_ERROR(401004, "验证码错误！"),
+    LOGOUT_ERROR(401005, "注销失败！"),
     ACCESS_DENY(403001, "没有访问权限！"),
 
     // 请求异常

@@ -13,13 +13,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("auth")
 public class AuthController {
-
     @Autowired
     AuthService authService;
 
@@ -69,5 +69,10 @@ public class AuthController {
         BeanUtils.copyProperties(member, authInfo);
 
         return R.ok(authInfo);
+    }
+
+    @DeleteMapping("logout")
+    public R logout() {
+        return authService.logout() ? R.ok("已注销！") : R.ok(RespCode.LOGOUT_ERROR.getCode(), "注销失败！");
     }
 }

@@ -34,10 +34,18 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+
+        // 静态资源放行
+        if (requestURI.matches("/static/.*") || requestURI.equals("/favicon.ico")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 从Header中获取Token
         String authToken = jwtTokenUtil.getAuthToken(request);
-        if (authToken == null || request.getRequestURI().contains("/auth/captcha")) {
-             filterChain.doFilter(request, response);
+        if (authToken == null || requestURI.contains("/auth/captcha")) {
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -60,7 +68,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         // 获取登陆用户的详细信息
         String memberName = jwtTokenUtil.getUserNameFromToken(authToken);
         UserDetails userDetails = authService.loadUserByUsername(memberName);
-        if(userDetails == null){
+        if (userDetails == null) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -154,7 +154,7 @@ public class ProductController {
             return R.ok("已添加！");
         }
 
-        SysUpload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
+        SysUpload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_MODULE_PRODUCT, requestParam.getPic());
 
         return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
     }
@@ -185,10 +185,10 @@ public class ProductController {
         // 更新商品图片
         if (!product.getPic().equals(requestParam.getPic())) {
             // 删除旧图片
-            uploadService.detachSourcePic(productId, UploadConstant.UPLOAD_TYPE_PRODUCT);
+            uploadService.detachSourcePic(productId, UploadConstant.UPLOAD_MODULE_PRODUCT);
 
             // 绑定新图片
-            uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_TYPE_PRODUCT, requestParam.getPic());
+            uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_MODULE_PRODUCT, requestParam.getPic());
         }
 
         return R.ok("已更新！");
@@ -207,7 +207,7 @@ public class ProductController {
 
         // 删除管理图片
         for (Long id : ids) {
-            uploadService.detachSourcePic(id, UploadConstant.UPLOAD_TYPE_PRODUCT);
+            uploadService.detachSourcePic(id, UploadConstant.UPLOAD_MODULE_PRODUCT);
         }
 
         return R.ok("已删除！");

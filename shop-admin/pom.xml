@@ -39,10 +39,10 @@
         </dependency>
 
         <!--Velocity模板生成引擎-->
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity-engine-core</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.velocity</groupId>-->
+<!--            <artifactId>velocity-engine-core</artifactId>-->
+<!--        </dependency>-->
 
     </dependencies>
 

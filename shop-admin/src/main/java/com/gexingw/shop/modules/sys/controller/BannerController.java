@@ -67,7 +67,7 @@ public class BannerController {
         }
 
         // TODO 删除已经无用的图片
-        SysUpload upload = uploadService.attachPicToSource(bannerId, UploadConstant.UPLOAD_TYPE_BANNER, requestParam.getPic());
+        SysUpload upload = uploadService.attachPicToSource(bannerId, UploadConstant.UPLOAD_MODULE_BANNER, requestParam.getPic());
 
         return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
     }
@@ -88,10 +88,10 @@ public class BannerController {
         // 更新图片
         if (!banner.getPic().equals(requestParam.getPic())) {
             // 删除旧图片
-            uploadService.detachSourcePic(banner.getId(), UploadConstant.UPLOAD_TYPE_BANNER);
+            uploadService.detachSourcePic(banner.getId(), UploadConstant.UPLOAD_MODULE_BANNER);
 
             // 更新新图片
-            uploadService.attachPicToSource(banner.getId(), UploadConstant.UPLOAD_TYPE_BANNER, requestParam.getPic());
+            uploadService.attachPicToSource(banner.getId(), UploadConstant.UPLOAD_MODULE_BANNER, requestParam.getPic());
         }
 
         return R.ok("已更新！");
@@ -107,7 +107,7 @@ public class BannerController {
 
         // 删除图片
         for (Long id : ids) {
-            uploadService.detachSourcePic(id, UploadConstant.UPLOAD_TYPE_BANNER);
+            uploadService.detachSourcePic(id, UploadConstant.UPLOAD_MODULE_BANNER);
         }
 
         return R.ok("已删除！");

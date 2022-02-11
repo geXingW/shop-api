@@ -39,7 +39,15 @@ spring:
     charset: UTF-8
     suffix: .ftl
 
+  mvc:
+    static-path-pattern: /static/**
+
+  web:
+    resources:
+      static-locations: file:G:/java/shop-api/resources/static
+
   # 验证码
+
 captcha:
   char-type: TYPE_ONLY_NUMBER
   font-type: FONT_1
@@ -62,8 +70,8 @@ file:
   active-disk: local
   disks:
     local:
-      location: J:\upload
-      host: http://pic.chdt.local/upload
+      location: G:\java\shop-api\resources\static
+      host: http://localhost:8091/static
 
 snowflake:
   start-timestamp: 1288834974657

@@ -1,10 +1,12 @@
 package com.gexingw.shop.modules.ums.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.bo.ums.UmsMenu;
 import com.gexingw.shop.bo.ums.UmsRole;
 import com.gexingw.shop.modules.ums.dto.admin.UmsAdminRequestParam;
+import com.gexingw.shop.modules.ums.dto.admin.UmsAdminSearchParam;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -61,4 +63,6 @@ public interface UmsAdminService {
     public UmsAdmin getAdminDetailByAdminId(Long adminId);
 
     boolean updateCenter(UmsAdminRequestParam requestParam) throws Exception;
+
+    IPage<UmsAdmin> queryList(IPage<UmsAdmin> page, UmsAdminSearchParam requestParams);
 }

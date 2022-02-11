@@ -129,17 +129,18 @@ public class ProductAttributeGroupController {
             queryWrapper.in("id", attachAttributeIds);
         }
 
+        // 查询所有未绑定该group属性
         if (!searchParam.isAttached() && attachAttributeIds.size() > 0) {
             queryWrapper.notIn("id", attachAttributeIds);
         }
 
         // 属性模糊搜索
-        if(searchParam.getBlurry() != null){
+        if (searchParam.getBlurry() != null) {
             queryWrapper.like("name", searchParam.getBlurry());
         }
 
         // 查询同一分类下的属性
-        queryWrapper.eq("category_id", attributeGroup.getCategoryId());
+//        queryWrapper.eq("category_id", attributeGroup.getCategoryId());
 
         // 查询基本属性
         if (PmsProductAttributeTypeEnum.BASE_ATTRIBUTE.getCode().equals(searchParam.getType())) {

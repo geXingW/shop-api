@@ -26,7 +26,7 @@ public class SysUpload {
 
     private Long uploadId;
 
-    private String uploadType;
+    private String uploadModule;
 
     private Long size;
 

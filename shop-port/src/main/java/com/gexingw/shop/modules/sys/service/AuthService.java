@@ -9,4 +9,6 @@ public interface AuthService {
     boolean isPasswdMatch(String password1, String password2);
 
     public UmsMember getMemberDetailByUsername(String username);
+
+    boolean logout();
 }

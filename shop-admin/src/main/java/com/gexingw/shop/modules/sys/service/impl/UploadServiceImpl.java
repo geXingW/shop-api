@@ -13,12 +13,12 @@ public class UploadServiceImpl implements UploadService {
     SysUploadMapper sysUploadMapper;
 
     @Override
-    public SysUpload attachPicToSource(Long uploadId, String uploadType, String uploadPath) {
+    public SysUpload attachPicToSource(Long uploadId, String uploadModule, String uploadPath) {
         // 根据path + uploadType，获取唯一的Upload记录
-        uploadPath = uploadPath.substring(uploadPath.indexOf(uploadType));
+        uploadPath = uploadPath.substring(uploadPath.indexOf(uploadModule));
 
         QueryWrapper<SysUpload> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("upload_type", uploadType).eq("path", uploadPath);
+        queryWrapper.eq("upload_module", uploadModule).eq("path", uploadPath);
 
         SysUpload upload = sysUploadMapper.selectOne(queryWrapper);
         if (upload == null) {
@@ -34,8 +34,8 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public boolean detachSourcePic(Long uploadId, String uploadType) {
-        QueryWrapper<SysUpload> queryWrapper = new QueryWrapper<SysUpload>().eq("upload_id", uploadId).eq("upload_type", uploadType);
+    public boolean detachSourcePic(Long uploadId, String uploadModule) {
+        QueryWrapper<SysUpload> queryWrapper = new QueryWrapper<SysUpload>().eq("upload_id", uploadId).eq("upload_module", uploadModule);
         return sysUploadMapper.delete(queryWrapper) >= 0;
     }
 }

@@ -1,6 +1,7 @@
 package com.gexingw.shop.modules.ums.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.ums.*;
 import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.constant.AdminConstant;
@@ -11,6 +12,7 @@ import com.gexingw.shop.enums.DataScopeEnum;
 
 import com.alibaba.fastjson.JSON;
 import com.gexingw.shop.modules.ums.bo.UmsAdminDetails;
+import com.gexingw.shop.modules.ums.dto.admin.UmsAdminSearchParam;
 import com.gexingw.shop.modules.ums.service.UmsMenuService;
 import com.gexingw.shop.modules.ums.service.*;
 import com.gexingw.shop.util.AuthUtil;
@@ -405,6 +407,36 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         }
 
         return umsAdminMapper.updateById(umsAdmin) > 0;
+    }
+
+    @Override
+    public IPage<UmsAdmin> queryList(IPage<UmsAdmin> page, UmsAdminSearchParam requestParams) {
+        QueryWrapper<UmsAdmin> queryWrapper = new QueryWrapper<>();
+
+        // 根据部门搜索
+        if (requestParams.getDeptId() != 0L) {
+            queryWrapper.eq("dept_id", requestParams.getDeptId());
+        }
+
+        // 模糊搜索
+        if (requestParams.getBlurry() != null) {
+            queryWrapper.and(q -> q.like("username", requestParams.getBlurry()).or()
+                    .like("nick_name", requestParams.getBlurry()).or()
+                    .like("email", requestParams.getBlurry()).or()
+                    .like("phone", requestParams.getBlurry())
+            );
+        }
+
+        // 根据日期搜索
+        if (requestParams.getCreateTimeBegin() != null) {
+            queryWrapper.ge("create_time", requestParams.getCreateTimeBegin());
+        }
+
+        if (requestParams.getCreateTimeEnd() != null) {
+            queryWrapper.le("create_time", requestParams.getCreateTimeEnd());
+        }
+
+        return umsAdminMapper.selectPage(page, queryWrapper);
     }
 
     /**

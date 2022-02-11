@@ -673,7 +673,7 @@ CREATE TABLE `uploads`  (
   `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `size` bigint(255) UNSIGNED NULL DEFAULT 0,
   `upload_id` bigint(20) UNSIGNED NULL DEFAULT 0,
-  `upload_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `upload_module` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE

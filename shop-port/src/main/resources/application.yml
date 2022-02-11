@@ -13,6 +13,13 @@ spring:
     host: ${REDIS_HOST:localhost}
     port: ${REDIS_PORT:6379}
 
+  mvc:
+    static-path-pattern: /static/**
+
+  web:
+    resources:
+      static-locations: file:G:/java/shop-api/resources/static
+
 jwt:
   token:
     header: Authorization
@@ -25,7 +32,7 @@ file:
   disks:
     local:
       location: J:\upload
-      host: http://pic.chdt.local/upload
+      host: http://localhost:8092/static
 
 mybatis-plus:
   configuration:

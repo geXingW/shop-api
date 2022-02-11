@@ -27,12 +27,15 @@ public class CommonController {
      * @return
      */
     @PostMapping("upload")
-    public R upload(@RequestParam MultipartFile file, @RequestParam String uploadType, @RequestParam Long uploadId) {
+    public R upload(@RequestParam MultipartFile file,
+                    @RequestParam String uploadType,
+                    @RequestParam Long uploadId,
+                    @RequestParam String uploadModule) {
         // 上传文件获取服务器文件路径
-        File uploadedFile = commonService.upload(file, uploadType);
+        File uploadedFile = commonService.upload(file, uploadType, uploadModule);
 
         // 资源与新图片绑定
-        SysUpload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
+        SysUpload upload = commonService.attachUploadFile(uploadId, uploadModule, uploadedFile);
         if (upload == null) {
             return R.ok(RespCode.SAVE_FAILURE.getCode(), "新图片绑定失败！");
         }

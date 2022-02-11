@@ -1,20 +1,13 @@
 package com.gexingw.shop.modules.ums.dto.admin;
 
+import com.gexingw.shop.dto.BaseSearchParam;
 import lombok.Data;
 
 @Data
-public class UmsAdminSearchParam {
+public class UmsAdminSearchParam extends BaseSearchParam {
 
-    private String blurry;
-
-    private long deptId = -1L;
+    private long deptId = 0L;
 
     private int enabled = -1;
-
-    private int page = 0;
-
-    private int size = 10;
-
-    private String[] createTime = new String[]{};
 
 }

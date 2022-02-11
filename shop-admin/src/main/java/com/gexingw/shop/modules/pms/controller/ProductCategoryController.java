@@ -109,7 +109,7 @@ public class ProductCategoryController {
         }
 
         // 关联上传的图片
-        SysUpload upload = uploadService.attachPicToSource(categoryId, UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
+        SysUpload upload = uploadService.attachPicToSource(categoryId, UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY, requestParam.getIcon());
 
         return upload != null ? R.ok("已保存！") : R.ok(RespCode.UPLOAD_FAILURE.getCode(), "保存失败！");
     }
@@ -120,9 +120,12 @@ public class ProductCategoryController {
      * @return
      */
     @PostMapping("/upload-pic")
-    public R upload(@RequestParam MultipartFile file, @RequestParam String uploadType, @RequestParam Long uploadId) {
+    public R upload(@RequestParam MultipartFile file,
+                    @RequestParam String uploadType,
+                    @RequestParam Long uploadId,
+                    @RequestParam String uploadModule) {
         // 上传文件获取服务器文件路径
-        File uploadedFile = commonService.upload(file, uploadType);
+        File uploadedFile = commonService.upload(file, uploadType, uploadModule);
         if (uploadedFile == null) {
             return R.ok("上传失败！");
         }
@@ -158,6 +161,9 @@ public class ProductCategoryController {
             return R.ok(RespCode.FAILURE.getCode(), "更新失败！");
         }
 
+        // 清理商品分类缓存
+        categoryService.delCategoryTreeFromRedis();
+
         // 更新父级分类的sub count
         if (productCategory.getPid().equals(requestParam.getPid())) {
             return R.ok("已更新！");
@@ -171,15 +177,12 @@ public class ProductCategoryController {
             return R.ok(RespCode.FAILURE, "更新父级分类失败！");
         }
 
-        // 清理商品分类缓存
-        categoryService.delCategoryTreeFromRedis();
-
         if (requestParam.getIcon() == null || requestParam.getIcon().isEmpty()) {
             return R.ok("已更新！");
         }
 
         // 更新分类图片
-        SysUpload upload = uploadService.attachPicToSource(requestParam.getId(), UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY, requestParam.getIcon());
+        SysUpload upload = uploadService.attachPicToSource(requestParam.getId(), UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY, requestParam.getIcon());
 
         return upload != null ? R.ok("已更新！") : R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
     }
@@ -200,7 +203,7 @@ public class ProductCategoryController {
 
         // 删除关联的图片
         for (Long id : ids) {
-            uploadService.detachSourcePic(id, UploadConstant.UPLOAD_TYPE_PRODUCT_CATEGORY);
+            uploadService.detachSourcePic(id, UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY);
         }
 
         return R.ok("已更新！");
@@ -221,7 +224,7 @@ public class ProductCategoryController {
         List<Long> attributeGroupIds = attributeGroups.stream().map(PmsProductAttributeGroup::getId).collect(Collectors.toList());
 
         // 如果该分类下没有属性组，也就没有绑定属性，直接返回空集合
-        if(attributeGroupIds.size() == 0){
+        if (attributeGroupIds.size() == 0) {
             return R.ok(productCategoryAttributeVO);
         }
 

@@ -41,7 +41,7 @@ public class PmsBanner {
     public String getPic() {
         SysUploadMapper sysUploadMapper = SpringContextUtil.getBean(SysUploadMapper.class);
         SysUpload upload = sysUploadMapper.selectOne(new QueryWrapper<SysUpload>().eq("upload_id", id)
-                .eq("upload_type", UploadConstant.UPLOAD_TYPE_BANNER));
+                .eq("upload_module", UploadConstant.UPLOAD_MODULE_BANNER));
 
         return upload != null ? upload.getFullUrl() : "";
     }

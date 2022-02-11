@@ -6,7 +6,7 @@ import lombok.Data;
 public class PmsProductAttributeRequestParam {
     private Long id;
 
-    private Long categoryId;
+//    private Long categoryId;
 
     private String name;
 
