@@ -34,7 +34,7 @@ public class PortSecurityConfig extends WebSecurityConfiguration {
 
     private static final String[] URL_WHITE_LIST = {
             "/auth/login", "/auth/captcha", "/banner", "/hot-product", "/recommend-product", "/new-product",
-            "/product/*", "/static/**", "/favicon.ico"
+            "/product/*", "/static/**", "/favicon.ico", "/product/category/tree"
     };
 
     @Bean

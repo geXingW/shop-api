@@ -37,7 +37,7 @@ public class AdminSecurityConfig extends WebSecurityConfiguration {
     RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     private static final String[] URL_WHITE_LIST = {
-            "/auth/login", "/auth/captcha", "/static/**", "/favicon.ico",
+            "/auth/login", "/auth/captcha", "/static/**", "/favicon.ico"
     };
 
     @Bean

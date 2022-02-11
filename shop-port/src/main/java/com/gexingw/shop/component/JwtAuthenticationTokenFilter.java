@@ -44,7 +44,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         // 从Header中获取Token
         String authToken = jwtTokenUtil.getAuthToken(request);
-        if (authToken == null || requestURI.contains("/auth/captcha")) {
+        if (requestURI.contains("/auth/captcha") || requestURI.equals("/product/category/tree")) {
             filterChain.doFilter(request, response);
             return;
         }
