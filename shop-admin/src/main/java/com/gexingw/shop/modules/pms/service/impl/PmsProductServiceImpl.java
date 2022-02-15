@@ -56,6 +56,9 @@ public class PmsProductServiceImpl implements PmsProductService {
         // 处理商品中带的域名
         this.removeProductImageDomain(product, requestParam);
 
+        // 商品SKU选项
+        product.setSkuOptions(JSON.toJSONString(requestParam.getSkuOptions()));
+
         if (productMapper.insert(product) <= 0) {
             return null;
         }
@@ -85,6 +88,9 @@ public class PmsProductServiceImpl implements PmsProductService {
 
         // 处理商品中带的域名
         this.removeProductImageDomain(product, requestParam);
+
+        // 商品SKU选项
+        product.setSkuOptions(JSON.toJSONString(requestParam.getSkuOptions()));
 
         if (productMapper.updateById(product) <= 0) {
             throw new DBOperationException("商品信息保存失败！");

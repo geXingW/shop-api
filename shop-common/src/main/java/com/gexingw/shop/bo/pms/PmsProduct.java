@@ -6,7 +6,9 @@ import com.gexingw.shop.constant.SystemConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("pms_products")
@@ -61,6 +63,8 @@ public class PmsProduct {
     private String detailMobileHtml; // 手机端详情显示
 
     private String albumPics; // 商品相册
+
+    private String skuOptions; // 商品SKU可选项
 
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)

@@ -1,8 +1,11 @@
 package com.gexingw.shop.modules.pms.vo.product;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.constant.UploadConstant;
+import com.gexingw.shop.modules.pms.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.utils.FileUtil;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -11,6 +14,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 @Data
@@ -60,6 +64,8 @@ public class PmsProductInfoVO {
 
     private Integer isNew;
 
+    private List<PmsProductRequestParam.SkuOption> skuOptions = new ArrayList<>();
+
     public PmsProductInfoVO setProductInfo(PmsProduct product) {
         BeanUtils.copyProperties(product, this);
         return this;
@@ -81,6 +87,11 @@ public class PmsProductInfoVO {
         String separator = Matcher.quoteReplacement(File.separator);
         this.detailPCHtml = product.getDetailPCHtml().replaceAll("src=\"", "src=\"" + fileDomain + separator);
         this.detailMobileHtml = product.getDetailMobileHtml().replaceAll("src=\"", "src=\"" + fileDomain + separator);
+
+        // 商品Sku选项
+        TypeReference<List<PmsProductRequestParam.SkuOption>> jsonTypeReference = new TypeReference<List<PmsProductRequestParam.SkuOption>>() {
+        };
+        this.skuOptions = JSON.parseObject(product.getSkuOptions(), jsonTypeReference);
 
         return this;
     }

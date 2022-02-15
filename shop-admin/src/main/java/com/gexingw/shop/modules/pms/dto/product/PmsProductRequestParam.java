@@ -59,6 +59,8 @@ public class PmsProductRequestParam {
 
     private List<Sku> skuList = new ArrayList<>();
 
+    private List<SkuOption> skuOptions = new ArrayList<>();
+
     private List<Attribute> attributeList = new ArrayList<>();
 
     private String onSale;
@@ -91,6 +93,15 @@ public class PmsProductRequestParam {
         private String name;
 
         private String value;
+    }
+
+    @Data
+    public static class SkuOption {
+        private Long attributeId;
+
+        private String attributeName;
+
+        private List<String> attributeValues;
     }
 
     public List<String> getPicsWithoutDomain(FileConfig config) {
