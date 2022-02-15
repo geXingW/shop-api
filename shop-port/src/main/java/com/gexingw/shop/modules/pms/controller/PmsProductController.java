@@ -2,20 +2,22 @@ package com.gexingw.shop.modules.pms.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.pms.PmsProduct;
+import com.gexingw.shop.bo.pms.PmsProductSku;
 import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.enums.PmsProductOnSaleEnum;
 import com.gexingw.shop.enums.RespCode;
+import com.gexingw.shop.modules.pms.dto.product.PmsProductPriceRequestParam;
 import com.gexingw.shop.modules.pms.dto.product.PmsProductSearchRequestParam;
 import com.gexingw.shop.modules.pms.service.PmsProductService;
+import com.gexingw.shop.modules.pms.service.PmsProductSkuService;
+import com.gexingw.shop.modules.pms.vo.PmsProductSkuVO;
 import com.gexingw.shop.modules.pms.vo.PmsProductVO;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,6 +28,9 @@ public class PmsProductController {
 
     @Autowired
     PmsProductService pmsProductService;
+
+    @Autowired
+    PmsProductSkuService pmsProductSkuService;
 
     @Autowired
     FileConfig fileConfig;
@@ -47,11 +52,11 @@ public class PmsProductController {
     /**
      * 商品详情
      *
-     * @param id
-     * @return
+     * @param id 商品ID
+     * @return 商品信息
      */
     @GetMapping("/{id}")
-    R info(@PathVariable String id) {
+    public R info(@PathVariable String id) {
         PmsProduct pmsProduct = pmsProductService.getById(id);
         if (pmsProduct == null) {
             return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品不存在！");
@@ -66,5 +71,24 @@ public class PmsProductController {
         return R.ok(new PmsProductVO(pmsProduct).setProductPics(pmsProduct, fileConfig));
     }
 
+    @PostMapping("/{id}/price")
+    public R price(@PathVariable String id, @RequestBody PmsProductPriceRequestParam requestParam) {
+        // 检查商品信息是否存在
+        if (pmsProductService.getById(id) == null) {
+            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品不存在！");
+        }
+
+        // 获取商品价格和库存
+        List<PmsProductPriceRequestParam.Option> spData = requestParam.getOptions().stream().sorted(Comparator.comparing(PmsProductPriceRequestParam.Option::getId))
+                .collect(Collectors.toList());
+        PmsProductSku productSku = pmsProductSkuService.getByIdAndSkuData(id, spData);
+
+        // 查询不到该Sku信息，直接返回默认值
+        if (productSku == null) {
+            return R.ok(new PmsProductSkuVO());
+        }
+
+        return R.ok(new PmsProductSkuVO(productSku));
+    }
 
 }

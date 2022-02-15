@@ -1,6 +1,8 @@
 package com.gexingw.shop.modules.pms.vo;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.config.FileConfig;
@@ -35,12 +37,13 @@ public class PmsProductVO {
 
     private int saleCnt = 0;
 
-    @TableField(value = "detail_pc_html")
     private String detailPCHtml; // PC端详情显示
 
     private String detailMobileHtml; // 手机端详情显示
 
     private String categoryName;
+
+    private List<SkuOption> skuOptions = new ArrayList<>();
 
     public PmsProductVO() {
     }
@@ -49,10 +52,13 @@ public class PmsProductVO {
         this.setProductInfo(product);
     }
 
-    public PmsProductVO setProductInfo(PmsProduct product) {
-        BeanUtil.copyProperties(product, this);
+    public void setProductInfo(PmsProduct product) {
+        BeanUtil.copyProperties(product, this,"skuOptions");
 
-        return this;
+        // 商品Sku可选项
+        TypeReference<List<SkuOption>> typeReference = new TypeReference<List<SkuOption>>() {
+        };
+        this.skuOptions = JSON.parseObject(product.getSkuOptions(), typeReference);
     }
 
     public PmsProductVO setProductPics(PmsProduct product, FileConfig fileConfig) {
@@ -72,5 +78,14 @@ public class PmsProductVO {
         this.detailPCHtml = product.getDetailPCHtml().replace("src=\"", "src=\"" + domain + File.separator);
 
         return this;
+    }
+
+    @Data
+    public static class SkuOption {
+        private Long attributeId;
+
+        private String attributeName;
+
+        private List<String> attributeValues;
     }
 }

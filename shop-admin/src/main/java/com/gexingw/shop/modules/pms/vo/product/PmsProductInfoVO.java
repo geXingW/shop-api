@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.config.FileConfig;
-import com.gexingw.shop.constant.UploadConstant;
 import com.gexingw.shop.modules.pms.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.utils.FileUtil;
 import lombok.Data;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 
 @Data

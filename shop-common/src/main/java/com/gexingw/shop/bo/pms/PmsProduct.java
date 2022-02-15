@@ -6,9 +6,7 @@ import com.gexingw.shop.constant.SystemConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @TableName("pms_products")
