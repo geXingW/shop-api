@@ -104,4 +104,5 @@ public class CommonServiceImpl implements CommonService {
         // 删除相关文件 TODO
         return FileUtil.del(upload.getPath());
     }
+
 }

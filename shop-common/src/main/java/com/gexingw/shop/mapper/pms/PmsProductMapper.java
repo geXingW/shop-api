@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface PmsProductMapper extends BaseMapper<PmsProduct> {
     @Update("update pms_products set `stock` = `stock` - #{stock} where id = #{id}")
-    Integer decrStock(Long id, Integer stock);
+    Integer decrStock(String id, Integer stock);
 }

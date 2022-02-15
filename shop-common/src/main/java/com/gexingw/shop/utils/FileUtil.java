@@ -329,4 +329,16 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     public static String getMd5(File file) {
         return getMd5(getByte(file));
     }
+
+    /**
+     * 根据域名 + 模块 + uri的完整URL
+     *
+     * @param domain 实际访问Url的域名
+     * @param uri 图片uri
+     * @return 图片访问完整url
+     */
+    public static String buildFileFullUrl(String domain, String uri) {
+        String separator = File.separator;
+        return StringUtil.trim(domain, separator) + separator + StringUtil.trim(uri, separator);
+    }
 }

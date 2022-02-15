@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ProductCategoryTreeVO {
+public class PmsProductCategoryTreeVO {
     private Long id;
 
     private String name;
@@ -16,9 +16,9 @@ public class ProductCategoryTreeVO {
     private Boolean leaf;
 
     @JsonInclude
-    private List<ProductCategoryTreeVO> children;
+    private List<PmsProductCategoryTreeVO> children;
 
-    public void setChildren(List<ProductCategoryTreeVO> children) {
+    public void setChildren(List<PmsProductCategoryTreeVO> children) {
         this.children = children;
 
         // 列表大于0，代表有子分类

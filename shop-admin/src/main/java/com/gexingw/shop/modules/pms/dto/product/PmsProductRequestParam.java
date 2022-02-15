@@ -1,12 +1,17 @@
 package com.gexingw.shop.modules.pms.dto.product;
 
+import com.gexingw.shop.config.FileConfig;
+
+import com.gexingw.shop.utils.StringUtil;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.*;
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class PmsProductRequestParam {
@@ -86,5 +91,11 @@ public class PmsProductRequestParam {
         private String name;
 
         private String value;
+    }
+
+    public List<String> getPicsWithoutDomain(FileConfig config) {
+        String domain = config.getDiskHost();
+        return this.pics.stream().map(pic -> StringUtil.trim(pic.replace(domain, ""), File.separator))
+                .collect(Collectors.toList());
     }
 }

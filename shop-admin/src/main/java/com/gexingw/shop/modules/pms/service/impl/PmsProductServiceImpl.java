@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.pms.PmsProduct;
+import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.constant.ProductConstant;
 import com.gexingw.shop.modules.pms.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.exception.DBOperationException;
@@ -12,12 +13,16 @@ import com.gexingw.shop.modules.pms.service.PmsProductService;
 import com.gexingw.shop.modules.pms.service.PmsProductAttributeValueService;
 import com.gexingw.shop.modules.pms.service.PmsProductSkuService;
 import com.gexingw.shop.utils.RedisUtil;
+import com.gexingw.shop.utils.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 @Service
 public class PmsProductServiceImpl implements PmsProductService {
@@ -33,6 +38,9 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Autowired
     PmsProductSkuService productSkuService;
 
+    @Autowired
+    FileConfig fileConfig;
+
     @Override
     public IPage<PmsProduct> search(QueryWrapper<PmsProduct> queryWrapper, IPage<PmsProduct> page) {
         return productMapper.selectPage(page, queryWrapper);
@@ -44,7 +52,9 @@ public class PmsProductServiceImpl implements PmsProductService {
         PmsProduct product = new PmsProduct();
 
         BeanUtils.copyProperties(requestParam, product);
-        product.setAlbumPics(requestParam.getPics());   // 相册
+
+        // 处理商品中带的域名
+        this.removeProductImageDomain(product, requestParam);
 
         if (productMapper.insert(product) <= 0) {
             return null;
@@ -72,6 +82,10 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
 
         BeanUtils.copyProperties(requestParam, product);
+
+        // 处理商品中带的域名
+        this.removeProductImageDomain(product, requestParam);
+
         if (productMapper.updateById(product) <= 0) {
             throw new DBOperationException("商品信息保存失败！");
         }
@@ -97,6 +111,11 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean update(PmsProduct product) {
+        return productMapper.updateById(product) >= 0;
     }
 
     @Override
@@ -138,7 +157,8 @@ public class PmsProductServiceImpl implements PmsProductService {
         return true;
     }
 
-    private PmsProduct getRedisProductByProductId(Long productId) {
+    @Override
+    public PmsProduct getRedisProductByProductId(Long productId) {
         Object redisObj = redisUtil.get(String.format(ProductConstant.REDIS_PRODUCT_FORMAT, productId));
         if (redisObj == null) {
             return null;
@@ -147,12 +167,26 @@ public class PmsProductServiceImpl implements PmsProductService {
         return JSON.parseObject(redisObj.toString(), PmsProduct.class);
     }
 
-    private boolean setRedisProductByProductId(Long productId, PmsProduct product) {
+    @Override
+    public boolean setRedisProductByProductId(Long productId, PmsProduct product) {
         return redisUtil.set(String.format(ProductConstant.REDIS_PRODUCT_FORMAT, productId), product);
     }
 
-    private void delRedisProductByProductId(Long productId) {
+    @Override
+    public void delRedisProductByProductId(Long productId) {
         redisUtil.del(String.format(ProductConstant.REDIS_PRODUCT_FORMAT, productId));
     }
 
+    private void removeProductImageDomain(PmsProduct product, PmsProductRequestParam requestParam) {
+        // 商品图片
+        List<String> picsWithoutDomain = requestParam.getPicsWithoutDomain(fileConfig);
+        product.setAlbumPics(String.join(",", picsWithoutDomain));   // 相册
+        product.setPic(picsWithoutDomain.get(0)); //主图
+
+        // 商品详情
+        String separator = Matcher.quoteReplacement(File.separator);
+        String fileDomain = StringUtil.trim(fileConfig.getDiskHost(), separator) + separator;
+        product.setDetailPCHtml(requestParam.getDetailPCHtml().replaceAll("src=\"" + fileDomain, "src=\""));
+        product.setDetailMobileHtml(requestParam.getDetailMobileHtml().replaceAll("src=\"" + fileDomain, "src=\""));
+    }
 }

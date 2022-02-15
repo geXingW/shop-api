@@ -79,7 +79,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public boolean delCartItemByItemIds(List<Long> itemIds) {
+    public boolean delCartItemByItemIds(List<String> itemIds) {
         long memberId = AuthUtil.getAuthId();
         QueryWrapper<OmsCartItem> queryWrapper = new QueryWrapper<OmsCartItem>().eq("member_id", memberId).in("item_id", itemIds);
 

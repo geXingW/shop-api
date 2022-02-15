@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // 根据itemId，查询所有商品详情
-        List<Long> itemIds = reqOrderItems.stream().map(OmsOrderRequestParam.OrderItems::getItemId).collect(Collectors.toList());
+        List<String> itemIds = reqOrderItems.stream().map(OmsOrderRequestParam.OrderItems::getItemId).collect(Collectors.toList());
 
         // 将商品列表按照id，组成Map,方便后续取值
         Map<Long, PmsProduct> orderProductDetailMap = new HashMap<>();

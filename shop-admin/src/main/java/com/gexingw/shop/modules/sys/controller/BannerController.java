@@ -36,7 +36,7 @@ public class BannerController {
     @GetMapping
     public R index(BannerSearchParam searchParam) {
         // 分页
-        IPage<PmsBanner> page = new Page<PmsBanner>(searchParam.getPage(), searchParam.getSize());
+        IPage<PmsBanner> page = new Page<>(searchParam.getPage(), searchParam.getSize());
 
         // 查询条件
         QueryWrapper<PmsBanner> queryWrapper = new QueryWrapper<>();
@@ -52,7 +52,7 @@ public class BannerController {
         }
 
         // 结束时间
-        if(searchParam.getCreateTimeBegin() != null){
+        if (searchParam.getCreateTimeBegin() != null) {
             queryWrapper.lt("create_time", searchParam.getCreateTimeEnd());
         }
 
@@ -67,7 +67,7 @@ public class BannerController {
         }
 
         // TODO 删除已经无用的图片
-        SysUpload upload = uploadService.attachPicToSource(bannerId, UploadConstant.UPLOAD_MODULE_BANNER, requestParam.getPic());
+        SysUpload upload = uploadService.attachPicToSource(bannerId, UploadConstant.UPLOAD_MODULE_BANNER, UploadConstant.UPLOAD_TYPE_IMAGE, requestParam.getPic());
 
         return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
     }
@@ -91,7 +91,7 @@ public class BannerController {
             uploadService.detachSourcePic(banner.getId(), UploadConstant.UPLOAD_MODULE_BANNER);
 
             // 更新新图片
-            uploadService.attachPicToSource(banner.getId(), UploadConstant.UPLOAD_MODULE_BANNER, requestParam.getPic());
+            uploadService.attachPicToSource(banner.getId(), UploadConstant.UPLOAD_MODULE_BANNER, UploadConstant.UPLOAD_TYPE_IMAGE, requestParam.getPic());
         }
 
         return R.ok("已更新！");

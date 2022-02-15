@@ -14,8 +14,15 @@ public interface PmsProductService {
 
     boolean update(Long productId, PmsProductRequestParam requestParam);
 
+    boolean update(PmsProduct product);
+
     PmsProduct getById(Long id);
 
     boolean delete(Set<Long> ids);
 
+    PmsProduct getRedisProductByProductId(Long productId);
+
+    boolean setRedisProductByProductId(Long productId, PmsProduct product);
+
+    void delRedisProductByProductId(Long productId);
 }

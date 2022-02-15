@@ -13,9 +13,9 @@ public class UploadServiceImpl implements UploadService {
     SysUploadMapper sysUploadMapper;
 
     @Override
-    public SysUpload attachPicToSource(Long uploadId, String uploadModule, String uploadPath) {
+    public SysUpload attachPicToSource(Long uploadId, String uploadModule, String uploadType, String uploadPath) {
         // 根据path + uploadType，获取唯一的Upload记录
-        uploadPath = uploadPath.substring(uploadPath.indexOf(uploadModule));
+        uploadPath = uploadPath.substring(uploadPath.indexOf(uploadType));
 
         QueryWrapper<SysUpload> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("upload_module", uploadModule).eq("path", uploadPath);

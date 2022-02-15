@@ -20,5 +20,5 @@ public interface CartService {
 
     boolean deleteByItemIds(Set<Long> ids);
 
-    boolean delCartItemByItemIds(List<Long> itemIds);
+    boolean delCartItemByItemIds(List<String> itemIds);
 }

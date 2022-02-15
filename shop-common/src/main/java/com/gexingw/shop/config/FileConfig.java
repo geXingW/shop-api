@@ -72,6 +72,15 @@ public class FileConfig {
         return diskItem.getLocation();
     }
 
+    public String getDiskHost() {
+        DiskItem diskItem = getDiskItem(getDiskName());
+        if (diskItem == null) {
+            return null;
+        }
+
+        return diskItem.getHost();
+    }
+
     public String getDiskHost(String disk) {
         DiskItem diskItem = getDiskItem(disk);
         if (diskItem == null) {

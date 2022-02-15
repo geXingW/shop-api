@@ -1,18 +1,12 @@
 package com.gexingw.shop.bo.pms;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.constant.SystemConstant;
-import com.gexingw.shop.constant.UploadConstant;
-import com.gexingw.shop.mapper.sys.SysUploadMapper;
-import com.gexingw.shop.utils.SpringContextUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @TableName("pms_products")
@@ -22,11 +16,17 @@ public class PmsProduct {
 
     private String title;
 
+    // 商品主图，上传的第一张图片
+    private String pic;
+
     private String subTitle;
 
     private Long brandId;
 
     private Long categoryId;
+
+    @TableField(exist = false)
+    private String categoryName;
 
     private String onSale;
 
@@ -70,16 +70,22 @@ public class PmsProduct {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
-    public String getPic() {
-        SysUploadMapper sysUploadMapper = SpringContextUtil.getBean(SysUploadMapper.class);
-        SysUpload upload = sysUploadMapper.selectOne(new QueryWrapper<SysUpload>().eq("upload_id", id)
-                .eq("upload_module", UploadConstant.UPLOAD_MODULE_PRODUCT));
+//    public String getPic() {
+//        SysUploadMapper sysUploadMapper = SpringContextUtil.getBean(SysUploadMapper.class);
+//        SysUpload upload = sysUploadMapper.selectOne(new QueryWrapper<SysUpload>().eq("upload_id", id)
+//                .eq("upload_module", UploadConstant.UPLOAD_MODULE_PRODUCT));
+//
+//        return upload != null ? upload.getFullUrl() : "";
+//    }
 
-        return upload != null ? upload.getFullUrl() : "";
-    }
+//    public void setAlbumPics(List<String> picsUrl) {
+//        List<String> picPaths = picsUrl.stream().map(picUrl -> picUrl.substring(picUrl.indexOf(UploadConstant.UPLOAD_TYPE_IMAGE)))
+//                .collect(Collectors.toList());
+//
+//        this.albumPics = String.join(",", picPaths);
+//    }
 
-    public void setAlbumPics(List<String> pics) {
-        this.albumPics = String.join(",", pics);
-    }
-
+//    public List<String> getAlbumPics() {
+//        return Arrays.stream(this.albumPics.split(",")).collect(Collectors.toList());
+//    }
 }

@@ -1,12 +1,8 @@
 package com.gexingw.shop.modules.oms.dto;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.gexingw.shop.bo.oms.OmsOrderItemDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -18,7 +14,7 @@ public class OmsOrderRequestParam {
 
     private Integer sourceType;
 
-    private Integer status = 0;
+    private Integer status;
 
     private String note;
 
@@ -31,7 +27,7 @@ public class OmsOrderRequestParam {
      */
     @Data
     public static class OrderItems {
-        private Long itemId;
+        private String itemId;
 
         private Integer itemQuantity;
     }

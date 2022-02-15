@@ -24,7 +24,6 @@ public class CommonController {
     /**
      * 上传接口
      *
-     * @return
      */
     @PostMapping("upload")
     public R upload(@RequestParam MultipartFile file,
@@ -42,6 +41,7 @@ public class CommonController {
 
         HashMap<String, Object> result = new HashMap<>();
         result.put("url", upload.getFullUrl());
+        result.put("path", upload.getPath());
 
         return R.ok(result, "上传成功！");
     }

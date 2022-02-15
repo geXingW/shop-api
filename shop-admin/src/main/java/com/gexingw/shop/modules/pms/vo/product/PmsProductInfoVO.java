@@ -1,12 +1,17 @@
 package com.gexingw.shop.modules.pms.vo.product;
 
 import com.gexingw.shop.bo.pms.PmsProduct;
+import com.gexingw.shop.config.FileConfig;
+import com.gexingw.shop.constant.UploadConstant;
+import com.gexingw.shop.utils.FileUtil;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 @Data
 public class PmsProductInfoVO {
@@ -14,9 +19,16 @@ public class PmsProductInfoVO {
 
     private String title;
 
+    // 商品主图，上传的第一张图片
+    private String pic;
+
+    private List<String> albumPics = new ArrayList<>(); // 商品相册
+
     private String subTitle;
 
     private Long categoryId;
+
+    private String categoryName;
 
     private Integer sort;
 
@@ -44,12 +56,33 @@ public class PmsProductInfoVO {
 
     private List<String> pics = new ArrayList<>();
 
-    private Integer onSale;
+    private String onSale;
 
     private Integer isNew;
 
-    public void setProductInfo(PmsProduct product) {
+    public PmsProductInfoVO setProductInfo(PmsProduct product) {
         BeanUtils.copyProperties(product, this);
+        return this;
+    }
+
+    public PmsProductInfoVO setProductPics(PmsProduct product, FileConfig fileConfig) {
+        String fileDomain = fileConfig.getDiskHost();
+
+        // 主图
+        this.pic = FileUtil.buildFileFullUrl(fileDomain, product.getPic());
+
+        // 相册
+        String[] picPaths = product.getAlbumPics().split(",");
+        for (String picPath : picPaths) {
+            this.albumPics.add(FileUtil.buildFileFullUrl(fileDomain, picPath));
+        }
+
+        // 商品详情
+        String separator = Matcher.quoteReplacement(File.separator);
+        this.detailPCHtml = product.getDetailPCHtml().replaceAll("src=\"", "src=\"" + fileDomain + separator);
+        this.detailMobileHtml = product.getDetailMobileHtml().replaceAll("src=\"", "src=\"" + fileDomain + separator);
+
+        return this;
     }
 
     @Data

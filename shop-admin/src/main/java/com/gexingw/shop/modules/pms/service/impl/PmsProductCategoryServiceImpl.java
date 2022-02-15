@@ -128,6 +128,11 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     }
 
     @Override
+    public List<PmsProductCategory> getByIds(List<Long> ids) {
+        return categoryMapper.selectBatchIds(ids);
+    }
+
+    @Override
     public boolean incrProductCntByCategoryId(Long categoryId) {
         PmsProductCategory category = categoryMapper.selectById(categoryId);
         category.incrProductCnt(1);

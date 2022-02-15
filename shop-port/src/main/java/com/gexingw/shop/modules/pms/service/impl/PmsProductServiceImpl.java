@@ -1,8 +1,11 @@
 package com.gexingw.shop.modules.pms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.mapper.pms.PmsProductMapper;
+import com.gexingw.shop.modules.pms.dto.product.PmsProductSearchRequestParam;
 import com.gexingw.shop.modules.pms.service.PmsProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,21 +23,45 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
-    public PmsProduct getById(Long id) {
+    public PmsProduct getById(String id) {
         return productMapper.selectById(id);
     }
 
     @Override
-    public List<PmsProduct> getByIds(List<Long> ids) {
+    public List<PmsProduct> getByIds(List<String> ids) {
         return productMapper.selectBatchIds(ids);
     }
 
     @Override
-    public boolean decrProductStockById(Long id, Integer quantity) {
+    public boolean decrProductStockById(String id, Integer quantity) {
         try {
             return productMapper.decrStock(id, quantity) > 0;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public IPage<PmsProduct> search(PmsProductSearchRequestParam requestParam) {
+        // 分页
+        Page<PmsProduct> page = new Page<>(requestParam.getPage(), requestParam.getSize());
+
+        // 条件查询
+        QueryWrapper<PmsProduct> queryWrapper = new QueryWrapper<>();
+
+        String keywords = requestParam.getKeywords();
+
+        // 没有关键字
+        if (keywords == null) {
+            return productMapper.selectPage(page, queryWrapper);
+        }
+
+        // 根据关键字，匹配查询
+        queryWrapper.and(
+                q -> q.like("title", keywords).or()
+                        .like("sub_title", keywords)
+        );
+
+        return productMapper.selectPage(page, queryWrapper);
     }
 }

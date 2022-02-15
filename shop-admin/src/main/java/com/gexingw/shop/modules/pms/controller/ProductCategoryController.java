@@ -109,7 +109,7 @@ public class ProductCategoryController {
         }
 
         // 关联上传的图片
-        SysUpload upload = uploadService.attachPicToSource(categoryId, UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY, requestParam.getIcon());
+        SysUpload upload = uploadService.attachPicToSource(categoryId, UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY, UploadConstant.UPLOAD_TYPE_IMAGE, requestParam.getIcon());
 
         return upload != null ? R.ok("已保存！") : R.ok(RespCode.UPLOAD_FAILURE.getCode(), "保存失败！");
     }
@@ -182,7 +182,7 @@ public class ProductCategoryController {
         }
 
         // 更新分类图片
-        SysUpload upload = uploadService.attachPicToSource(requestParam.getId(), UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY, requestParam.getIcon());
+        SysUpload upload = uploadService.attachPicToSource(requestParam.getId(), UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY, UploadConstant.UPLOAD_TYPE_IMAGE, requestParam.getIcon());
 
         return upload != null ? R.ok("已更新！") : R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
     }
@@ -230,16 +230,18 @@ public class ProductCategoryController {
 
         List<Long> attachAttributeIds = attributeGroupService.getAttachAttributeIdsByGroupIds(attributeGroupIds);
 
-        // 基本属性
-        List<PmsProductAttribute> attachedBaseAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.BASE_ATTRIBUTE.getCode(), attachAttributeIds);
-        for (PmsProductAttribute attachedBaseAttribute : attachedBaseAttributes) {
-            productCategoryAttributeVO.baseAttributes.add(categoryService.getFormatCategoryAttributeVO(attachedBaseAttribute));
-        }
+        if (attachAttributeIds.size() > 0) {
+            // 基本属性
+            List<PmsProductAttribute> attachedBaseAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.BASE_ATTRIBUTE.getCode(), attachAttributeIds);
+            for (PmsProductAttribute attachedBaseAttribute : attachedBaseAttributes) {
+                productCategoryAttributeVO.baseAttributes.add(categoryService.getFormatCategoryAttributeVO(attachedBaseAttribute));
+            }
 
-        // 销售属性
-        List<PmsProductAttribute> attachedSaleAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.SALE_ATTRIBUTE.getCode(), attachAttributeIds);
-        for (PmsProductAttribute attachedSaleAttribute : attachedSaleAttributes) {
-            productCategoryAttributeVO.saleAttributes.add(categoryService.getFormatCategoryAttributeVO(attachedSaleAttribute));
+            // 销售属性
+            List<PmsProductAttribute> attachedSaleAttributes = attributeService.getAttributesByTypeAndIds(PmsProductAttributeTypeEnum.SALE_ATTRIBUTE.getCode(), attachAttributeIds);
+            for (PmsProductAttribute attachedSaleAttribute : attachedSaleAttributes) {
+                productCategoryAttributeVO.saleAttributes.add(categoryService.getFormatCategoryAttributeVO(attachedSaleAttribute));
+            }
         }
 //
 //        for (PmsProductAttributeGroup attributeGroup : attributeGroups) {
