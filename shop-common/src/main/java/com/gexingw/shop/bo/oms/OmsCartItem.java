@@ -19,7 +19,7 @@ public class OmsCartItem {
 
     private Long memberId;
 
-    private Long itemId;
+    private String itemId;
 
     private BigDecimal itemPrice;
 
@@ -30,6 +30,10 @@ public class OmsCartItem {
     private String itemTitle;
 
     private String itemSubTitle;
+
+    private Long skuId;
+
+    private String skuData;
 
     private Integer checked;
 

@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface PmsProductSkuService {
 
-    PmsProductSku getByIdAndSkuData(String id, List<PmsProductPriceRequestParam.Option> spData);
+    PmsProductSku getById(Long id);
+
+    PmsProductSku getByProductIdAndSkuData(String productId, List<PmsProductPriceRequestParam.Option> spData);
 }

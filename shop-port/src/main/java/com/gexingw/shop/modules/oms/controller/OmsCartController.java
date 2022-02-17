@@ -1,0 +1,161 @@
+package com.gexingw.shop.modules.oms.controller;
+
+import com.gexingw.shop.bo.oms.OmsCartItem;
+import com.gexingw.shop.bo.pms.PmsProduct;
+import com.gexingw.shop.bo.pms.PmsProductSku;
+import com.gexingw.shop.config.FileConfig;
+import com.gexingw.shop.enums.RespCode;
+import com.gexingw.shop.modules.oms.dto.OmsCartRequestParam;
+import com.gexingw.shop.modules.oms.service.CartService;
+import com.gexingw.shop.modules.oms.vo.OmsCartVO;
+import com.gexingw.shop.modules.pms.service.PmsProductService;
+import com.gexingw.shop.modules.pms.service.PmsProductSkuService;
+import com.gexingw.shop.util.AuthUtil;
+import com.gexingw.shop.utils.R;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
+@RestController
+@RequestMapping("cart")
+public class OmsCartController {
+
+    @Autowired
+    CartService cartService;
+
+    @Autowired
+    PmsProductService productService;
+
+    @Autowired
+    PmsProductSkuService productSkuService;
+
+    @Autowired
+    FileConfig fileConfig;
+
+    @GetMapping
+    R index() {
+        // 查询购物车商品信息
+        Long memberId = AuthUtil.getAuthId();
+        List<OmsCartItem> cartItems = cartService.getListByMemberId(memberId);
+
+        // 购物车总价
+        BigDecimal cartTotalPrice = new BigDecimal(0);
+
+        List<OmsCartVO> cartVOs = new ArrayList<>();
+        for (OmsCartItem cartItem : cartItems) {
+
+            PmsProductSku productSku = productSkuService.getById(cartItem.getSkuId());
+            OmsCartVO cartVO = new OmsCartVO(cartItem, productSku, fileConfig);
+
+            // 如果商品被选中，累加商品价格
+            if (cartItem.getChecked() == 1) {
+                cartTotalPrice = cartTotalPrice.add(cartVO.getItemTotalPrice());
+            }
+
+            cartVOs.add(cartVO);
+        }
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("cartTotalPrice", cartTotalPrice);
+        result.put("cartItems", cartVOs);
+
+        return R.ok(result);
+    }
+
+    @PostMapping
+    R save(@RequestBody OmsCartRequestParam requestParam) {
+        // 检查商品信息
+        // todo 此处应该检查商品的上架和删除状态
+        PmsProduct product = productService.getById(requestParam.getProductId());
+        if (product == null) {
+            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品不存在！");
+        }
+
+        // 检查商品规格
+        PmsProductSku productSku = productSkuService.getById(requestParam.getSkuId());
+        if (productSku == null) {
+            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品规格不存在！");
+        }
+
+        // 检查商品库存
+        if (requestParam.getProductCnt() > productSku.getStock()) {
+            return R.ok(RespCode.PRODUCT_STOCK_OVER.getCode(), "商品库存不足！");
+        }
+
+        // 查看当前商品在购物车中是否存在
+        OmsCartItem cartItem = cartService.getBySkuIdAndMemberId(requestParam.getSkuId(), requestParam.getMemberId());
+        if (cartItem == null) { // 购物车中不存在该规格的商品，新增购物车
+            return cartService.save(requestParam, product, productSku) ? R.ok("已添加！") : R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
+        }
+
+        // 检查商品库存
+        if (requestParam.getProductCnt() > productSku.getStock() - cartItem.getItemQuantity()) {
+            return R.ok(RespCode.PRODUCT_STOCK_OVER.getCode(), "商品库存不足！");
+        }
+
+        // 已存在该规格商品的，增加购物车商品数量
+        cartItem.setItemQuantity(requestParam.getProductCnt() + cartItem.getItemQuantity());
+        if (!cartService.update(cartItem)) {
+            return R.ok("添加失败！");
+        }
+
+        return R.ok("已添加！");
+    }
+
+    @PutMapping
+    R update(@RequestBody OmsCartRequestParam requestParam) {
+        // 检查购物车信息是否存在
+        OmsCartItem cartItem = cartService.getById(requestParam.getId());
+        if (cartItem == null) {
+            return R.ok("购物车信息不存在！");
+        }
+
+        // 检查商品规格
+        PmsProductSku productSku = productSkuService.getById(requestParam.getSkuId());
+        if (productSku == null) {
+            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品规格不存在！");
+        }
+
+        // 检查商品库存
+        if (requestParam.getProductCnt() > productSku.getStock()) {
+            return R.ok(RespCode.PRODUCT_STOCK_OVER.getCode(), "商品库存不足！");
+        }
+
+        if (!cartService.update(cartItem, productSku, requestParam)) {
+            return R.ok("更新失败！");
+        }
+
+        return R.ok("已更新！");
+    }
+
+    @PutMapping("change-check-status")
+    R changeCartItemCheckStatus(@RequestBody Set<Long> ids) {
+        if (!cartService.changeCheckStatusByIds(ids)) {
+            return R.ok("更新失败！");
+        }
+
+        return R.ok("已更新！");
+    }
+
+    @DeleteMapping
+    R delete(@RequestBody Set<Long> ids) {
+        if (ids.isEmpty()) {
+            return R.ok("已删除！");
+        }
+
+        return cartService.deleteByIds(ids) ? R.ok("已移除！") : R.ok(RespCode.DELETE_FAILURE.getCode(), "移除失败！");
+    }
+
+    @DeleteMapping("clear")
+    public R clear() {
+        if (!cartService.clearCartItems()) {
+            return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), "删除失败！");
+        }
+        return R.ok("已删除！");
+    }
+}

@@ -6,6 +6,9 @@ import lombok.Getter;
 public enum RespCode {
     SUCCESS(200000, "success"),
 
+    // 商品异常
+    PRODUCT_STOCK_OVER(400001, "商品库存不足！"),
+
     // 用户认证
     UNAUTHORIZED(401001, "请先登录！"),
     AUTHORIZED_FAILED(401002, "用户名或密码错误！"),

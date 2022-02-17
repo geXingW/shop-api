@@ -81,7 +81,7 @@ public class PmsProductController {
         // 获取商品价格和库存
         List<PmsProductPriceRequestParam.Option> spData = requestParam.getOptions().stream().sorted(Comparator.comparing(PmsProductPriceRequestParam.Option::getId))
                 .collect(Collectors.toList());
-        PmsProductSku productSku = pmsProductSkuService.getByIdAndSkuData(id, spData);
+        PmsProductSku productSku = pmsProductSkuService.getByProductIdAndSkuData(id, spData);
 
         // 查询不到该Sku信息，直接返回默认值
         if (productSku == null) {

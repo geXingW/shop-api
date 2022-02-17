@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 public class PmsProductSkuVO {
     private String productId;
 
+    private Long skuId;
+
     private BigDecimal price = new BigDecimal(0);
 
     private int stock = 0;
@@ -28,5 +30,6 @@ public class PmsProductSkuVO {
         this.price = productSku.getPrice();
         this.stock = productSku.getStock();
         this.lowStock = productSku.getLowStock();
+        this.skuId = productSku.getId();
     }
 }

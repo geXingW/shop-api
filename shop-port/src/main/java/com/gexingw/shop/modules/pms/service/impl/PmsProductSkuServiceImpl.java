@@ -17,11 +17,16 @@ public class PmsProductSkuServiceImpl implements PmsProductSkuService {
     PmsProductSkuMapper productSkuMapper;
 
     @Override
-    public PmsProductSku getByIdAndSkuData(String id, List<PmsProductPriceRequestParam.Option> spData) {
+    public PmsProductSku getById(Long id) {
+        return productSkuMapper.selectById(id);
+    }
+
+    @Override
+    public PmsProductSku getByProductIdAndSkuData(String productId, List<PmsProductPriceRequestParam.Option> spData) {
         String spDataJson = JSON.toJSONString(spData);
 
         QueryWrapper<PmsProductSku> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("product_id", id).eq("sp_data", spDataJson);
+        queryWrapper.eq("product_id", productId).eq("sp_data", spDataJson);
 
         return productSkuMapper.selectOne(queryWrapper);
     }
