@@ -13,4 +13,6 @@ public interface CityService {
     Integer findByName(String region);
 
     SysCity findByPCRNames(String province, String city, String region);
+
+    SysCity findByCode(Integer provinceCode);
 }

@@ -13,7 +13,16 @@ public interface UmsMemberRecvAddressService {
 
     boolean deleteByIds(Set<Long> ids);
 
-    boolean update(UmsMemberRecvAddress requestParam);
+    boolean update(UmsMemberRecvAddressRequestParam requestParam);
 
     boolean updateAddressDefaultStatusExcludeId(Long id);
+
+    UmsMemberRecvAddress getById(Long id);
+
+    boolean setDefault(UmsMemberRecvAddress id);
+
+    boolean setFirstAddressAsDefault();
+
+    UmsMemberRecvAddress getDefaultAddress();
+
 }

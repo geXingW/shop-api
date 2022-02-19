@@ -45,6 +45,7 @@ public class OmsCartController {
 
         // 购物车总价
         BigDecimal cartTotalPrice = new BigDecimal(0);
+        Long cartItemCount = 0L;
 
         List<OmsCartVO> cartVOs = new ArrayList<>();
         for (OmsCartItem cartItem : cartItems) {
@@ -55,6 +56,7 @@ public class OmsCartController {
             // 如果商品被选中，累加商品价格
             if (cartItem.getChecked() == 1) {
                 cartTotalPrice = cartTotalPrice.add(cartVO.getItemTotalPrice());
+                cartItemCount += cartItem.getItemQuantity();
             }
 
             cartVOs.add(cartVO);
@@ -63,6 +65,7 @@ public class OmsCartController {
         HashMap<String, Object> result = new HashMap<>();
         result.put("cartTotalPrice", cartTotalPrice);
         result.put("cartItems", cartVOs);
+        result.put("cartItemCount", cartItemCount);
 
         return R.ok(result);
     }

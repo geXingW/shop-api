@@ -127,4 +127,9 @@ public class CityServiceImpl implements CityService {
 
         return cityMapper.findByNameAndParentCode(region, cityBo.getCode());
     }
+
+    @Override
+    public SysCity findByCode(Integer provinceCode) {
+        return cityMapper.selectOne(new QueryWrapper<SysCity>().eq("code", provinceCode));
+    }
 }

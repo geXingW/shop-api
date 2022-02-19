@@ -9,6 +9,10 @@ import lombok.Data;
 @TableName("ums_member_recv_address")
 public class UmsMemberRecvAddress {
 
+    public static Integer ADDRESS_DEFAULT = 1;  // 默认地址
+
+    public static Integer ADDRESS_NOT_DEFAULT = 0; // 非默认地址
+
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
@@ -22,11 +26,15 @@ public class UmsMemberRecvAddress {
 
     private Integer postCode;
 
-    private String province;
+    private String provinceName;
 
-    private String city;
+    private Integer provinceCode;
 
-    private String region;
+    private String cityName;
+    private Integer cityCode;
+
+    private String regionName;
+    private Integer regionCode;
 
     private String detailAddress;
 }
