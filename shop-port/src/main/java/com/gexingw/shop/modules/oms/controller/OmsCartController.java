@@ -1,11 +1,13 @@
 package com.gexingw.shop.modules.oms.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gexingw.shop.bo.oms.OmsCartItem;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.bo.pms.PmsProductSku;
 import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.modules.oms.dto.OmsCartRequestParam;
+import com.gexingw.shop.modules.oms.dto.OmsCartSearchParam;
 import com.gexingw.shop.modules.oms.service.CartService;
 import com.gexingw.shop.modules.oms.vo.OmsCartVO;
 import com.gexingw.shop.modules.pms.service.PmsProductService;
@@ -38,10 +40,19 @@ public class OmsCartController {
     FileConfig fileConfig;
 
     @GetMapping
-    R index() {
+    R index(OmsCartSearchParam searchParam) {
         // 查询购物车商品信息
         Long memberId = AuthUtil.getAuthId();
-        List<OmsCartItem> cartItems = cartService.getListByMemberId(memberId);
+
+        QueryWrapper<OmsCartItem> queryWrapper = new QueryWrapper<>();
+        // 按照更新时间 + 添加购物车的时间排序
+        queryWrapper.orderByDesc("update_time", "create_time");
+
+        if (searchParam.getChecked() != null) {
+            queryWrapper.eq("checked", searchParam.getChecked());
+        }
+
+        List<OmsCartItem> cartItems = cartService.search(queryWrapper);
 
         // 购物车总价
         BigDecimal cartTotalPrice = new BigDecimal(0);

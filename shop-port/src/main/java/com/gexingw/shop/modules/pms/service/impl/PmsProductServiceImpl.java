@@ -3,6 +3,7 @@ package com.gexingw.shop.modules.pms.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gexingw.shop.bo.oms.OmsCartItem;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.mapper.pms.PmsProductMapper;
 import com.gexingw.shop.modules.pms.dto.product.PmsProductSearchRequestParam;
@@ -10,6 +11,7 @@ import com.gexingw.shop.modules.pms.service.PmsProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,15 +32,6 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Override
     public List<PmsProduct> getByIds(List<String> ids) {
         return productMapper.selectBatchIds(ids);
-    }
-
-    @Override
-    public boolean decrProductStockById(String id, Integer quantity) {
-        try {
-            return productMapper.decrStock(id, quantity) > 0;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     @Override
@@ -63,5 +56,21 @@ public class PmsProductServiceImpl implements PmsProductService {
         );
 
         return productMapper.selectPage(page, queryWrapper);
+    }
+
+    @Override
+    public boolean lockStockByProductId(String id, Integer quantity) {
+        return productMapper.lockStock(id, quantity) > 0;
+    }
+
+    @Override
+    public boolean addProductSaleCount(ArrayList<OmsCartItem> cartItems) {
+        for (OmsCartItem cartItem : cartItems) {
+            if (!productMapper.addSaleCount(cartItem.getItemId(), cartItem.getItemQuantity())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -13,8 +13,7 @@ import java.util.Date;
 
 @Data
 public class OmsOrder {
-
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
     private Long memberId;

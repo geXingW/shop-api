@@ -30,4 +30,9 @@ public class PmsProductSkuServiceImpl implements PmsProductSkuService {
 
         return productSkuMapper.selectOne(queryWrapper);
     }
+
+    @Override
+    public boolean lockStockBySkuId(Long id, Integer quantity) {
+        return productSkuMapper.lockStock(id, quantity) > 0;
+    }
 }

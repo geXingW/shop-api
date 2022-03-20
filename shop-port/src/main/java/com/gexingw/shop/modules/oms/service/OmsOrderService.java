@@ -10,10 +10,10 @@ import com.gexingw.shop.modules.oms.dto.OmsOrderRequestParam;
 import java.util.List;
 import java.util.Set;
 
-public interface OrderService {
+public interface OmsOrderService {
     IPage<OmsOrder> search(QueryWrapper<OmsOrder> queryWrapper, IPage<OmsOrder> page);
 
-    OmsOrder findById(Long id);
+    OmsOrder getById(String id);
 
     Long save(OmsOrderRequestParam requestParam);
 
@@ -21,7 +21,7 @@ public interface OrderService {
 
     boolean deleteByIds(Set<Long> ids);
 
-    List<OmsOrderItemDetail> getOrderItemDetailsByOrderId(Long orderId);
+    List<OmsOrderItemDetail> getOrderItemDetailsByOrderId(String orderId);
 
-    OmsOrderRecvAddress getOrderRecvAddressByOrderId(Long orderId);
+    OmsOrderRecvAddress getOrderRecvAddressByOrderId(String orderId);
 }

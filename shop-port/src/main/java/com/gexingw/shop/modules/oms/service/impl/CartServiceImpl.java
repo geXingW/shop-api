@@ -6,19 +6,13 @@ import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.bo.pms.PmsProductSku;
 import com.gexingw.shop.constant.OmsCartConstant;
 import com.gexingw.shop.exception.DBOperationException;
-import com.gexingw.shop.modules.oms.dto.OmsCartRequestParam;
 import com.gexingw.shop.mapper.oms.OmsCartItemMapper;
+import com.gexingw.shop.modules.oms.dto.OmsCartRequestParam;
 import com.gexingw.shop.modules.oms.service.CartService;
-import com.gexingw.shop.util.AuthUtil;
-import com.gexingw.shop.modules.oms.vo.OmsCartItemVo;
-import com.gexingw.shop.utils.R;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -42,19 +36,6 @@ public class CartServiceImpl implements CartService {
         QueryWrapper<OmsCartItem> queryWrapper = new QueryWrapper<OmsCartItem>().eq("member_id", memberId)
                 .eq("item_id", itemId);
         return cartItemMapper.selectOne(queryWrapper);
-    }
-
-    @Override
-    public boolean deleteByItemIds(Set<Long> ids) {
-        return cartItemMapper.delete(new QueryWrapper<OmsCartItem>().in("item_id", ids)) > 0;
-    }
-
-    @Override
-    public boolean delCartItemByItemIds(List<String> itemIds) {
-        long memberId = AuthUtil.getAuthId();
-        QueryWrapper<OmsCartItem> queryWrapper = new QueryWrapper<OmsCartItem>().eq("member_id", memberId).in("item_id", itemIds);
-
-        return cartItemMapper.delete(queryWrapper) > 0;
     }
 
     @Override
@@ -146,6 +127,21 @@ public class CartServiceImpl implements CartService {
     @Override
     public boolean deleteByIds(Set<Long> ids) {
         return cartItemMapper.delete(new QueryWrapper<OmsCartItem>().in("id", ids)) >= 0;
+    }
+
+    @Override
+    public List<OmsCartItem> getByIds(List<Long> ids) {
+        return cartItemMapper.selectBatchIds(ids);
+    }
+
+    @Override
+    public boolean delCartItemsByIds(List<Long> ids) {
+        return cartItemMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public List<OmsCartItem> search(QueryWrapper<OmsCartItem> queryWrapper) {
+        return cartItemMapper.selectList(queryWrapper);
     }
 
 }

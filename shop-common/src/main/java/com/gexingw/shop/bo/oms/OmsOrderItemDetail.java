@@ -14,10 +14,10 @@ import java.util.Date;
 @Data
 public class OmsOrderItemDetail {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private String id;
 
-    private Long itemId;
+    private String itemId;
 
     private String itemPic;
 
@@ -28,6 +28,8 @@ public class OmsOrderItemDetail {
     private BigDecimal itemPrice;
 
     private Integer itemQuantity;
+
+    private String itemSkuData;
 
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")

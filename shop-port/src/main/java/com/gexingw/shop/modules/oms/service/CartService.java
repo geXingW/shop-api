@@ -1,5 +1,6 @@
 package com.gexingw.shop.modules.oms.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gexingw.shop.bo.oms.OmsCartItem;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.bo.pms.PmsProductSku;
@@ -12,10 +13,6 @@ public interface CartService {
     List<OmsCartItem> getListByMemberId(Long memberId);
 
     OmsCartItem getByItemIdAndMemberId(String itemId, Long memberId);
-
-    boolean deleteByItemIds(Set<Long> ids);
-
-    boolean delCartItemByItemIds(List<String> itemIds);
 
     boolean save(OmsCartRequestParam requestParam, PmsProduct product, PmsProductSku productSku);
 
@@ -32,4 +29,10 @@ public interface CartService {
     boolean clearCartItems();
 
     boolean deleteByIds(Set<Long> ids);
+
+    List<OmsCartItem> getByIds(List<Long> ids);
+
+    boolean delCartItemsByIds(List<Long> collect);
+
+    List<OmsCartItem> search(QueryWrapper<OmsCartItem> queryWrapper);
 }

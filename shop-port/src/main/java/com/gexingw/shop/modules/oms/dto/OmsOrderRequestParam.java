@@ -8,49 +8,35 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class OmsOrderRequestParam {
-    private Long id;
+    private String id;
 
     private Long memberId;
 
     private Integer sourceType;
 
+    private Integer payType;
+
     private Integer status;
 
     private String note;
 
-    private List<OrderItems> orderItems;
+    private List<OrderItem> orderItems;
 
-    private RecvAddress recvAddress;
+    private Long addressId;
 
     /**
      * 订单商品信息
      */
     @Data
-    public static class OrderItems {
+    public static class OrderItem {
+        private Long cartId;
+
         private String itemId;
 
+        private Long skuId;
+
         private Integer itemQuantity;
+
     }
 
-    /**
-     * 订单收货地址
-     */
-    @Data
-    public static class RecvAddress {
-        private Long recvAddressId;
-
-        private String recvName;
-
-        private String recvPhone;
-
-        private Integer recvPostCode;
-
-        private String recvProvince;
-
-        private String recvCity;
-
-        private String recvRegion;
-
-        private String recvDetailAddress;
-    }
 }

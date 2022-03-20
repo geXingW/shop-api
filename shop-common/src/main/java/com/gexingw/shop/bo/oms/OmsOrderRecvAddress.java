@@ -1,7 +1,6 @@
 package com.gexingw.shop.bo.oms;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,26 +11,26 @@ import java.util.Date;
 
 @Data
 public class OmsOrderRecvAddress {
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "id")
+    private String id;
 
-    private Long orderId;
+    private String orderId;
 
     private Long recvAddressId;
 
-    private String recvName;
+    private String name;
 
-    private String recvPhone;
+    private String phoneNumber;
 
-    private Integer recvPostCode;
+    private Integer postCode;
 
-    private String recvProvince;
+    private String provinceName;
 
-    private String recvCity;
+    private String cityName;
 
-    private String recvRegion;
+    private String regionName;
 
-    private String recvDetailAddress;
+    private String detailAddress;
 
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")

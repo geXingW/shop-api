@@ -36,7 +36,7 @@ public class OmsOrderDetailVO {
     @AllArgsConstructor
     @NoArgsConstructor
     private static class OrderItem {
-        private Long itemId;
+        private String itemId;
 
         private String itemName;
 
@@ -72,7 +72,8 @@ public class OmsOrderDetailVO {
     }
 
     public void setRecvAddress(OmsOrderRecvAddress orderRecvAddress) {
-        String fullAddress = orderRecvAddress.getRecvProvince() + orderRecvAddress.getRecvCity() + orderRecvAddress.getRecvRegion() + orderRecvAddress.getRecvDetailAddress();
-        recvAddress = new RecvAddress(orderRecvAddress.getRecvName(), orderRecvAddress.getRecvPhone(), fullAddress);
+        String fullAddress = orderRecvAddress.getProvinceName() + orderRecvAddress.getCityName() + orderRecvAddress.getRegionName()
+                + orderRecvAddress.getDetailAddress();
+        recvAddress = new RecvAddress(orderRecvAddress.getName(), orderRecvAddress.getPhoneNumber(), fullAddress);
     }
 }

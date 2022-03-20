@@ -10,4 +10,6 @@ public interface PmsProductSkuService {
     PmsProductSku getById(Long id);
 
     PmsProductSku getByProductIdAndSkuData(String productId, List<PmsProductPriceRequestParam.Option> spData);
+
+    boolean lockStockBySkuId(Long id, Integer quantity);
 }
