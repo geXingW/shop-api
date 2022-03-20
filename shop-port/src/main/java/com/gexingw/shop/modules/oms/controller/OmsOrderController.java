@@ -118,9 +118,10 @@ public class OmsOrderController {
         orderDetailVO.setTotalAmount(order.getTotalAmount());
         orderDetailVO.setItemAmount(order.getItemAmount());
         orderDetailVO.setFreightAmount(order.getFreightAmount());
+        orderDetailVO.setPayAmount(order.getPayAmount());
 
         // 查询订单商品信息
-        orderDetailVO.setOrderItems(orderService.getOrderItemDetailsByOrderId(id));
+        orderDetailVO.setOrderItems(orderService.getOrderItemDetailsByOrderId(id), fileConfig);
 
         orderDetailVO.setRecvAddress(orderService.getOrderRecvAddressByOrderId(id));
 
@@ -132,7 +133,7 @@ public class OmsOrderController {
         // 设置订单用户
         requestParam.setMemberId(AuthUtil.getAuthId());
 
-        Long orderId;   // 订单Id
+        String orderId;   // 订单Id
 
         // 保存订单
         try {
@@ -145,7 +146,7 @@ public class OmsOrderController {
             return R.ok(RespCode.SAVE_FAILURE.getCode(), "订单创建失败！");
         }
 
-        return R.ok(orderId, "已创建！");
+        return R.ok("已创建！", orderId);
     }
 
     @PutMapping("/{id}")

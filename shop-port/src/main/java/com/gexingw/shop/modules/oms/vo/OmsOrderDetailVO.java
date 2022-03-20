@@ -2,10 +2,13 @@ package com.gexingw.shop.modules.oms.vo;
 
 import com.gexingw.shop.bo.oms.OmsOrderItemDetail;
 import com.gexingw.shop.bo.oms.OmsOrderRecvAddress;
+import com.gexingw.shop.config.FileConfig;
+import com.gexingw.shop.utils.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,48 +29,53 @@ public class OmsOrderDetailVO {
 
     private BigDecimal itemAmount;
 
+    private BigDecimal payAmount;
+
     private BigDecimal freightAmount;
 
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
 
     private RecvAddress recvAddress;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class OrderItem {
-        private String itemId;
+    private static class Item {
+        private String id;
 
-        private String itemName;
+        private String name;
 
-        private Integer itemQuantity;
+        private Integer quantity;
 
-        private BigDecimal itemPrice;
+        private BigDecimal price;
 
-        private BigDecimal itemAmount;
+        private BigDecimal amount;
+
+        private String pic;
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     private static class RecvAddress {
-        private String recvName;
+        private String name;
 
-        private String recvPhone;
+        private String phone;
 
-        private String recvDetailAddress;
+        private String detailAddress;
     }
 
-    public void setOrderItems(List<OmsOrderItemDetail> orderItemDetails) {
+    public void setOrderItems(List<OmsOrderItemDetail> orderItemDetails, FileConfig fileConfig) {
         for (OmsOrderItemDetail orderItemDetail : orderItemDetails) {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setItemId(orderItemDetail.getItemId());
-            orderItem.setItemName(orderItemDetail.getItemName());
-            orderItem.setItemQuantity(orderItemDetail.getItemQuantity());
-            orderItem.setItemPrice(orderItemDetail.getItemPrice());
-            orderItem.setItemAmount(orderItemDetail.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getItemQuantity())));
+            Item orderItem = new Item();
+            orderItem.setId(orderItemDetail.getItemId());
+            orderItem.setName(orderItemDetail.getItemName());
+            orderItem.setQuantity(orderItemDetail.getItemQuantity());
+            orderItem.setPrice(orderItemDetail.getItemPrice());
+            orderItem.setAmount(orderItemDetail.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
+            orderItem.setPic(this.getItemPic(orderItemDetail.getItemPic(), fileConfig));
 
-            orderItems.add(orderItem);
+            this.items.add(orderItem);
         }
     }
 
@@ -75,5 +83,12 @@ public class OmsOrderDetailVO {
         String fullAddress = orderRecvAddress.getProvinceName() + orderRecvAddress.getCityName() + orderRecvAddress.getRegionName()
                 + orderRecvAddress.getDetailAddress();
         recvAddress = new RecvAddress(orderRecvAddress.getName(), orderRecvAddress.getPhoneNumber(), fullAddress);
+    }
+
+    private String getItemPic(String picUri, FileConfig fileConfig) {
+        String domain = fileConfig.getDiskHost();
+
+        String separator = File.separator;
+        return StringUtil.trim(domain, separator) + separator + picUri;
     }
 }

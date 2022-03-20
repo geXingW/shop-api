@@ -15,7 +15,7 @@ public interface OmsOrderService {
 
     OmsOrder getById(String id);
 
-    Long save(OmsOrderRequestParam requestParam);
+    String save(OmsOrderRequestParam requestParam);
 
     boolean update(OmsOrderRequestParam requestParam);
 

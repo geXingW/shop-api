@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.gexingw.shop.bo.oms.OmsCartItem;
-import com.gexingw.shop.bo.pms.PmsProductSku;
 import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.constant.OmsCartConstant;
 import com.gexingw.shop.utils.StringUtil;
@@ -43,11 +42,11 @@ public class OmsCartVO {
 
     private BigDecimal itemTotalPrice;
 
-    public OmsCartVO(OmsCartItem cartItem, PmsProductSku productSku, FileConfig fileConfig) {
+    public OmsCartVO(OmsCartItem cartItem, int itemStock, FileConfig fileConfig) {
         BeanUtil.copyProperties(cartItem, this, "skuData", "itemPic", "checked");
 
         // 商品库存量
-        this.itemStock = productSku.getStock();
+        this.itemStock = itemStock;
 
         // 解析商品SKU数据
         this.setSkuData(cartItem);

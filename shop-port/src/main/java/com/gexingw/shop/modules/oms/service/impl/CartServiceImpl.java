@@ -43,13 +43,16 @@ public class CartServiceImpl implements CartService {
         OmsCartItem cartItem = new OmsCartItem();
         cartItem.setMemberId(requestParam.getMemberId());
         cartItem.setItemId(product.getId());
-        cartItem.setItemPrice(productSku.getPrice());
         cartItem.setItemQuantity(requestParam.getProductCnt());
         cartItem.setItemPic(product.getPic());
         cartItem.setItemTitle(product.getTitle());
         cartItem.setItemSubTitle(product.getSubTitle());
-        cartItem.setSkuId(productSku.getId());
-        cartItem.setSkuData(productSku.getSpData());
+        cartItem.setItemPrice(product.getSalePrice());
+        if (productSku != null) {
+            cartItem.setItemPrice(productSku.getPrice());
+            cartItem.setSkuId(productSku.getId());
+            cartItem.setSkuData(productSku.getSpData());
+        }
 
         return cartItemMapper.insert(cartItem) > 0;
     }
@@ -75,7 +78,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public boolean update(OmsCartItem cartItem, PmsProductSku productSku, OmsCartRequestParam requestParam) {
         // 规格是否有变动
-        if (!Objects.equals(cartItem.getSkuId(), requestParam.getSkuId())) {
+        if (productSku != null && !Objects.equals(cartItem.getSkuId(), requestParam.getSkuId())) {
             cartItem.setSkuId(productSku.getId());
             cartItem.setSkuData(productSku.getSpData());
         }

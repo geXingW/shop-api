@@ -68,7 +68,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long save(OmsOrderRequestParam requestParam) {
+    public String save(OmsOrderRequestParam requestParam) {
         // 订单
         OmsOrder order = new OmsOrder();
 
@@ -100,7 +100,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             boolean stockLocked = false;
 
             // 如果存在商品Sku，检查商品Sku信息
-            if (reqOrderItem.getSkuId() != null) {
+            if (reqOrderItem.getSkuId() != null && reqOrderItem.getSkuId() != 0) {
                 PmsProductSku productSku = productSkuService.getById(cartItem.getSkuId());
                 if (productSku == null) {
                     throw new ResourceNotExistException("购物车商品规格错误！");
@@ -162,7 +162,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             throw new DBOperationException("商品销量更新失败！");
         }
 
-        return Long.valueOf(order.getId());
+        return order.getId();
     }
 
     /**

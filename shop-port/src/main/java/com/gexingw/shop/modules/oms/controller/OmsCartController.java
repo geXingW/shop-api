@@ -61,8 +61,14 @@ public class OmsCartController {
         List<OmsCartVO> cartVOs = new ArrayList<>();
         for (OmsCartItem cartItem : cartItems) {
 
-            PmsProductSku productSku = productSkuService.getById(cartItem.getSkuId());
-            OmsCartVO cartVO = new OmsCartVO(cartItem, productSku, fileConfig);
+            int itemStock = 0;
+            if (cartItem.getSkuId() != 0) {
+                itemStock = productSkuService.getById(cartItem.getSkuId()).getStock();
+            } else {
+                itemStock = productService.getById(cartItem.getItemId()).getStock();
+            }
+
+            OmsCartVO cartVO = new OmsCartVO(cartItem, itemStock, fileConfig);
 
             // 如果商品被选中，累加商品价格
             if (cartItem.getChecked() == 1) {
@@ -90,25 +96,35 @@ public class OmsCartController {
             return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品不存在！");
         }
 
-        // 检查商品规格
-        PmsProductSku productSku = productSkuService.getById(requestParam.getSkuId());
-        if (productSku == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品规格不存在！");
+        Integer stock = 0;
+        PmsProductSku productSku = null;
+
+        // 无规格商品
+        if (requestParam.getSkuId() == 0) {
+            stock = product.getStock();
+        } else {
+            // 检查商品规格
+            productSku = productSkuService.getById(requestParam.getSkuId());
+            if (productSku == null) {
+                return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品规格不存在！");
+            }
+            stock = productSku.getStock();
         }
 
         // 检查商品库存
-        if (requestParam.getProductCnt() > productSku.getStock()) {
+        if (requestParam.getProductCnt() > stock) {
             return R.ok(RespCode.PRODUCT_STOCK_OVER.getCode(), "商品库存不足！");
         }
 
         // 查看当前商品在购物车中是否存在
         OmsCartItem cartItem = cartService.getBySkuIdAndMemberId(requestParam.getSkuId(), requestParam.getMemberId());
         if (cartItem == null) { // 购物车中不存在该规格的商品，新增购物车
-            return cartService.save(requestParam, product, productSku) ? R.ok("已添加！") : R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
+            boolean saved = productSku == null ? cartService.save(requestParam, product, null) : cartService.save(requestParam, product, productSku);
+            return saved ? R.ok("已添加！") : R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
         }
 
         // 检查商品库存
-        if (requestParam.getProductCnt() > productSku.getStock() - cartItem.getItemQuantity()) {
+        if (requestParam.getProductCnt() > stock - cartItem.getItemQuantity()) {
             return R.ok(RespCode.PRODUCT_STOCK_OVER.getCode(), "商品库存不足！");
         }
 
@@ -129,14 +145,28 @@ public class OmsCartController {
             return R.ok("购物车信息不存在！");
         }
 
-        // 检查商品规格
-        PmsProductSku productSku = productSkuService.getById(requestParam.getSkuId());
-        if (productSku == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品规格不存在！");
+        PmsProduct product = productService.getById(cartItem.getItemId());
+        if (product == null) {
+            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品不存在！");
+        }
+
+        Integer stock = 0;
+        PmsProductSku productSku = null;
+
+        // 无规格商品
+        if (requestParam.getSkuId() == 0) {
+            stock = product.getStock();
+        } else {
+            // 检查商品规格
+            productSku = productSkuService.getById(requestParam.getSkuId());
+            if (productSku == null) {
+                return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品规格不存在！");
+            }
+            stock = productSku.getStock();
         }
 
         // 检查商品库存
-        if (requestParam.getProductCnt() > productSku.getStock()) {
+        if (requestParam.getProductCnt() > stock) {
             return R.ok(RespCode.PRODUCT_STOCK_OVER.getCode(), "商品库存不足！");
         }
 

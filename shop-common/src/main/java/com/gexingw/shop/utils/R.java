@@ -44,6 +44,10 @@ public class R<T> {
         return new R(RespCode.SUCCESS.getCode(), message, null);
     }
 
+    public static R ok(String message, String data) {
+        return new R(RespCode.SUCCESS.getCode(), message, data);
+    }
+
     public static R ok(String message, Object data) {
         return new R(RespCode.SUCCESS.getCode(), message, data);
     }
