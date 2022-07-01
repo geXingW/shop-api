@@ -34,6 +34,7 @@
         <esay-captcha.version>1.6.2</esay-captcha.version>
         <poi.version>4.1.2</poi.version>
         <hutool.version>5.6.7</hutool.version>
+        <elasticsearch.version>7.15.2</elasticsearch.version>
     </properties>
 
     <dependencies>

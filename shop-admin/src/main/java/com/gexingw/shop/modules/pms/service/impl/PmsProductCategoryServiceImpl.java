@@ -8,14 +8,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.pms.PmsProductAttribute;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.constant.ProductConstant;
-import com.gexingw.shop.modules.pms.dto.category.PmsProductCategoryRequestParam;
 import com.gexingw.shop.mapper.pms.PmsProductCategoryMapper;
 import com.gexingw.shop.mapper.sys.SysUploadMapper;
+import com.gexingw.shop.modules.pms.dto.category.PmsProductCategoryRequestParam;
 import com.gexingw.shop.modules.pms.service.PmsProductCategoryService;
-import com.gexingw.shop.modules.sys.service.UploadService;
-import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.modules.pms.vo.category.PmsProductCategoryAttributeVO;
 import com.gexingw.shop.modules.pms.vo.category.ProductCategoryTreeVO;
+import com.gexingw.shop.modules.sys.service.UploadService;
+import com.gexingw.shop.utils.RedisUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,8 +128,12 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     }
 
     @Override
-    public List<PmsProductCategory> getByIds(List<Long> ids) {
-        return categoryMapper.selectBatchIds(ids);
+    public List<PmsProductCategory> getByProductIds(Set<String> productIds) {
+        if (productIds.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        return categoryMapper.selectList(new QueryWrapper<PmsProductCategory>().in("pid", productIds));
     }
 
     @Override

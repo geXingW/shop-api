@@ -1,7 +1,6 @@
 package com.gexingw.shop.modules.pms.dto.product;
 
 import com.gexingw.shop.config.FileConfig;
-
 import com.gexingw.shop.utils.StringUtil;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -36,7 +35,7 @@ public class PmsProductRequestParam {
 
     @DecimalMin("0.01")
     @DecimalMax("10000000")
-    private BigDecimal price;
+    private BigDecimal salePrice;
 
     @DecimalMin("0.01")
     @DecimalMax("10000000")
@@ -63,7 +62,7 @@ public class PmsProductRequestParam {
 
     private List<Attribute> attributeList = new ArrayList<>();
 
-    private String onSale;
+    private Integer onSale;
 
     private String keywords;
 

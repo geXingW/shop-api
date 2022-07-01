@@ -2,8 +2,8 @@ package com.gexingw.shop.modules.pms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gexingw.shop.bo.pms.PmsProductAttributeValue;
-import com.gexingw.shop.modules.pms.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.mapper.pms.PmsProductAttributeValueMapper;
+import com.gexingw.shop.modules.pms.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.modules.pms.service.PmsProductAttributeValueService;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeV
     PmsProductAttributeValueMapper valueMapper;
 
     @Override
-    public boolean save(Long productId, List<PmsProductRequestParam.Attribute> attributeList) {
+    public boolean save(String productId, List<PmsProductRequestParam.Attribute> attributeList) {
         ArrayList<Map<String, Object>> list = new ArrayList<>();
         for (PmsProductRequestParam.Attribute attribute : attributeList) {
             String attributeValue = attribute.getValue();
@@ -37,12 +37,12 @@ public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeV
     }
 
     @Override
-    public List<PmsProductAttributeValue> getAttributeValuesByPid(Long id) {
+    public List<PmsProductAttributeValue> getAttributeValuesByPid(String id) {
         return valueMapper.selectList(new QueryWrapper<PmsProductAttributeValue>().eq("product_id", id));
     }
 
     @Override
-    public boolean delProductAttributesByPid(Long productId) {
+    public boolean delProductAttributesByPid(String productId) {
         return valueMapper.delete(new QueryWrapper<PmsProductAttributeValue>().eq("product_id", productId)) >= 0;
     }
 
@@ -52,7 +52,7 @@ public class PmsProductAttributeValueServiceImpl implements PmsProductAttributeV
     }
 
     @Override
-    public boolean batchDelProductAttributesByProductIds(Set<Long> ids) {
+    public boolean batchDelProductAttributesByProductIds(Set<String> ids) {
         return valueMapper.delete(new QueryWrapper<PmsProductAttributeValue>().in("product_id", ids)) >= 0;
     }
 

@@ -28,7 +28,7 @@ public class PmsProduct {
     @TableField(exist = false)
     private String categoryName;
 
-    private String onSale;
+    private Integer onSale = 0;
 
     // 销售价
     private BigDecimal salePrice;

@@ -40,4 +40,7 @@ public class OmsOrderRecvAddress {
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     private Date updateTime;
 
+    public String getFullDetailAddress() {
+        return provinceName + cityName + regionName + detailAddress;
+    }
 }

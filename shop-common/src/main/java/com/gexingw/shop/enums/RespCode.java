@@ -37,7 +37,11 @@ public enum RespCode {
     DELETE_FAILURE(504000, "删除失败！"),
     DB_OPERATION_FAILURE(505000, "数据库操作失败！"),
     UPLOAD_FAILURE(506000, "上传失败！"),
-
+    ES_OPERATION_FAILURE(507000, "ES操作失败！"),
+    ES_SAVE_FAILURE(507001, "ES添加失败！"),
+    ES_UPDATE_FAILURE(507002, "ES更新失败！"),
+    ES_DELETE_FAILURE(507003, "ES删除失败！"),
+    ES_QUERY_FAILURE(507004, "ES查询失败！"),
     ;
 
 

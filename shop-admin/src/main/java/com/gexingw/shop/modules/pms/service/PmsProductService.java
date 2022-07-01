@@ -5,24 +5,32 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.modules.pms.dto.product.PmsProductRequestParam;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 public interface PmsProductService {
     IPage<PmsProduct> search(QueryWrapper<PmsProduct> queryWrapper, IPage<PmsProduct> objectPage);
 
-    Long save(PmsProductRequestParam requestParam);
+    String save(PmsProductRequestParam requestParam);
 
-    boolean update(Long productId, PmsProductRequestParam requestParam);
+    boolean update(String productId, PmsProductRequestParam requestParam);
 
     boolean update(PmsProduct product);
 
-    PmsProduct getById(Long id);
+    PmsProduct getById(String id);
 
-    boolean delete(Set<Long> ids);
+    boolean delete(Set<String> ids);
 
-    PmsProduct getRedisProductByProductId(Long productId);
+    PmsProduct getRedisProductByProductId(String productId);
 
-    boolean setRedisProductByProductId(Long productId, PmsProduct product);
+    boolean setRedisProductByProductId(String productId, PmsProduct product);
 
-    void delRedisProductByProductId(Long productId);
+    void delRedisProductByProductId(String productId);
+
+    boolean addProductToES(PmsProduct product) throws IOException;
+
+    boolean delProductFromESById(String id) throws IOException;
+
+    List<PmsProduct> getProductsByIds(Set<String> ids);
 }

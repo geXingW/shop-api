@@ -15,9 +15,9 @@ public interface OrderService {
 
     IPage<OmsOrder> search(QueryWrapper<OmsOrder> queryWrapper, Page<OmsOrder> page);
 
-    OmsOrder findById(Long id);
+    OmsOrder findById(String id);
 
-    List<OmsOrderItemDetail> getOrderItemDetailsByOrderId(Long orderId);
+    List<OmsOrderItemDetail> getOrderItemDetailsByOrderId(String orderId);
 
-    OmsOrderRecvAddress getOrderRecvAddressByOrderId(Long orderId);
+    OmsOrderRecvAddress getOrderRecvAddressByOrderId(String orderId);
 }

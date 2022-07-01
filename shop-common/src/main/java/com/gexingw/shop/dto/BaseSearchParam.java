@@ -2,8 +2,6 @@ package com.gexingw.shop.dto;
 
 import lombok.Data;
 
-import java.util.Arrays;
-
 @Data
 public class BaseSearchParam {
     private int page = 0;
@@ -22,6 +20,10 @@ public class BaseSearchParam {
 
     public int getPage() {
         return page == 0 ? ++page : page;
+    }
+
+    public int getFrom() {
+        return (this.page - 1) * this.size;
     }
 
     public String sortBy() {

@@ -1,25 +1,38 @@
 package com.gexingw.shop.modules.pms.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gexingw.shop.bo.pms.PmsProduct;
 import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.constant.ProductConstant;
-import com.gexingw.shop.modules.pms.dto.product.PmsProductRequestParam;
+import com.gexingw.shop.es.ESProduct;
 import com.gexingw.shop.exception.DBOperationException;
 import com.gexingw.shop.mapper.pms.PmsProductMapper;
-import com.gexingw.shop.modules.pms.service.PmsProductService;
+import com.gexingw.shop.modules.pms.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.modules.pms.service.PmsProductAttributeValueService;
+import com.gexingw.shop.modules.pms.service.PmsProductService;
 import com.gexingw.shop.modules.pms.service.PmsProductSkuService;
+import com.gexingw.shop.utils.FileUtil;
 import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.utils.StringUtil;
+import org.elasticsearch.action.DocWriteResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -41,6 +54,9 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Autowired
     FileConfig fileConfig;
 
+    @Autowired
+    RestHighLevelClient client;
+
     @Override
     public IPage<PmsProduct> search(QueryWrapper<PmsProduct> queryWrapper, IPage<PmsProduct> page) {
         return productMapper.selectPage(page, queryWrapper);
@@ -48,7 +64,7 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long save(PmsProductRequestParam requestParam) {
+    public String save(PmsProductRequestParam requestParam) {
         PmsProduct product = new PmsProduct();
 
         BeanUtils.copyProperties(requestParam, product);
@@ -63,7 +79,7 @@ public class PmsProductServiceImpl implements PmsProductService {
             return null;
         }
 
-        Long productId = Long.valueOf(product.getId());   // 新的商品ID
+        String productId = product.getId();   // 新的商品ID
         if (!attributeValueService.save(productId, requestParam.getAttributeList())) {
             throw new DBOperationException("商品基本属性保存失败!");
         }
@@ -78,7 +94,7 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean update(Long productId, PmsProductRequestParam requestParam) {
+    public boolean update(String productId, PmsProductRequestParam requestParam) {
         PmsProduct product = productMapper.selectById(productId);
         if (product == null) {
             return false;
@@ -125,7 +141,7 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
-    public PmsProduct getById(Long id) {
+    public PmsProduct getById(String id) {
         // 尝试从Redis获取
         PmsProduct product = this.getRedisProductByProductId(id);
         if (product != null) {
@@ -145,7 +161,7 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delete(Set<Long> ids) {
+    public boolean delete(Set<String> ids) {
         // 删除商品关联的属性信息
         if (!attributeValueService.batchDelProductAttributesByProductIds(ids)) {
             throw new DBOperationException("商品属性删除失败！");
@@ -164,7 +180,7 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
-    public PmsProduct getRedisProductByProductId(Long productId) {
+    public PmsProduct getRedisProductByProductId(String productId) {
         Object redisObj = redisUtil.get(String.format(ProductConstant.REDIS_PRODUCT_FORMAT, productId));
         if (redisObj == null) {
             return null;
@@ -174,13 +190,60 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
-    public boolean setRedisProductByProductId(Long productId, PmsProduct product) {
+    public boolean setRedisProductByProductId(String productId, PmsProduct product) {
         return redisUtil.set(String.format(ProductConstant.REDIS_PRODUCT_FORMAT, productId), product);
     }
 
     @Override
-    public void delRedisProductByProductId(Long productId) {
+    public void delRedisProductByProductId(String productId) {
         redisUtil.del(String.format(ProductConstant.REDIS_PRODUCT_FORMAT, productId));
+    }
+
+    @Override
+    public boolean addProductToES(PmsProduct product) throws IOException {
+        String[] albums = product.getAlbumPics().split(",");
+        ArrayList<String> albumsWithFullUrl = new ArrayList<>(albums.length);
+        for (String album : albums) {
+            // 将商品图片拼接为全url
+            albumsWithFullUrl.add(FileUtil.buildFileFullUrl(fileConfig, album));
+        }
+
+        // 拼装ES Product数据
+        ESProduct esProduct = new ESProduct();
+        esProduct.setId(product.getId());
+        esProduct.setTitle(product.getTitle());
+        esProduct.setSalePrice(product.getSalePrice());
+        esProduct.setPic(FileUtil.buildFileFullUrl(fileConfig, product.getPic()));
+        esProduct.setAlbums(albumsWithFullUrl);
+
+        // 商品Sku可选项
+        if (!"".equals(product.getSkuOptions())) {
+            esProduct.setSkuOptions(JSON.parseObject(product.getSkuOptions(), new TypeReference<List<ESProduct.ESProductSku>>() {
+            }));
+        }
+
+        // 组装ES请求
+        IndexRequest indexRequest = new IndexRequest("product").id(product.getId())
+                .source(JSON.toJSONString(esProduct), XContentType.JSON);
+        IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
+
+        return indexResponse.getResult() == DocWriteResponse.Result.CREATED;
+    }
+
+    @Override
+    public boolean delProductFromESById(String id) throws IOException {
+        DeleteRequest deleteRequest = new DeleteRequest("product").id(id);
+        DeleteResponse deleteResponse = client.delete(deleteRequest, RequestOptions.DEFAULT);
+        return deleteResponse.getResult() == DocWriteResponse.Result.DELETED;
+    }
+
+    @Override
+    public List<PmsProduct> getProductsByIds(Set<String> ids) {
+        if (ids.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        return productMapper.selectList(new QueryWrapper<PmsProduct>().in("id", ids));
     }
 
     private void removeProductImageDomain(PmsProduct product, PmsProductRequestParam requestParam) {

@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Set;
 
 public interface PmsProductAttributeValueService {
-    boolean save(Long productId, List<PmsProductRequestParam.Attribute> attributeList);
+    boolean save(String productId, List<PmsProductRequestParam.Attribute> attributeList);
 
-    List<PmsProductAttributeValue> getAttributeValuesByPid(Long id);
+    List<PmsProductAttributeValue> getAttributeValuesByPid(String id);
 
-    boolean delProductAttributesByPid(Long productId);
+    boolean delProductAttributesByPid(String productId);
 
     boolean updateAttributeNameByAttributeId(Long attributeId, String attributeName);
 
-    boolean batchDelProductAttributesByProductIds(Set<Long> ids);
+    boolean batchDelProductAttributesByProductIds(Set<String> ids);
 }

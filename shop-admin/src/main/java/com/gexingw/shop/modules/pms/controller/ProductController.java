@@ -8,23 +8,21 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.pms.*;
 import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.config.FileConfig;
+import com.gexingw.shop.constant.ProductConstant;
 import com.gexingw.shop.constant.UploadConstant;
+import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.modules.pms.dto.product.PmsProductRequestParam;
 import com.gexingw.shop.modules.pms.dto.product.PmsProductSearchParam;
-import com.gexingw.shop.enums.RespCode;
-import com.gexingw.shop.modules.pms.service.PmsProductAttributeService;
-import com.gexingw.shop.modules.pms.service.PmsProductCategoryService;
-import com.gexingw.shop.modules.pms.service.PmsProductService;
+import com.gexingw.shop.modules.pms.service.*;
+import com.gexingw.shop.modules.pms.vo.product.PmsProductInfoVO;
 import com.gexingw.shop.modules.sys.service.UploadService;
-import com.gexingw.shop.modules.pms.service.PmsProductAttributeValueService;
-import com.gexingw.shop.modules.pms.service.PmsProductSkuService;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
-import com.gexingw.shop.modules.pms.vo.product.PmsProductInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +109,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public R show(@PathVariable Long id) {
+    public R show(@PathVariable String id) {
         PmsProduct product = productService.getById(id);
         if (product == null) {
             return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到该商品信息！");
@@ -169,7 +167,7 @@ public class ProductController {
 
     @PostMapping
     public R add(@Validated @RequestBody PmsProductRequestParam requestParam) {
-        Long productId = productService.save(requestParam);
+        String productId = productService.save(requestParam);
         if (productId == null) {
             return R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
         }
@@ -188,7 +186,7 @@ public class ProductController {
         }
 
         for (String pic : pics) {
-            SysUpload upload = uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_MODULE_PRODUCT, UploadConstant.UPLOAD_TYPE_IMAGE, pic);
+            SysUpload upload = uploadService.attachPicToSource(Long.valueOf(productId), UploadConstant.UPLOAD_MODULE_PRODUCT, UploadConstant.UPLOAD_TYPE_IMAGE, pic);
             if (upload == null) {
                 return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), "图片上传失败！");
             }
@@ -198,7 +196,7 @@ public class ProductController {
     }
 
     @PutMapping("{id}")
-    public R update(@PathVariable("id") Long productId, @RequestBody PmsProductRequestParam requestParam) {
+    public R update(@PathVariable("id") String productId, @RequestBody PmsProductRequestParam requestParam) {
         PmsProduct product = productService.getById(productId);
         if (product == null) {
             return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到商品信息！");
@@ -220,6 +218,26 @@ public class ProductController {
             categoryService.incrProductCntByCategoryId(requestParam.getCategoryId());
         }
 
+        // 清除商品redis缓存
+        productService.delRedisProductByProductId(productId);
+
+        try {
+            // 删除ES信息
+            if (!productService.delProductFromESById(productId)) {
+                return R.ok(RespCode.ES_DELETE_FAILURE.getCode(), "ES删除失败！");
+            }
+
+            // 如果商品是上架状态，需要将旧的ES信息删除，并写入新的ES信息
+            if (ProductConstant.ON_SALE.equals(product.getOnSale())) { // 上架
+                product = productService.getById(productId);
+                if (!productService.addProductToES(product)) {
+                    return R.ok(RespCode.ES_SAVE_FAILURE.getCode(), "ES保存失败！");
+                }
+            }
+        } catch (IOException e) {
+            return R.ok(RespCode.ES_OPERATION_FAILURE.getCode(), "ES更新失败！");
+        }
+
         // 更新商品图片
 //        if (!product.getPic().equals(requestParam.getPic())) {
 //            // 删除旧图片
@@ -229,14 +247,11 @@ public class ProductController {
 //            uploadService.attachPicToSource(productId, UploadConstant.UPLOAD_MODULE_PRODUCT, UploadConstant.UPLOAD_TYPE_IMAGE, requestParam.getPic());
 //        }
 
-        // 清除商品redis缓存
-        productService.delRedisProductByProductId(productId);
-
         return R.ok("已更新！");
     }
 
     @PutMapping("change-sale-status/{id}")
-    public R changeSaleStatus(@PathVariable("id") Long productId, @RequestBody PmsProductRequestParam requestParam) {
+    public R changeSaleStatus(@PathVariable("id") String productId, @RequestBody PmsProductRequestParam requestParam) {
         PmsProduct product = productService.getById(productId);
         if (product == null) {
             return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品不存在！");
@@ -247,6 +262,28 @@ public class ProductController {
             return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), "更新失败！");
         }
 
+        // 如果商品上架，将商品写入ES
+        if (ProductConstant.ON_SALE.equals(product.getOnSale())) {
+            try {
+                if (!productService.addProductToES(product)) {
+                    return R.ok(RespCode.ES_OPERATION_FAILURE.getCode(), "存入ES失败！");
+                }
+            } catch (IOException e) {
+                return R.ok(RespCode.ES_OPERATION_FAILURE.getCode(), "存入ES失败！");
+            }
+        }
+
+        // 下架，移除ES商品
+        if (ProductConstant.OFF_SALE.equals(product.getOnSale())) {
+            try {
+                if (!productService.delProductFromESById(product.getId())) {
+                    return R.ok(RespCode.ES_OPERATION_FAILURE.getCode(), "删除ES失败！");
+                }
+            } catch (IOException e) {
+                return R.ok(RespCode.ES_OPERATION_FAILURE.getCode(), "删除ES失败！");
+            }
+        }
+
         // 删除Redis缓存
         productService.delRedisProductByProductId(productId);
 
@@ -254,22 +291,34 @@ public class ProductController {
     }
 
     @DeleteMapping
-    public R delete(@RequestBody Set<Long> ids) {
-        List<PmsProductCategory> categories = categoryService.getByIds(ids);
+    public R delete(@RequestBody Set<String> ids) {
+        List<PmsProduct> products = productService.getProductsByIds(ids);
+
+        // 删除商品数据
         if (!productService.delete(ids)) {
             return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
         }
 
-        for (PmsProductCategory category : categories) {
-            categoryService.decrProductCntByCategoryId(category.getPid());
+        for (PmsProduct product : products) {
+            // 删除ES商品
+            try {
+                if (!productService.delProductFromESById(product.getId())) {
+                    return R.ok(RespCode.ES_OPERATION_FAILURE.getCode(), "删除ES失败！");
+                }
+            } catch (IOException e) {
+                return R.ok(RespCode.ES_OPERATION_FAILURE.getCode(), "删除ES失败！");
+            }
+
+            // 删除关联图片
+            uploadService.detachSourcePic(Long.valueOf(product.getId()), UploadConstant.UPLOAD_MODULE_PRODUCT);
+
+            // 删除Redis缓存
+            productService.delRedisProductByProductId(product.getId());
         }
 
-        for (Long id : ids) {
-            // 删除关联图片
-            uploadService.detachSourcePic(id, UploadConstant.UPLOAD_MODULE_PRODUCT);
-
-            // 清除商品Redis缓存
-            productService.delRedisProductByProductId(id);
+        List<PmsProductCategory> categories = categoryService.getByProductIds(ids);
+        for (PmsProductCategory category : categories) {
+            categoryService.decrProductCntByCategoryId(category.getPid());
         }
 
         return R.ok("已删除！");

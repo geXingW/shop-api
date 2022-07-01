@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 public interface PmsProductSkuService {
-    boolean save(Long productId, List<PmsProductRequestParam.Sku> skuList);
+    boolean save(String productId, List<PmsProductRequestParam.Sku> skuList);
 
-    boolean delProductAttributesByPid(Long productId);
+    boolean delProductAttributesByPid(String productId);
 
-    List<PmsProductSku> getSkuListByProductId(Long productId);
+    List<PmsProductSku> getSkuListByProductId(String productId);
 
-    boolean batchDelProductSkuByProductIds(Set<Long> ids);
+    boolean batchDelProductSkuByProductIds(Set<String> ids);
 }

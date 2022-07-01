@@ -60,12 +60,13 @@ public class PmsProductInfoVO {
 
     private String onSale;
 
-    private Integer isNew;
+    private String isNew;
 
     private List<PmsProductRequestParam.SkuOption> skuOptions = new ArrayList<>();
 
     public PmsProductInfoVO setProductInfo(PmsProduct product) {
         BeanUtils.copyProperties(product, this);
+        this.setOnSale(product.getOnSale().toString());
         return this;
     }
 

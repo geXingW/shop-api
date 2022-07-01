@@ -1,0 +1,53 @@
+{
+    "properties": {
+        "id": {
+            "type": "long",
+            "index": false
+        },
+        "title": {
+            "type": "text",
+            "analyzer": "ik_max_word",
+            "search_analyzer": "ik_smart"
+        },
+        "sale_price": {
+            "type": "scaled_float",
+            "scaling_factor": 100,
+            "index": false
+        },
+        "pic": {
+            "type": "text",
+            "index": false
+        },
+        "albums": {
+            "type": "text",
+            "index": false
+        },
+        "brand_id": {
+            "type": "long",
+            "index": false
+        },
+        "brand_name": {
+            "type": "keyword"
+        },
+        "brand_icon": {
+            "type": "text",
+            "index": false
+        },
+        "skuOptions": {
+            "type": "nested",
+            "properties": {
+                "attributeId": {
+                    "type": "long",
+                    "index": false
+                },
+                "attributeName": {
+                    "type": "keyword",
+                    "index": false
+                },
+                "attributeValues": {
+                    "type": "keyword"
+                }
+            }
+        }
+    }
+}

@@ -1,14 +1,20 @@
 package com.gexingw.shop.constant;
 
 public interface ProductConstant {
-    public final String REDIS_PRODUCT_FORMAT = "product:%d";
+    // 商品上架
+    Integer ON_SALE = 1;
+
+    // 商品下架
+    Integer OFF_SALE = 0;
+
+    String REDIS_PRODUCT_FORMAT = "product:%s";
 
     // 商品分类的树形结构
-    public final String REDIS_PRODUCT_CATEGORY_TREE = "product:category_tree";
+    String REDIS_PRODUCT_CATEGORY_TREE = "product:category_tree";
 
     // 商品分类Redis缓存
-    public final String REDIS_PRODUCT_CATEGORY_FORMAT = "product:category:%d";
+    String REDIS_PRODUCT_CATEGORY_FORMAT = "product:category:%s";
 
     // 商品属性组 redis缓存
-    public final String REDIS_PRODUCT_ATTRIBUTE_GROUP_FORMAT = "product:attribute-group:%d";
+    String REDIS_PRODUCT_ATTRIBUTE_GROUP_FORMAT = "product:attribute-group:%s";
 }

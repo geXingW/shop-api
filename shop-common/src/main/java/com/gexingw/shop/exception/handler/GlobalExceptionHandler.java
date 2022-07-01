@@ -3,6 +3,7 @@ package com.gexingw.shop.exception.handler;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.exception.*;
 import com.gexingw.shop.utils.R;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ResponseBody
@@ -35,6 +37,7 @@ public class GlobalExceptionHandler {
                 message = fieldError.getField() + fieldError.getDefaultMessage();
             }
         }
+
         return R.ok(RespCode.PARAMS_INVALID.getCode(), message);
     }
 

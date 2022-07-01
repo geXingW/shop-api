@@ -5,6 +5,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
+import com.gexingw.shop.config.FileConfig;
 import com.gexingw.shop.exception.BadRequestException;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -334,11 +335,15 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
      * 根据域名 + 模块 + uri的完整URL
      *
      * @param domain 实际访问Url的域名
-     * @param uri 图片uri
+     * @param uri    图片uri
      * @return 图片访问完整url
      */
     public static String buildFileFullUrl(String domain, String uri) {
         String separator = File.separator;
         return StringUtil.trim(domain, separator) + separator + StringUtil.trim(uri, separator);
+    }
+
+    public static String buildFileFullUrl(FileConfig fileConfig, String uri) {
+        return buildFileFullUrl(fileConfig.getDiskHost(), uri);
     }
 }

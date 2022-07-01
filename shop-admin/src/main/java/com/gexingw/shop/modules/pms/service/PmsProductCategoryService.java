@@ -29,7 +29,7 @@ public interface PmsProductCategoryService {
 
     List<PmsProductCategory> getByIds(Set<Long> ids);
 
-    List<PmsProductCategory> getByIds(List<Long> ids);
+    List<PmsProductCategory> getByProductIds(Set<String> productIds);
 
     boolean incrProductCntByCategoryId(Long categoryId);
 

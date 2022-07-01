@@ -11,9 +11,16 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.gexingw.shop.bo.ums.UmsMember;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -22,6 +29,9 @@ import java.util.Scanner;
 class ShopAdminApplicationTests {
 
     private final static String PROJECT_PATH = System.getProperty("user.dir");
+
+    @Autowired
+    private RestHighLevelClient restHighLevelClient;
 
     @Test
     void contextLoads() {
@@ -183,4 +193,20 @@ class ShopAdminApplicationTests {
         return templateConfig;
     }
 
+
+    @Test
+    public void testElasticSearch() throws IOException {
+        System.out.println(restHighLevelClient);
+
+        UmsMember umsMember = new UmsMember();
+        umsMember.setUsername("username-1");
+        umsMember.setPassword("password-1");
+        umsMember.setNickname("nickname-1");
+        umsMember.setStatus("1");
+        umsMember.setMemberLevelId(1L);
+
+        CreateIndexRequest request = new CreateIndexRequest("ums_member");
+        CreateIndexResponse response = restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
+        System.out.println(response);
+    }
 }

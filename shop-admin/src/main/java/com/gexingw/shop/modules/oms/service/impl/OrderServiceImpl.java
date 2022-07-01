@@ -46,15 +46,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OmsOrder findById(Long id) {
+    public OmsOrder findById(String id) {
         return orderMapper.selectById(id);
     }
 
     @Override
-    public List<OmsOrderItemDetail> getOrderItemDetailsByOrderId(Long orderId) {
+    public List<OmsOrderItemDetail> getOrderItemDetailsByOrderId(String orderId) {
         List<OmsOrderItem> orderItems = orderItemMapper.selectList(new QueryWrapper<OmsOrderItem>().eq("order_id", orderId));
 
-        List<Long> itemDetailIds = orderItems.stream().map(OmsOrderItem::getOrderItemDetailId).collect(Collectors.toList());
+        List<String> itemDetailIds = orderItems.stream().map(OmsOrderItem::getOrderItemDetailId).collect(Collectors.toList());
         if (itemDetailIds.size() == 0) {
             return new ArrayList<>();
         }
@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OmsOrderRecvAddress getOrderRecvAddressByOrderId(Long orderId) {
+    public OmsOrderRecvAddress getOrderRecvAddressByOrderId(String orderId) {
         OmsOrderRecvAddress recvAddress = orderRecvAddressMapper.selectOne(new QueryWrapper<OmsOrderRecvAddress>().eq("order_id", orderId));
 
         return recvAddress == null ? new OmsOrderRecvAddress() : recvAddress;
