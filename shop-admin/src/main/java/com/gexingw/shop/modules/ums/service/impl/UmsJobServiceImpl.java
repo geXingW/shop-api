@@ -7,13 +7,13 @@ import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.bo.ums.UmsAdminJob;
 import com.gexingw.shop.bo.ums.UmsJob;
 import com.gexingw.shop.constant.AdminConstant;
-import com.gexingw.shop.modules.ums.dto.job.UmsJobRequestParam;
 import com.gexingw.shop.exception.DBOperationException;
 import com.gexingw.shop.exception.IllegalOperationException;
 import com.gexingw.shop.exception.ResourceNotExistException;
 import com.gexingw.shop.mapper.ums.UmsAdminJobMapper;
 import com.gexingw.shop.mapper.ums.UmsAdminMapper;
 import com.gexingw.shop.mapper.ums.UmsJobMapper;
+import com.gexingw.shop.modules.ums.dto.job.UmsJobRequestParam;
 import com.gexingw.shop.modules.ums.service.UmsJobService;
 import com.gexingw.shop.utils.RedisUtil;
 import org.springframework.beans.BeanUtils;
@@ -100,6 +100,7 @@ public class UmsJobServiceImpl implements UmsJobService {
         return jobs;
     }
 
+    @Override
     public boolean setRedisAdminJobsByAdminId(Long adminId, List<UmsJob> jobs) {
         for (UmsJob umsJob : jobs) {
             redisUtil.lSet(String.format(AdminConstant.REDIS_ADMIN_JOBS_FORMAT, adminId), umsJob, -1);
@@ -108,6 +109,7 @@ public class UmsJobServiceImpl implements UmsJobService {
         return true;
     }
 
+    @Override
     public List<UmsJob> getRedisAdminJobsByAdminId(Long adminId) {
         String redisKey = String.format(AdminConstant.REDIS_ADMIN_JOBS_FORMAT, adminId);
         if (!redisUtil.hasKey(redisKey)) {
@@ -121,6 +123,7 @@ public class UmsJobServiceImpl implements UmsJobService {
         return JSON.parseObject(JSON.toJSONString(redisObjs), typeReference);
     }
 
+    @Override
     public void delRedisAdminJobsByAdminId(Long adminId) {
         redisUtil.del(String.format(AdminConstant.REDIS_ADMIN_JOBS_FORMAT, adminId));
     }
@@ -130,5 +133,10 @@ public class UmsJobServiceImpl implements UmsJobService {
         List<UmsAdminJob> adminJobs = umsAdminJobMapper.selectList(new QueryWrapper<UmsAdminJob>().eq("job_id", jobId));
         List<Long> adminIds = adminJobs.stream().map(UmsAdminJob::getAdminId).collect(Collectors.toList());
         return umsAdminMapper.selectBatchIds(adminIds);
+    }
+
+    @Override
+    public List<UmsJob> getJobsByJobIds(List<Long> ids) {
+        return umsJobMapper.selectList(new QueryWrapper<UmsJob>().in("id", ids));
     }
 }

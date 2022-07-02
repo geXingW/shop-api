@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author GeXingW
+ */
 @RestController
 @RequestMapping("product")
 public class PmsProductController {
@@ -85,12 +88,6 @@ public class PmsProductController {
 
         result.put("records", records);
 
-        System.out.println(searchSourceBuilder);
-
-        System.out.println(searchHits);
-
-        System.out.println(searchResponse.toString());
-
         return R.ok(result);
     }
 
@@ -104,12 +101,11 @@ public class PmsProductController {
     public R info(@PathVariable String id) {
         PmsProduct pmsProduct = pmsProductService.getById(id);
         if (pmsProduct == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品不存在！");
+            return R.ok(RespCode.PRODUCT_NOT_EXIST);
         }
 
         // 检查商品是否上架
-        Integer isOnSale = Integer.valueOf(pmsProduct.getOnSale());
-        if (!PmsProductOnSaleEnum.ON_SALE.getCode().equals(isOnSale)) {
+        if (!PmsProductOnSaleEnum.ON_SALE.getCode().equals(pmsProduct.getOnSale())) {
             return R.ok(RespCode.RESOURCE_UNAVAILABLE.getCode(), "商品暂未上架！");
         }
 

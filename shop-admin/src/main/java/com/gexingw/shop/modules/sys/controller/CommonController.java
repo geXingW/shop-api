@@ -36,14 +36,14 @@ public class CommonController {
         // 资源与新图片绑定
         SysUpload upload = commonService.attachUploadFile(uploadId, uploadModule, uploadedFile);
         if (upload == null) {
-            return R.ok(RespCode.SAVE_FAILURE.getCode(), "新图片绑定失败！");
+            return R.failure(RespCode.UPDATE_FAILURE, "新图片绑定失败！");
         }
 
         HashMap<String, Object> result = new HashMap<>();
         result.put("url", upload.getFullUrl());
         result.put("path", upload.getPath());
 
-        return R.ok(result, "上传成功！");
+        return R.ok(RespCode.UPLOADED, result);
     }
 
 }

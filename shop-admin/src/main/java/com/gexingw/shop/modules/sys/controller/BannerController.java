@@ -3,14 +3,14 @@ package com.gexingw.shop.modules.sys.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.bo.pms.PmsBanner;
+import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.constant.UploadConstant;
+import com.gexingw.shop.enums.RespCode;
+import com.gexingw.shop.modules.pms.service.PmsBannerService;
 import com.gexingw.shop.modules.sys.dto.banner.BannerRequestParam;
 import com.gexingw.shop.modules.sys.dto.banner.BannerSearchParam;
-import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.modules.sys.service.CommonService;
-import com.gexingw.shop.modules.pms.service.PmsBannerService;
 import com.gexingw.shop.modules.sys.service.UploadService;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
@@ -63,13 +63,13 @@ public class BannerController {
     public R save(@RequestBody BannerRequestParam requestParam) {
         Long bannerId = bannerService.save(requestParam);
         if (bannerId == null) {
-            return R.ok(RespCode.SAVE_FAILURE.getCode(), "保存失败！");
+            return R.failure(RespCode.SAVE_FAILURE);
         }
 
         // TODO 删除已经无用的图片
         SysUpload upload = uploadService.attachPicToSource(bannerId, UploadConstant.UPLOAD_MODULE_BANNER, UploadConstant.UPLOAD_TYPE_IMAGE, requestParam.getPic());
 
-        return upload != null ? R.ok("已添加！") : R.ok(RespCode.FAILURE.getCode(), "添加失败！");
+        return upload != null ? R.ok(RespCode.BANNER_CREATED) : R.failure(RespCode.SAVE_FAILURE);
     }
 
     @PutMapping
@@ -77,12 +77,12 @@ public class BannerController {
         // 检查该banner是否存在
         PmsBanner banner = bannerService.findById(requestParam.getId());
         if (banner == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到该Banner！");
+            return R.failure(RespCode.BANNER_NOT_EXIST);
         }
 
         // 更新商品信息
         if (!bannerService.update(requestParam)) {
-            return R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
         // 更新图片
@@ -94,7 +94,7 @@ public class BannerController {
             uploadService.attachPicToSource(banner.getId(), UploadConstant.UPLOAD_MODULE_BANNER, UploadConstant.UPLOAD_TYPE_IMAGE, requestParam.getPic());
         }
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.BANNER_UPDATED);
     }
 
     @DeleteMapping
@@ -102,7 +102,7 @@ public class BannerController {
         // TODO 删除已经无用的关联图片
         List<PmsBanner> banners = bannerService.getByIds(ids);
         if (!bannerService.deleteByIds(ids)) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
 
         // 删除图片
@@ -110,6 +110,6 @@ public class BannerController {
             uploadService.detachSourcePic(id, UploadConstant.UPLOAD_MODULE_BANNER);
         }
 
-        return R.ok("已删除！");
+        return R.ok(RespCode.BANNER_DELETED);
     }
 }

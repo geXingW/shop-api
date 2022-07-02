@@ -43,26 +43,35 @@ public class PmsProduct {
 
     private Integer saleCnt;
 
-    private Integer stock;  // 库存
+    // 库存
+    private Integer stock;
 
-    private Integer lowStock; // 预警库存
+    // 预警库存
+    private Integer lowStock;
 
-    private String unit; // 单位
+    // 单位
+    private String unit;
 
     private String keywords;
 
-    private String isNew;  // 新品
+    // 新品
+    private String isNew;
 
-    private String isRecommend; // 推荐
+    // 推荐
+    private String isRecommend;
 
+    // PC端详情显示
     @TableField(value = "detail_pc_html")
-    private String detailPCHtml; // PC端详情显示
+    private String detailPCHtml;
 
-    private String detailMobileHtml; // 手机端详情显示
+    // 手机端详情显示
+    private String detailMobileHtml;
 
-    private String albumPics; // 商品相册
+    // 商品相册
+    private String albumPics;
 
-    private String skuOptions; // 商品SKU可选项
+    // 商品SKU可选项
+    private String skuOptions;
 
     @JsonFormat(pattern = SystemConstant.DATETIME_STRING_FORMAT, timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)

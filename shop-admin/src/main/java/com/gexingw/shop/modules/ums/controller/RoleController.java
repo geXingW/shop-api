@@ -5,13 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.ums.UmsAdminRole;
 import com.gexingw.shop.bo.ums.UmsRole;
-import com.gexingw.shop.modules.ums.dto.role.UmsRoleRequestParam;
-import com.gexingw.shop.modules.ums.dto.role.UmsRoleSearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.mapper.ums.UmsAdminRoleMapper;
 import com.gexingw.shop.mapper.ums.UmsDeptMapper;
 import com.gexingw.shop.mapper.ums.UmsRoleMapper;
 import com.gexingw.shop.mapper.ums.UmsRoleMenuMapper;
+import com.gexingw.shop.modules.ums.dto.role.UmsRoleRequestParam;
+import com.gexingw.shop.modules.ums.dto.role.UmsRoleSearchParam;
 import com.gexingw.shop.modules.ums.service.UmsAdminService;
 import com.gexingw.shop.modules.ums.service.UmsMenuService;
 import com.gexingw.shop.modules.ums.service.UmsRoleService;
@@ -145,7 +145,7 @@ public class RoleController {
         // 检查该资源是否存在
         UmsRole role = umsRoleService.findById(id);
         if (role == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "该角色不存在或已被删除！");
+            return R.failure(RespCode.ADMIN_ROLE_NOT_EXIST);
         }
 
         // 获取角色菜单信息
@@ -161,38 +161,42 @@ public class RoleController {
     @PreAuthorize("@el.check('role:add')")
     public R save(@RequestBody UmsRoleRequestParam roleRequestParam) {
         if (!umsRoleService.checkLevel(roleRequestParam)) {
-            return R.ok("权限不足！");
+            return R.failure(RespCode.OPERATION_DENY);
         }
 
-        return R.ok(umsRoleService.save(roleRequestParam));
+        return R.ok(RespCode.ADMIN_ROLE_CREATED, umsRoleService.save(roleRequestParam));
     }
 
     @PutMapping
     @PreAuthorize("@el.check('role:edit')")
     public R update(@RequestBody UmsRoleRequestParam roleRequestParam) {
         if (!umsRoleService.checkLevel(roleRequestParam)) {
-            return R.ok("权限不足！");
+            return R.failure(RespCode.OPERATION_DENY);
         }
 
         // 检查该资源是否存在
         if (!umsRoleService.isIdExist(roleRequestParam.getId())) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "该角色不存在或已被删除！");
+            return R.failure(RespCode.ADMIN_ROLE_NOT_EXIST);
         }
 
         if (!umsRoleService.update(roleRequestParam)) {
-            return R.ok(RespCode.FAILURE.getCode(), "角色更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
         // 删除redis中存储的用户菜单信息
         List<Long> roleUserIds = umsRoleService.getRoleUserIds(roleRequestParam.getId());
         for (Long userId : roleUserIds) {
-            umsRoleService.delRedisAdminRolesByAdminId(userId); // 更新角色信息
-            umsMenuService.delRedisAdminMenuByAdminId(userId); // 更新菜单缓存
-            umsMenuService.delRedisAdminPermissionByAdminId(userId); // 更新权限缓存
-            umsAdminService.delRedisAdminDataScopeByAdminId(userId); // 更新数据权限
+            // 更新角色信息
+            umsRoleService.delRedisAdminRolesByAdminId(userId);
+            // 更新菜单缓存
+            umsMenuService.delRedisAdminMenuByAdminId(userId);
+            // 更新权限缓存
+            umsMenuService.delRedisAdminPermissionByAdminId(userId);
+            // 更新数据权限
+            umsAdminService.delRedisAdminDataScopeByAdminId(userId);
         }
 
-        return R.ok("角色已更新！");
+        return R.ok(RespCode.ADMIN_ROLE_UPDATED);
     }
 
     @PutMapping("menu")
@@ -200,23 +204,27 @@ public class RoleController {
     public R updateMenu(@RequestBody UmsRoleRequestParam roleRequestParam) {
         // 检查该资源是否存在
         if (!umsRoleService.isIdExist(roleRequestParam.getId())) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "该角色不存在或已被删除！");
+            return R.failure(RespCode.ADMIN_ROLE_NOT_EXIST);
         }
 
         if (!umsRoleService.updateRoleMenu(roleRequestParam)) {
-            return R.ok("菜单更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE, "菜单更新失败！");
         }
 
         // 删除redis中存储的用户菜单信息
         List<Long> roleUserIds = umsRoleService.getRoleUserIds(roleRequestParam.getId());
         for (Long userId : roleUserIds) {
-            umsRoleService.delRedisAdminRolesByAdminId(userId); // 更新角色信息
-            umsMenuService.delRedisAdminMenuByAdminId(userId); // 更新菜单缓存
-            umsMenuService.delRedisAdminPermissionByAdminId(userId); // 更新权限缓存
-            umsAdminService.delRedisAdminDataScopeByAdminId(userId); // 更新数据权限
+            // 更新角色信息
+            umsRoleService.delRedisAdminRolesByAdminId(userId);
+            // 更新菜单缓存
+            umsMenuService.delRedisAdminMenuByAdminId(userId);
+            // 更新权限缓存
+            umsMenuService.delRedisAdminPermissionByAdminId(userId);
+            // 更新数据权限
+            umsAdminService.delRedisAdminDataScopeByAdminId(userId);
         }
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.MENU_UPDATED);
     }
 
     @GetMapping("level")
@@ -238,18 +246,22 @@ public class RoleController {
     @PreAuthorize("@el.check('role:del')")
     public R delete(@RequestBody List<Long> ids) {
         if (!umsRoleService.batchDeleteByIds(ids)) {
-            return R.ok("删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
 
         List<Long> adminIds = umsRoleService.getAdminIdsByRoleIds(ids);
         for (Long adminId : adminIds) {
-            umsRoleService.delRedisAdminRolesByAdminId(adminId); // 更新角色信息
-            umsMenuService.delRedisAdminMenuByAdminId(adminId); // 更新菜单缓存
-            umsMenuService.delRedisAdminPermissionByAdminId(adminId); // 更新权限缓存
-            umsAdminService.delRedisAdminDataScopeByAdminId(adminId); // 更新数据权限
+            // 更新角色信息
+            umsRoleService.delRedisAdminRolesByAdminId(adminId);
+            // 更新菜单缓存
+            umsMenuService.delRedisAdminMenuByAdminId(adminId);
+            // 更新权限缓存
+            umsMenuService.delRedisAdminPermissionByAdminId(adminId);
+            // 更新数据权限
+            umsAdminService.delRedisAdminDataScopeByAdminId(adminId);
         }
 
-        return R.ok("已删除！");
+        return R.ok(RespCode.ADMIN_ROLE_DELETED);
     }
 }
 

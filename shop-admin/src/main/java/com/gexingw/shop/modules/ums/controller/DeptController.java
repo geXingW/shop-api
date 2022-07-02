@@ -1,20 +1,17 @@
 package com.gexingw.shop.modules.ums.controller;
 
-import com.gexingw.shop.bo.ums.UmsAdmin;
-import com.gexingw.shop.bo.ums.UmsDept;
-import com.gexingw.shop.modules.ums.dto.dept.UmsDeptRequestParam;
-import com.gexingw.shop.modules.ums.dto.dept.UmsDeptSearchParam;
-import com.gexingw.shop.enums.RespCode;
-import com.gexingw.shop.mapper.ums.UmsDeptMapper;
-import com.gexingw.shop.modules.ums.service.UmsAdminService;
-import com.gexingw.shop.modules.ums.service.UmsDeptService;
-import com.gexingw.shop.utils.R;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gexingw.shop.bo.ums.UmsAdmin;
+import com.gexingw.shop.bo.ums.UmsDept;
+import com.gexingw.shop.enums.RespCode;
+import com.gexingw.shop.mapper.ums.UmsDeptMapper;
+import com.gexingw.shop.modules.ums.dto.dept.UmsDeptRequestParam;
+import com.gexingw.shop.modules.ums.dto.dept.UmsDeptSearchParam;
+import com.gexingw.shop.modules.ums.service.UmsAdminService;
+import com.gexingw.shop.modules.ums.service.UmsDeptService;
+import com.gexingw.shop.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -117,10 +114,10 @@ public class DeptController {
     @PreAuthorize("@el.check('dept:add')")
     public R save(@RequestBody UmsDeptRequestParam deptRequestParam) {
         if (!umsDeptService.save(deptRequestParam)) {
-            return R.ok(RespCode.SAVE_FAILURE.getCode(), "保存失败！");
+            return R.failure(RespCode.SAVE_FAILURE);
         }
 
-        return R.ok("已保存！");
+        return R.ok(RespCode.DEPT_CREATED);
     }
 
     @PostMapping("superior")
@@ -184,11 +181,11 @@ public class DeptController {
     @PreAuthorize("@el.check('dept:edit')")
     public R update(@RequestBody UmsDeptRequestParam deptRequestParam) {
         if (!umsDeptService.exist(deptRequestParam.getId())) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "删除失败！");
+            return R.failure(RespCode.DEPT_NOT_EXIST);
         }
 
         if (!umsDeptService.update(deptRequestParam)) {
-            return R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
         // 清除相关联管理员的数据权限
@@ -198,7 +195,7 @@ public class DeptController {
             umsDeptService.delRedisAdminDeptByAdminId(umsAdmin.getId());
         }
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.DEPT_UPDATED);
     }
 
     @DeleteMapping
@@ -207,13 +204,13 @@ public class DeptController {
         // 清除相关联管理员的数据权限
         List<UmsAdmin> admins = umsDeptService.getDeptAdminsByDeptIds(ids);
         if (!umsDeptService.delete(ids)) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
 
         for (UmsAdmin umsAdmin : admins) {
             umsDeptService.delRedisAdminDeptByAdminId(umsAdmin.getId());
         }
 
-        return R.ok("已删除！");
+        return R.ok(RespCode.DEPT_DELETED);
     }
 }

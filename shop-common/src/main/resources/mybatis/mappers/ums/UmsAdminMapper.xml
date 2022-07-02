@@ -28,11 +28,11 @@
             <id column="dept_sort" property="deptSort" />
             <id column="ud_enabled" property="enabled" />
         </association>
-        <collection property="jobs" ofType="com.gexingw.shop.bo.ums.UmsJob">
-            <id column="uj_id" property="id" />
-            <id column="uj_name" property="name" />
-            <id column="uj_enabled" property="enabled" />
-            <id column="uj_sort" property="job_sort" />
+        <collection property="job" ofType="com.gexingw.shop.bo.ums.UmsJob">
+            <id column="uj_id" property="id"/>
+            <id column="uj_name" property="name"/>
+            <id column="uj_enabled" property="enabled"/>
+            <id column="uj_sort" property="jobSort"/>
         </collection>
     </resultMap>
 

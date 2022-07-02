@@ -3,6 +3,10 @@ package com.gexingw.shop.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * @author GeXingW
+ */
+
 @Getter
 @AllArgsConstructor
 public enum PmsProductOnSaleEnum {

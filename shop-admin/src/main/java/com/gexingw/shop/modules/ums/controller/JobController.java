@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.bo.ums.UmsJob;
-import com.gexingw.shop.modules.ums.dto.job.UmsJobRequestParam;
-import com.gexingw.shop.modules.ums.dto.job.UmsJobSearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.mapper.ums.UmsJobMapper;
+import com.gexingw.shop.modules.ums.dto.job.UmsJobRequestParam;
+import com.gexingw.shop.modules.ums.dto.job.UmsJobSearchParam;
 import com.gexingw.shop.modules.ums.service.UmsJobService;
 import com.gexingw.shop.utils.FileUtil;
 import com.gexingw.shop.utils.PageUtil;
@@ -52,17 +52,17 @@ public class JobController {
     public R save(@RequestBody UmsJobRequestParam jobRequestParam) {
         Long jobId = umsJobService.save(jobRequestParam);
         if (umsJobService.save(jobRequestParam) <= 0) {
-            return R.ok("保存失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
-        return jobId > 0 ? R.ok(jobId, "已保存！") : R.ok("保存失败！");
+        return jobId > 0 ? R.ok(jobId, "已保存！") : R.failure(RespCode.SAVE_FAILURE);
     }
 
     @PutMapping
     @PreAuthorize("@el.check('job:edit')")
     public R update(@RequestBody UmsJobRequestParam jobRequestParam) {
         if (!umsJobService.update(jobRequestParam)) {
-            return R.ok(RespCode.UPDATE_FAILURE, "更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
         // 清除与该角色相关联的管理员缓存
@@ -71,17 +71,17 @@ public class JobController {
             umsJobService.delRedisAdminJobsByAdminId(admin.getId());
         }
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.ADMIN_JOB_UPDATED);
     }
 
     @DeleteMapping
     @PreAuthorize("@el.check('job:del')")
     public R delete(@RequestBody List<Long> ids) {
         if (!umsJobService.delete(ids)) {
-            return R.ok(RespCode.DELETE_FAILURE, "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
 
-        return R.ok("已删除！");
+        return R.ok(RespCode.ADMIN_JOB_DELETED);
     }
 
     @GetMapping("download")

@@ -24,6 +24,8 @@ public class UmsAdmin {
 
     private Long deptId;
 
+    private Long jobId;
+
     private String password;
 
     private String username;
@@ -35,7 +37,6 @@ public class UmsAdmin {
     private String phone;
 
     private String email;
-
 
     private String avatarName;
 
@@ -64,7 +65,7 @@ public class UmsAdmin {
     private UmsDept dept;
 
     @TableField(exist = false)
-    private List<UmsJob> jobs;
+    private UmsJob job;
 
     @TableField(exist = false)
     private List<UmsRole> roles;
@@ -90,9 +91,11 @@ public class UmsAdmin {
         return "UmsAdmin{" +
                 "id=" + id +
                 ", deptId=" + deptId +
+                ", jobId=" + jobId +
+                ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
                 ", nickName='" + nickName + '\'' +
-                ", gender=" + gender +
+                ", gender='" + gender + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", avatarName='" + avatarName + '\'' +
@@ -100,7 +103,11 @@ public class UmsAdmin {
                 ", isAdmin=" + isAdmin +
                 ", enabled=" + enabled +
                 ", createTime=" + createTime +
-                ", jobs=" + jobs +
+                ", updateTime=" + updateTime +
+                ", avatar='" + avatar + '\'' +
+                ", authorities=" + authorities +
+                ", dept=" + dept +
+                ", job=" + job +
                 ", roles=" + roles +
                 '}';
     }

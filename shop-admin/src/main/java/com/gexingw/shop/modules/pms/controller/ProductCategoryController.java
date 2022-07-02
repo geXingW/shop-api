@@ -8,18 +8,18 @@ import com.gexingw.shop.bo.pms.PmsProductAttributeGroup;
 import com.gexingw.shop.bo.pms.PmsProductCategory;
 import com.gexingw.shop.bo.sys.SysUpload;
 import com.gexingw.shop.constant.UploadConstant;
-import com.gexingw.shop.modules.pms.dto.category.PmsProductCategoryRequestParam;
-import com.gexingw.shop.modules.pms.dto.category.PmsProductCategorySearchParam;
 import com.gexingw.shop.enums.PmsProductAttributeTypeEnum;
 import com.gexingw.shop.enums.RespCode;
+import com.gexingw.shop.modules.pms.dto.category.PmsProductCategoryRequestParam;
+import com.gexingw.shop.modules.pms.dto.category.PmsProductCategorySearchParam;
+import com.gexingw.shop.modules.pms.service.PmsProductAttributeGroupService;
 import com.gexingw.shop.modules.pms.service.PmsProductAttributeService;
 import com.gexingw.shop.modules.pms.service.PmsProductCategoryService;
+import com.gexingw.shop.modules.pms.vo.category.PmsProductCategoryAttributeVO;
 import com.gexingw.shop.modules.sys.service.UploadService;
 import com.gexingw.shop.modules.sys.service.impl.CommonServiceImpl;
-import com.gexingw.shop.modules.pms.service.PmsProductAttributeGroupService;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
-import com.gexingw.shop.modules.pms.vo.category.PmsProductCategoryAttributeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -93,7 +93,7 @@ public class ProductCategoryController {
     public R save(@RequestBody PmsProductCategoryRequestParam requestParam) {
         Long categoryId = categoryService.save(requestParam);
         if (categoryId == 0) {
-            return R.ok(RespCode.FAILURE.getCode(), "保存失败！");
+            return R.failure(RespCode.SAVE_FAILURE);
         }
 
         // 更新父级分类的子分类数量
@@ -104,14 +104,15 @@ public class ProductCategoryController {
         // 清理商品分类缓存
         categoryService.delCategoryTreeFromRedis();
 
-        if (requestParam.getIcon() == null || requestParam.getIcon().isEmpty()) {   // 没有上传图片无需更新图片
-            return R.ok("已保存！");
+        // 没有上传图片无需更新图片
+        if (requestParam.getIcon() == null || requestParam.getIcon().isEmpty()) {
+            return R.ok(RespCode.PRODUCT_CATEGORY_CREATED);
         }
 
         // 关联上传的图片
         SysUpload upload = uploadService.attachPicToSource(categoryId, UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY, UploadConstant.UPLOAD_TYPE_IMAGE, requestParam.getIcon());
 
-        return upload != null ? R.ok("已保存！") : R.ok(RespCode.UPLOAD_FAILURE.getCode(), "保存失败！");
+        return upload != null ? R.ok(RespCode.PRODUCT_CREATED) : R.failure(RespCode.SAVE_FAILURE);
     }
 
     /**
@@ -127,38 +128,38 @@ public class ProductCategoryController {
         // 上传文件获取服务器文件路径
         File uploadedFile = commonService.upload(file, uploadType, uploadModule);
         if (uploadedFile == null) {
-            return R.ok("上传失败！");
+            return R.ok(RespCode.UPLOADED);
         }
 
         // 删除旧文件
         if (uploadId != 0) {
             if (!commonService.detachOldFile(uploadId, uploadType)) {
-                return R.ok(RespCode.DELETE_FAILURE.getCode(), "旧图片删除失败！");
+                return R.failure(RespCode.FILE_DELETE_FAILURE);
             }
         }
 
         // 绑定新的上传文件
         SysUpload upload = commonService.attachUploadFile(uploadId, uploadType, uploadedFile);
         if (upload == null) {
-            return R.ok("上传失败！");
+            return R.failure(RespCode.UPLOAD_FAILURE);
         }
 
         HashMap<String, String> result = new HashMap<>();
         result.put("url", upload.getFullUrl());
 
-        return R.ok(result, "上传成功！");
+        return R.ok(RespCode.UPLOADED, result);
     }
 
     @PutMapping
     public R update(@RequestBody PmsProductCategoryRequestParam requestParam) {
         PmsProductCategory productCategory = categoryService.getById(requestParam.getId());
         if (productCategory == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品的分类不存在！");
+            return R.failure(RespCode.PRODUCT_CATEGORY_NOT_EXIST);
         }
 
         // 更新分类信息
         if (!categoryService.update(requestParam)) {
-            return R.ok(RespCode.FAILURE.getCode(), "更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
         // 清理商品分类缓存
@@ -166,25 +167,27 @@ public class ProductCategoryController {
 
         // 更新父级分类的sub count
         if (productCategory.getPid().equals(requestParam.getPid())) {
-            return R.ok("已更新！");
+            return R.ok(RespCode.PRODUCT_CATEGORY_UPDATED);
         }
 
-        if (!categoryService.decrParentCategorySubCnt(productCategory.getPid())) { // 减少旧父类
-            return R.ok(RespCode.FAILURE, "更新父级分类失败！");
+        // 减少旧父类
+        if (!categoryService.decrParentCategorySubCnt(productCategory.getPid())) {
+            return R.failure(RespCode.UPDATE_FAILURE, "更新父级分类失败！");
         }
 
-        if (!categoryService.incrParentCategorySubCnt(requestParam.getPid())) {    // 增加新父类
-            return R.ok(RespCode.FAILURE, "更新父级分类失败！");
+        // 增加新父类
+        if (!categoryService.incrParentCategorySubCnt(requestParam.getPid())) {
+            return R.failure(RespCode.UPDATE_FAILURE, "更新父级分类失败！");
         }
 
         if (requestParam.getIcon() == null || requestParam.getIcon().isEmpty()) {
-            return R.ok("已更新！");
+            return R.ok(RespCode.PRODUCT_CATEGORY_UPDATED);
         }
 
         // 更新分类图片
         SysUpload upload = uploadService.attachPicToSource(requestParam.getId(), UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY, UploadConstant.UPLOAD_TYPE_IMAGE, requestParam.getIcon());
 
-        return upload != null ? R.ok("已更新！") : R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
+        return upload != null ? R.ok(RespCode.PRODUCT_CATEGORY_UPDATED) : R.failure(RespCode.UPDATE_FAILURE);
     }
 
     @DeleteMapping
@@ -192,7 +195,7 @@ public class ProductCategoryController {
         List<PmsProductCategory> categories = categoryService.getByIds(ids);
 
         if (!categoryService.delete(ids)) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
         for (PmsProductCategory category : categories) {
             categoryService.decrParentCategorySubCnt(category.getPid());
@@ -206,14 +209,14 @@ public class ProductCategoryController {
             uploadService.detachSourcePic(id, UploadConstant.UPLOAD_MODULE_PRODUCT_CATEGORY);
         }
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.DELETE_FAILURE);
     }
 
     @GetMapping("attribute")
     public R attribute(PmsProductCategorySearchParam searchParam) {
         PmsProductCategory productCategory = categoryService.getById(searchParam.getCategoryId());
         if (productCategory == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到该分类!");
+            return R.failure(RespCode.PRODUCT_CATEGORY_NOT_EXIST);
         }
 
         PmsProductCategoryAttributeVO productCategoryAttributeVO = new PmsProductCategoryAttributeVO();

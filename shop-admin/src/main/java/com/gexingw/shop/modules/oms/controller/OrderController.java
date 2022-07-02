@@ -76,7 +76,7 @@ public class OrderController {
     public R show(@PathVariable String id) {
         OmsOrder order = orderService.findById(id);
         if (order == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "订单未找到！");
+            return R.failure(RespCode.ORDER_NOT_EXIST);
         }
 
         OrderDetailVO orderDetailVO = new OrderDetailVO();
@@ -107,7 +107,7 @@ public class OrderController {
     @DeleteMapping
     public R delete(@RequestBody Set<Long> ids) {
         if (!orderService.deleteByOrderIds(ids)) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
 
         return R.ok();

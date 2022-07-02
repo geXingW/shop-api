@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.ums.UmsDict;
 import com.gexingw.shop.bo.ums.UmsDictDetail;
-import com.gexingw.shop.modules.sys.dto.dict.UmsDictRequestParam;
-import com.gexingw.shop.modules.sys.dto.dict.UmsDictSearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.mapper.ums.UmsDictMapper;
+import com.gexingw.shop.modules.sys.dto.dict.UmsDictRequestParam;
+import com.gexingw.shop.modules.sys.dto.dict.UmsDictSearchParam;
 import com.gexingw.shop.modules.sys.service.UmsDictDetailService;
 import com.gexingw.shop.modules.sys.service.UmsDictService;
 import com.gexingw.shop.utils.PageUtil;
@@ -77,7 +77,7 @@ public class DictController {
     @PreAuthorize("@el.check('job:edit')")
     public R update(@RequestBody UmsDictRequestParam requestParam) {
         if (!umsDictService.update(requestParam)) {
-            return R.ok(RespCode.UPDATE_FAILURE, "更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
         return R.ok("已更新！");
@@ -87,11 +87,11 @@ public class DictController {
     @PreAuthorize("@el.check('job:del')")
     public R delete(@RequestBody List<Long> ids) {
         if (umsDictMapper.deleteBatchIds(ids) <= 0) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
 
         if (!umsDictService.delete(ids)) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
 
         }
 

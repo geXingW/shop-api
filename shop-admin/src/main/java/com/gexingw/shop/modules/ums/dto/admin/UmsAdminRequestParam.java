@@ -5,7 +5,9 @@ import com.gexingw.shop.bo.ums.UmsJob;
 import com.gexingw.shop.bo.ums.UmsRole;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,21 +17,22 @@ public class UmsAdminRequestParam {
     private long id;
 
     @NotEmpty
+    @Max(value = 10, message = " 管理员名称不能超过10个字符")
     private String username;
 
     @NotEmpty
     private String email;
 
-    @NotEmpty
+    @NotNull
     private boolean enabled;
 
     @NotEmpty
     private String gender;
 
-    @NotEmpty
+    @NotNull
     private UmsDept dept;
 
-    @NotEmpty
+    @NotNull
     private List<UmsJob> jobs;
 
     @NotEmpty

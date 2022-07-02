@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.ums.UmsDict;
 import com.gexingw.shop.bo.ums.UmsDictDetail;
-import com.gexingw.shop.modules.sys.dto.dict.UmsDictDetailRequestParam;
-import com.gexingw.shop.modules.sys.dto.dict.UmsDictDetailSearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.mapper.ums.UmsDictDetailMapper;
 import com.gexingw.shop.mapper.ums.UmsDictMapper;
+import com.gexingw.shop.modules.sys.dto.dict.UmsDictDetailRequestParam;
+import com.gexingw.shop.modules.sys.dto.dict.UmsDictDetailSearchParam;
 import com.gexingw.shop.modules.sys.service.UmsDictDetailService;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
@@ -56,17 +56,17 @@ public class DictDetailController {
     @PutMapping
     public R update(@RequestBody UmsDictDetailRequestParam dictDetailRequestParam) {
         if (!umsDictDetailService.update(dictDetailRequestParam)) {
-            return R.ok("更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.SYSTEM_DICT_UPDATED);
     }
 
     @DeleteMapping("/{id}")
     public R delete(@PathVariable Long id) {
         if (umsDictDetailMapper.deleteById(id) <= 0) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE, "删除失败！");
         }
-        return R.ok("已删除！");
+        return R.ok(RespCode.SYSTEM_DICT_DELETED);
     }
 }

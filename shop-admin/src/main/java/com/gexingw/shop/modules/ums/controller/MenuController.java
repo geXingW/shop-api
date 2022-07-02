@@ -7,18 +7,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.ums.UmsAdminRole;
 import com.gexingw.shop.bo.ums.UmsMenu;
 import com.gexingw.shop.bo.ums.UmsRoleMenu;
-import com.gexingw.shop.modules.ums.dto.menu.UmsMenuRequestParam;
-import com.gexingw.shop.modules.ums.dto.menu.UmsMenuSearchParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.mapper.ums.UmsMenuMapper;
+import com.gexingw.shop.modules.ums.dto.menu.UmsMenuRequestParam;
+import com.gexingw.shop.modules.ums.dto.menu.UmsMenuSearchParam;
 import com.gexingw.shop.modules.ums.service.UmsAdminRoleService;
 import com.gexingw.shop.modules.ums.service.UmsMenuService;
 import com.gexingw.shop.modules.ums.service.UmsRoleMenuService;
 import com.gexingw.shop.modules.ums.service.UmsRoleService;
 import com.gexingw.shop.util.AuthUtil;
-import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.utils.PageUtil;
 import com.gexingw.shop.utils.R;
+import com.gexingw.shop.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -143,7 +143,7 @@ public class MenuController {
 
         // 如果存在父级菜单，父级菜单的子菜单需要加1
         if (!umsMenuService.incrParentMenuSubCount(menuRequestParam.getPid())) {
-            return R.ok(RespCode.FAILURE.getCode(), "更新父级菜单子菜单数量失败！");
+            return R.failure(RespCode.UPDATE_FAILURE, "更新父级菜单子菜单数量失败！");
         }
 
         // 添加管理员角色与菜单的绑定
@@ -215,11 +215,11 @@ public class MenuController {
     public R update(@RequestBody UmsMenuRequestParam menuRequestParam) {
         UmsMenu umsMenu = umsMenuService.getMenuById(menuRequestParam.getId());
         if (umsMenu == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "菜单不存在！");
+            return R.failure(RespCode.MENU_NOT_EXIST);
         }
 
         if (!umsMenuService.update(menuRequestParam)) {
-            return R.ok(RespCode.FAILURE.getCode(), "更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
         // 如果修改了父级菜单，需要更新父级菜单的subcount
@@ -227,12 +227,12 @@ public class MenuController {
 
             // 旧的父级菜单 -1
             if (!umsMenuService.decrParentMenuSubCount(umsMenu.getPid())) {
-                return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), "父级菜单更新失败！");
+                return R.failure(RespCode.UPDATE_FAILURE, "父级菜单更新失败！");
             }
 
             // 新的父级菜单 +1
             if (!umsMenuService.incrParentMenuSubCount(menuRequestParam.getPid())) {
-                return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), "父级菜单更新失败！");
+                return R.failure(RespCode.UPDATE_FAILURE, "父级菜单更新失败！");
             }
         }
 
@@ -242,14 +242,14 @@ public class MenuController {
         // 清除关联用户的菜单和权限缓存
         umsMenuService.delAdminMenuAndPermissionCacheByRoleIds(roleIds);
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.MENU_UPDATED);
     }
 
     @DeleteMapping
     @PreAuthorize("@el.check('menu:del')")
     public R delete(@RequestBody List<Long> ids) {
         if (!umsMenuService.delete(ids)) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
 
         // 更新父级菜单的 subcount
@@ -257,7 +257,7 @@ public class MenuController {
         for (UmsMenu umsMenu : umsMenus) {
             // 父级菜单subcount -1
             if (!umsMenuService.decrParentMenuSubCount(umsMenu.getPid())) {
-                return R.ok(RespCode.DB_OPERATION_FAILURE, "父级菜单更新失败！");
+                return R.failure(RespCode.UPDATE_FAILURE, "父级菜单更新失败！");
             }
         }
 
@@ -269,7 +269,7 @@ public class MenuController {
             umsMenuService.delAdminMenuAndPermissionCacheByRoleIds(roleIds);
         }
 
-        return R.ok("已删除！");
+        return R.ok(RespCode.MENU_DELETED);
     }
 
     @GetMapping("lazy")

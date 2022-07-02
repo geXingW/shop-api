@@ -16,11 +16,13 @@ public interface UmsJobService {
 
     List<UmsJob> getJobsByAdminId(Long adminId);
 
-    public List<UmsJob> getRedisAdminJobsByAdminId(Long adminId);
+    List<UmsJob> getRedisAdminJobsByAdminId(Long adminId);
 
-    public boolean setRedisAdminJobsByAdminId(Long adminId, List<UmsJob> jobs);
+    boolean setRedisAdminJobsByAdminId(Long adminId, List<UmsJob> jobs);
 
-    public void delRedisAdminJobsByAdminId(Long adminId);
+    void delRedisAdminJobsByAdminId(Long adminId);
 
     List<UmsAdmin> getJobAdminsByJobId(Long jobId);
+
+    List<UmsJob> getJobsByJobIds(List<Long> ids);
 }

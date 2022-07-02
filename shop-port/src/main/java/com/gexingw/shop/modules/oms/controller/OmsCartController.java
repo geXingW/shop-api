@@ -93,7 +93,7 @@ public class OmsCartController {
         // todo 此处应该检查商品的上架和删除状态
         PmsProduct product = productService.getById(requestParam.getProductId());
         if (product == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品不存在！");
+            return R.failure(RespCode.RESOURCE_NOT_EXIST);
         }
 
         Integer stock = 0;
@@ -106,35 +106,37 @@ public class OmsCartController {
             // 检查商品规格
             productSku = productSkuService.getById(requestParam.getSkuId());
             if (productSku == null) {
-                return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品规格不存在！");
+                return R.failure(RespCode.RESOURCE_NOT_EXIST);
             }
             stock = productSku.getStock();
         }
 
         // 检查商品库存
         if (requestParam.getProductCnt() > stock) {
-            return R.ok(RespCode.PRODUCT_STOCK_OVER.getCode(), "商品库存不足！");
+            return R.failure(RespCode.PRODUCT_STOCK_OVER);
         }
 
         // 查看当前商品在购物车中是否存在
         OmsCartItem cartItem = cartService.getBySkuIdAndMemberId(requestParam.getSkuId(), requestParam.getMemberId());
-        if (cartItem == null) { // 购物车中不存在该规格的商品，新增购物车
+
+        // 购物车中不存在该规格的商品，新增购物车
+        if (cartItem == null) {
             boolean saved = productSku == null ? cartService.save(requestParam, product, null) : cartService.save(requestParam, product, productSku);
-            return saved ? R.ok("已添加！") : R.ok(RespCode.SAVE_FAILURE.getCode(), "添加失败！");
+            return saved ? R.ok(RespCode.CART_ADDED) : R.failure(RespCode.SAVE_FAILURE);
         }
 
         // 检查商品库存
         if (requestParam.getProductCnt() > stock - cartItem.getItemQuantity()) {
-            return R.ok(RespCode.PRODUCT_STOCK_OVER.getCode(), "商品库存不足！");
+            return R.failure(RespCode.PRODUCT_STOCK_OVER);
         }
 
         // 已存在该规格商品的，增加购物车商品数量
         cartItem.setItemQuantity(requestParam.getProductCnt() + cartItem.getItemQuantity());
         if (!cartService.update(cartItem)) {
-            return R.ok("添加失败！");
+            return R.failure(RespCode.SAVE_FAILURE);
         }
 
-        return R.ok("已添加！");
+        return R.ok(RespCode.CART_ADDED);
     }
 
     @PutMapping
@@ -142,12 +144,12 @@ public class OmsCartController {
         // 检查购物车信息是否存在
         OmsCartItem cartItem = cartService.getById(requestParam.getId());
         if (cartItem == null) {
-            return R.ok("购物车信息不存在！");
+            return R.failure(RespCode.CART_ITEM_NOT_EXIST);
         }
 
         PmsProduct product = productService.getById(cartItem.getItemId());
         if (product == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品不存在！");
+            return R.ok(RespCode.PRODUCT_NOT_EXIST);
         }
 
         Integer stock = 0;
@@ -160,46 +162,46 @@ public class OmsCartController {
             // 检查商品规格
             productSku = productSkuService.getById(requestParam.getSkuId());
             if (productSku == null) {
-                return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "商品规格不存在！");
+                return R.failure(RespCode.PRODUCT_SKU_NOT_EXIST);
             }
             stock = productSku.getStock();
         }
 
         // 检查商品库存
         if (requestParam.getProductCnt() > stock) {
-            return R.ok(RespCode.PRODUCT_STOCK_OVER.getCode(), "商品库存不足！");
+            return R.failure(RespCode.PRODUCT_STOCK_OVER);
         }
 
         if (!cartService.update(cartItem, productSku, requestParam)) {
-            return R.ok("更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.CART_UPDATED);
     }
 
     @PutMapping("change-check-status")
     R changeCartItemCheckStatus(@RequestBody Set<Long> ids) {
         if (!cartService.changeCheckStatusByIds(ids)) {
-            return R.ok("更新失败！");
+            return R.failure(RespCode.UPDATE_FAILURE);
         }
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.CART_UPDATED);
     }
 
     @DeleteMapping
     R delete(@RequestBody Set<Long> ids) {
         if (ids.isEmpty()) {
-            return R.ok("已删除！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
 
-        return cartService.deleteByIds(ids) ? R.ok("已移除！") : R.ok(RespCode.DELETE_FAILURE.getCode(), "移除失败！");
+        return cartService.deleteByIds(ids) ? R.ok(RespCode.CART_DELETED) : R.failure(RespCode.DELETE_FAILURE);
     }
 
     @DeleteMapping("clear")
     public R clear() {
         if (!cartService.clearCartItems()) {
-            return R.ok(RespCode.DB_OPERATION_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
-        return R.ok("已删除！");
+        return R.ok(RespCode.CART_DELETED);
     }
 }

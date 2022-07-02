@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gexingw.shop.bo.sys.SysCity;
+import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.modules.sys.dto.city.SysCityRequestParam;
 import com.gexingw.shop.modules.sys.dto.city.SysCitySearchParam;
-import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.modules.sys.service.SysCityService;
 import com.gexingw.shop.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +27,8 @@ public class SysCityController {
         // 查询条件
         QueryWrapper<SysCity> queryWrapper = new QueryWrapper<>();
 
-        // 模糊搜索
-        if (searchParam.getBlurry() != null) {   // 名字搜索
+        // // 名字模糊搜索
+        if (searchParam.getBlurry() != null) {
             queryWrapper.like("name", searchParam.getBlurry());
         }
 
@@ -73,36 +73,36 @@ public class SysCityController {
     R save(@RequestBody SysCityRequestParam requestParam) {
         Integer cityId = cityService.save(requestParam);
         if (cityService.save(requestParam) == null) {
-            return R.ok(RespCode.SAVE_FAILURE.getCode(), "保存失败！");
+            return R.failure(RespCode.SAVE_FAILURE);
         }
 
         // 删除redis缓存
         cityService.delRedisCityTree();
 
-        return R.ok("已保存！");
+        return R.ok(RespCode.SYSTEM_CITY_CREATED);
     }
 
     @PutMapping
     R update(@RequestBody SysCityRequestParam requestParam) {
         if (!cityService.update(requestParam)) {
-            R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
+            R.failure(RespCode.UPDATE_FAILURE, "更新失败！");
         }
 
         // 删除redis缓存
         cityService.delRedisCityTree();
 
-        return R.ok("已更新！");
+        return R.ok(RespCode.SYSTEM_CITY_UPDATED);
     }
 
     @DeleteMapping
     R delete(@RequestBody Set<Integer> ids) {
         if (!cityService.deleteByIds(ids)) {
-            return R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+            return R.failure(RespCode.DELETE_FAILURE);
         }
 
         // 删除redis缓存
         cityService.delRedisCityTree();
 
-        return R.ok("已删除！");
+        return R.ok(RespCode.SYSTEM_CITY_DELETED);
     }
 }

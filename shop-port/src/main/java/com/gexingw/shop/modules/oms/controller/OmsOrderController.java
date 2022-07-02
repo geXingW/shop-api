@@ -108,7 +108,7 @@ public class OmsOrderController {
     public R show(@PathVariable String id) {
         OmsOrder order = orderService.getById(id);
         if (order == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到该订单！");
+            return R.ok(RespCode.RESOURCE_NOT_EXIST);
         }
 
         OmsOrderDetailVO orderDetailVO = new OmsOrderDetailVO();
@@ -143,10 +143,10 @@ public class OmsOrderController {
         }
 
         if (orderId == null) {
-            return R.ok(RespCode.SAVE_FAILURE.getCode(), "订单创建失败！");
+            return R.ok(RespCode.SAVE_FAILURE);
         }
 
-        return R.ok("已创建！", orderId);
+        return R.ok(RespCode.ORDER_CREATED, RespCode.ORDER_CREATED.getMessage(), orderId);
     }
 
     @PutMapping("/{id}")
@@ -154,10 +154,10 @@ public class OmsOrderController {
         // 检查订单是否存在
         OmsOrder order = orderService.getById(id);
         if (order == null) {
-            return R.ok(RespCode.RESOURCE_NOT_EXIST.getCode(), "未找到该订单！");
+            return R.ok(RespCode.ORDER_NOT_EXIST);
         }
 
-        return R.ok("没什么可更新的！");
+        return R.ok(RespCode.ORDER_UPDATED);
 //
 //        if (!orderService.update(requestParam)) {
 //            return R.ok(RespCode.UPDATE_FAILURE.getCode(), "更新失败！");
@@ -168,6 +168,6 @@ public class OmsOrderController {
 
     @DeleteMapping
     public R delete(@RequestBody Set<Long> ids) {
-        return orderService.deleteByIds(ids) ? R.ok("已删除！") : R.ok(RespCode.DELETE_FAILURE.getCode(), "删除失败！");
+        return orderService.deleteByIds(ids) ? R.ok(RespCode.ORDER_DELETED) : R.ok(RespCode.DELETE_FAILURE);
     }
 }

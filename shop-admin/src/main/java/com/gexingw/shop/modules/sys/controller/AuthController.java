@@ -3,16 +3,16 @@ package com.gexingw.shop.modules.sys.controller;
 import com.gexingw.shop.bo.ums.UmsAdmin;
 import com.gexingw.shop.component.AdminCaptcha;
 import com.gexingw.shop.constant.AuthConstant;
-import com.gexingw.shop.modules.sys.dto.auth.UmsLoginRequestParam;
 import com.gexingw.shop.enums.RespCode;
 import com.gexingw.shop.exception.BadRequestException;
+import com.gexingw.shop.modules.sys.dto.auth.UmsLoginRequestParam;
 import com.gexingw.shop.modules.ums.service.UmsAdminService;
 import com.gexingw.shop.modules.ums.service.UmsDeptService;
 import com.gexingw.shop.modules.ums.service.UmsJobService;
 import com.gexingw.shop.util.AuthUtil;
 import com.gexingw.shop.util.JwtTokenUtil;
-import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.utils.R;
+import com.gexingw.shop.utils.RedisUtil;
 import com.gexingw.shop.utils.RsaUtil;
 import com.wf.captcha.SpecCaptcha;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,17 +87,21 @@ public class AuthController {
         // 获取用户已分配角色
         Map<String, Object> userInfo = new HashMap<>();
 
-        userDetails.setPassword(null);// 移除密码字段
+        // 移除密码字段
+        userDetails.setPassword(null);
         userInfo.put("info", userDetails);
-        userInfo.put("roles", umsAdminService.getUserPermissions(userDetails.getId()));// 角色
-        userInfo.put("dataScopes", umsAdminService.getUserDataScope(userDetails.getId()));// 数据权限
-        userInfo.put("jobs", umsJobService.getJobsByAdminId(userDetails.getId()));// jobs
+        // 角色
+        userInfo.put("roles", umsAdminService.getUserPermissions(userDetails.getId()));
+        // 数据权限
+        userInfo.put("dataScopes", umsAdminService.getUserDataScope(userDetails.getId()));
+        // jobs
+        userInfo.put("jobs", umsJobService.getJobsByAdminId(userDetails.getId()));
 
         HashMap<String, Object> result = new HashMap<>();
         result.put("token", token);
         result.put("user", userInfo);
 
-        return R.ok("登陆成功！", result);
+        return R.ok(result);
     }
 
     /**
@@ -116,7 +120,7 @@ public class AuthController {
 
             // 缓存验证码
             if (!adminCaptcha.cacheCode(uuid, code)) {
-                return R.ok(RespCode.FAILURE.getCode(), "验证码生成失败！");
+                return R.failure(RespCode.CAPTCHA_GENERATE_FAILURE);
             }
 
             HashMap<String, String> result = new HashMap<>();
@@ -125,7 +129,7 @@ public class AuthController {
 
             return R.ok(result);
         } catch (Exception e) {
-            return R.ok(RespCode.FAILURE.getCode(), "验证码生成失败！");
+            return R.failure(RespCode.CAPTCHA_GENERATE_FAILURE);
         }
     }
 
